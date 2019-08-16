@@ -1,0 +1,52 @@
+.published-change{
+	padding:20px 0;
+	position:relative;
+}
+.published-change div{
+	display: flex;
+	margin: 10px 20px;
+}
+.published-change div p{
+	width: 300px;
+}
+.published-change div p span{
+	display: inline-block;
+	width: 100px;
+	text-align: center;
+	font-size: 13px;
+	color: black;
+}
+.published-change div p input{
+	height: 20px;
+}
+.published-change div p select{
+	height: 23px;
+	width: 100px;
+}
+.published-name div{
+	display: flex;
+}
+.published-name div p{
+	width: 100px;
+	margin-right: 50px;
+}
+.published-price{
+	display:table-cell;
+	vertical-align: middle;
+}
+.published-price div{
+	display: flex;
+}
+.published-price p{
+	width: 80px;
+	margin-right: 20px;
+}
+.published-do div{
+	/*width: inherit;*/
+	/*margin-right: 10px;*/
+	display: flex;
+}
+.published-do div a{
+	margin-right: 10px;
+	/*margin-right: 10px;*/
+}

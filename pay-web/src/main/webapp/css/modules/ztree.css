@@ -1,0 +1,27 @@
+/*
+    author: xinxiaonna
+    date: 2017-8-4
+*/
+.zTreeMenu {
+    position:absolute;
+    top: 0;
+    text-align: left;
+    border: 1px solid #999;
+    background-color: #DFDFDF;
+    z-index: 9999;
+}
+.zTreeMenu ul li {
+    font-size: 13px;
+    display: block;
+    width: 60px;
+    margin: 1px 0;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #999;
+}
+.zTreeMenu ul li.last {
+    border-bottom: none;
+}
+.zTreeMenu ul li:last-child {
+    border-bottom: none;
+}

@@ -1,0 +1,252 @@
+package com.ewfresh.pay.policy.impl;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.parser.Feature;
+import com.ewfresh.pay.model.PayFlow;
+import com.ewfresh.pay.model.RefundParam;
+import com.ewfresh.pay.model.exception.*;
+import com.ewfresh.pay.model.vo.RefundInfoVo;
+import com.ewfresh.pay.policy.RefundPolicy;
+import com.ewfresh.pay.redisService.Bill99OrderRedisService;
+import com.ewfresh.pay.redisService.UnionPayWebWapOrderRedisService;
+import com.ewfresh.pay.service.PayFlowService;
+import com.ewfresh.pay.util.JsonUtil;
+import com.ewfresh.pay.util.bob.BOBRefundSeqFormat;
+import com.ewfresh.pay.util.bob.FenYuanConvert;
+import com.ewfresh.pay.util.unionpayH5Pay.UnionPayHttpsClient;
+import com.ewfresh.pay.util.unionpayH5Pay.UnionpayH5B2BCbc3DesUtil;
+import com.ewfresh.pay.util.unionpayH5Pay.UnionpayH5B2BMD5Util;
+import com.ewfresh.pay.util.unionpayH5PayB2B.UnionPayB2BLogUtil;
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.dom4j.DocumentException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static com.ewfresh.pay.util.Constants.*;
+
+/**
+ * description: 中国银联H5PayB2B退款策略---联机退warning：这个是按照联机退方式写的退款策略，
+ * 因使用在线退款（跟B2C同一个通道），故此方案弃用。
+ * @author: jiudongdong
+ * date: 2019/6/14.
+ */
+//@Component
+public class UnionPayH5PayB2BRefundPolicy implements RefundPolicy {
+    private Logger logger = LoggerFactory.getLogger(getClass());
+    //读取资源配置参数
+    @Value("${H5Pay.url}")
+    private String APIurl;
+    @Value("${H5Pay.mid}")
+    private String mid;
+    @Value("${H5Pay.B2B.appid}")
+    private String appid;//商户ID（用于H5B2B退款，由王府井提供）
+    @Value("${H5Pay.tid}")
+    private String tid;
+    @Value("${H5Pay.instMid}")
+    private String instMid;
+    @Value("${H5Pay.msgSrc}")
+    private String msgSrc;
+    @Value("${H5Pay.msgSrcId}")
+    private String msgSrcId;
+    @Value("${H5Pay.key}")
+    private String md5Key;
+
+    @Value("${H5Pay.msgType_refund}")
+    private String msgType_refund;
+    @Value("${H5Pay.msgType_secureCancel}")
+    private String msgType_secureCancel;
+    @Value("${H5Pay.msgType_secureComplete}")
+    private String msgType_secureComplete;
+    @Value("${H5Pay.msgType_close}")
+    private String msgType_close;
+    @Value("${H5Pay.msgType_query}")
+    private String msgType_query;//订单查询（支付）
+    @Value("${H5Pay.msgType_refundQuery}")
+    private String msgType_refundQuery;//订单查询（退款）
+    @Value("${H5Pay.notifyUrl}")
+    private String notifyUrl;//支付结果通知地址
+    @Value("${H5Pay.returnUrl}")
+    private String returnUrl;//前台网页跳转地址
+    @Value("${H5Pay.apiUrl_makeOrder}")
+    private String apiUrl_makeOrder;//向银联发送支付请求的url
+
+    @Value("${httpClient.getToken}")
+    private String userTokenUrl;
+    @Value("${httpClient.getOrderInfo}")
+    private String getOrderInfoUrl;
+
+    @Value("${H5Pay.B2B.key}")
+    private String B2BKey;//B2B通讯秘钥
+    @Value("${H5Pay.B2B.keyStorePath}")
+    private String keyStorePath;//B2B私钥路径
+    @Value("${H5Pay.B2B.keyStorePassword}")
+    private String keyStorePassword;//B2B私钥密码
+    @Value("${H5Pay.B2B.keyStorePath}")
+    private String trustStorePath;//B2B trustStore路径
+    @Value("${H5Pay.B2B.trustStorePassword}")
+    private String trustStorePassword;//B2B trustStore密码
+    @Value("${H5Pay.B2B.refundUrl}")
+    private String refundUrl;//B2B退款地址
+
+
+    @Autowired
+    private Bill99OrderRedisService bill99OrderRedisService;
+    @Autowired
+    private PayFlowService payFlowService;
+    @Autowired
+    private UnionPayWebWapOrderRedisService unionPayWebWapOrderRedisService;
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+    private SimpleDateFormat standardSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    @Override
+    public List<PayFlow> refund(RefundParam refundParam)
+            throws RefundParamNullException, PayFlowFoundNullException, UnsupportedEncodingException,
+            RefundHttpToBill99FailedException, RefundBill99ResponseNullException, DocumentException,
+            RefundBill99HandleException, Bill99NotFoundThisOrderException, RefundAmountMoreThanOriException,
+            WeiXinNotEnoughException, TheBankDoNotSupportRefundTheSameDay, HttpToUnionPayFailedException,
+            VerifyUnionPaySignatureException, UnionPayHandleRefundException {
+
+        logger.info("Refund by UnionPayH5PayB2BRefundPolicy START, the params = {}", JsonUtil.toJson(refundParam));
+        String outTradeNo = refundParam.getOutTradeNo();// 商户订单号(与第三方交互交易的流水号对应表中的interaction_id字段加E加R的订单号)
+        /* 1. 校验退款请求参数 */
+        String tradeNo = refundParam.getTradeNo();// 交易流水号（支付流水表的channel_flow_id）
+        String refundAmount = refundParam.getRefundAmount();// 退款金额
+        refundAmount = StringUtils.isBlank(refundAmount) ? null : FenYuanConvert.yuan2Fen(refundAmount).toString();
+        String totalAmount = refundParam.getTotalAmount();// 订单金额
+        String outRequestNo = refundParam.getOutRequestNo();// 退款订单号(子订单订单号,如果没有该订单没有子订单则该处填订单号)
+        String orderNo = refundParam.getOrderNo();// 父订单号
+        if (StringUtils.isBlank(tradeNo) || StringUtils.isBlank(refundAmount) || StringUtils.isBlank(outRequestNo)
+                || StringUtils.isBlank(outTradeNo) || StringUtils.isBlank(orderNo)) {
+            logger.error("The param has empty part, tradeNo = " + tradeNo + ", refundAmount = " + refundAmount + ", outRequestNo = " +
+                    outRequestNo + ", outTradeNo = " + outTradeNo + ", orderNo = " + orderNo);
+            throw new RefundParamNullException("The params tradeNo or refundAmount or outRequestNo or outTradeNo or orderNo is empty");
+        }
+        // 1.1 根据支付渠道流水号获取部分退款信息
+        PayFlow payFlow = payFlowService.getPayFlowPartById(tradeNo);
+        if (payFlow == null) {
+            logger.error("There is no this payFlowId: " + tradeNo);
+            throw new PayFlowFoundNullException("There is no this payFlowId: " + tradeNo);
+        }
+        String receiverUserId = payFlow.getReceiverUserId();//店铺id
+        Date successTime = payFlow.getSuccessTime();//接收支付通知时，将payTime存在这个successTime字段了
+        String channelFlowId = payFlow.getChannelFlowId();
+
+        //组织请求报文
+        Map<String, String> map = new HashMap<>();
+        String refundSequence = msgSrcId + BOBRefundSeqFormat.orderNo2UnionPayRefundSequence(outRequestNo);// msgSrcId + 生成28位的退款流水号
+        map.put("serialNo", refundSequence);
+        map.put("appid", appid);
+        map.put("mernum", mid);
+        map.put("o_trandate", standardSdf.format(successTime));
+        map.put("o_referno", channelFlowId);
+        map.put("rnamount", refundAmount);
+        String sign = refundSequence + appid + mid + B2BKey;
+        map.put("sign", UnionpayH5B2BMD5Util.getMD5Str(sign));
+        logger.info("Sign of UnionPayH5PayB2BRefundPolicy request = {}", UnionpayH5B2BMD5Util.getMD5Str(sign));
+
+        // 发送退款请求
+        String requestContent;//请求信息
+        String result;//响应信息
+        try {
+            requestContent = JSON.toJSONString(map);
+            List<NameValuePair> nvps = new ArrayList<>();
+            nvps.add(new BasicNameValuePair("data", UnionpayH5B2BCbc3DesUtil.encrypt(requestContent)));
+            logger.info("Data = {}", requestContent);
+            logger.info("Data = {}", UnionpayH5B2BCbc3DesUtil.encrypt(requestContent));
+            UnionPayHttpsClient httpsClient = new UnionPayHttpsClient(refundUrl, keyStorePath, trustStorePath, keyStorePassword, trustStorePassword);
+            result = httpsClient.httpsPost(nvps);
+            logger.info("The result of refund of h5 b2b is: {}", result);
+            result = UnionpayH5B2BCbc3DesUtil.decrypt(result);
+            logger.info("The result of refund of h5 b2b is: {}", result);
+        } catch (Exception e) {
+            logger.error("The response data is empty for UnionPayH5PayB2BRefundPolicy, outTradeNo = " + outTradeNo);
+            logger.error("Connection is timeout for refund: " + outTradeNo);
+            // 网络异常，请稍后重试
+            throw new HttpToUnionPayFailedException("Connection is timeout for refund: " + outTradeNo);
+        }
+        //转换成json对象
+        com.alibaba.fastjson.JSONObject respJsonObj = JSON.parseObject(result.toString(), Feature.OrderedField);
+        String respCode = respJsonObj.getString(RESP_CODE);//应答码
+        String serialNo = respJsonObj.getString(SERIAL_NO);//自定义的退款序列号
+        String appid = respJsonObj.getString(APP_ID);//H5B2B手工接口退款的应用id，银联数字王府井提供
+        String signResult = respJsonObj.getString(SIGN);//H5B2B手工接口退款的签名
+
+        // 验签
+        String calSign = UnionpayH5B2BMD5Util.getMD5Str(respCode + serialNo + appid + B2BKey);
+        logger.info("Result sign = {}", signResult);
+        logger.info("Self cal sign = {}", calSign);
+        boolean checkSign = calSign.equalsIgnoreCase(signResult);
+        if (!checkSign) {
+            logger.error("Verify signature for UnionPayH5PayB2BRefundPolicy response not pass!!! outTradeNo = " + outTradeNo);
+            logger.error("The response data of refund outTradeNo: " + outTradeNo + " is: " + respJsonObj);
+            // 校验中国银联签名异常
+            throw new VerifyUnionPaySignatureException("Verify signature for UnionPayH5RefundPolicy Exception");
+        }
+        logger.info("Verify signature success! outTradeNo = {}", outTradeNo);
+
+        //网付系统应答码的处理：
+        //验签成功，处理应答码
+        logger.info("respCode = {} of outTradeNo {}", respCode, outRequestNo);
+        UnionPayB2BLogUtil.logTradeInfo(respCode, outTradeNo);
+        if (!"00".equals(respCode)) {
+            logger.error("UnionPay handle B2B refund failed, outTradeNo = " + outTradeNo);
+            logger.error("The response data of refund is: " + respJsonObj);
+            // 中国银联处理退款失败
+            throw new UnionPayHandleRefundException("UnionPayH5PayB2BRefundPolicy handle refund Exception");
+        }
+        logger.info("UnionPay handle refund success, outTradeNo = {}", outTradeNo);
+        logger.info("The response data of refund is: {}", respJsonObj);
+
+        // 退款成功，删除orderAllowCancelHandler里备份的退单信息
+        bill99OrderRedisService.delReturnAmountParams(outRequestNo);
+
+        /* 5. 封装PayFlow信息 */
+        // TODO 是否需要运费一条流水？店铺商品退款一条流水?worker里轮询的时候，改2条流水的状态
+        // 5.1 设置支付流水信息
+        payFlow.setOrderId(Long.valueOf(orderNo));
+        payFlow.setChannelFlowId(refundSequence);// 上面生成: msgSrcId + 28位的退款流水号
+        payFlow.setPayerPayAmount(FenYuanConvert.fen2Yuan(refundAmount));// TODO 付款方支付金额---退款金额   拆分为运费和商品金额
+        payFlow.setTradeType(TRADE_TYPE_2);//交易类型：退款
+        payFlow.setReceiverFee(BigDecimal.ZERO);//手续费为0
+        payFlow.setDesp(REFUND_ORDER);//订单描述：退款
+        payFlow.setIsRefund(SHORT_ONE);// 是否退款
+        payFlow.setStatus(STATUS_2);//状态 0:成功,1:失败
+        // 收款人id和付款人id对调、收款人名称和付款人名称对调
+        String payerId = payFlow.getPayerId();//付款人id // TODO
+        String payerName = payFlow.getPayerName();//付款人名称 // TODO
+        String receiverName = payFlow.getReceiverName();//收款人名称
+        payFlow.setPayerId(receiverUserId);// TODO
+        payFlow.setReceiverUserId(payerId);
+        payFlow.setPayerName(receiverName);
+        payFlow.setReceiverName(payerName);
+        // 收款账号类型(1个人,2店铺)  和 付款账号类型(1个人,2店铺)   对调
+        Short payerType = payFlow.getPayerType();
+        Short receiverType = payFlow.getReceiverType();
+        payFlow.setPayerType(receiverType);
+        payFlow.setReceiverType(payerType);
+        // SuccessTime，这个需要在退款的异步通知里面设置，字段为refundDate
+        logger.info("Refund order apply success, the orderNo = {}", outTradeNo);
+
+        // 5.3 TODO 退款信息放入Redis，worker轮询还没写
+        RefundInfoVo refundInfoVo = new RefundInfoVo();
+        refundInfoVo.setRefundParam(refundParam);
+        refundInfoVo.setRefundSeq(refundSequence);//msgSrcId + 生成28位的退款流水号
+        refundInfoVo.setRefundTime(null);// 退款申请时间
+        refundInfoVo.setSuccessTime(successTime);// 订单支付成功时间
+        unionPayWebWapOrderRedisService.putRefundOrderInfoToRedis(refundInfoVo, PAY_UNIONPAYQRCODE_REFUND_INFO);//TODO 这个Key，要跟b2c区分
+
+        /* 6. 返回PayFlow对象*/
+        ArrayList<PayFlow> refund = new ArrayList<>();
+        refund.add(payFlow);
+        return refund;
+    }
+}

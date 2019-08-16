@@ -1,0 +1,364 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ewfresh.pay.dao.AccountFlowDao" >
+  <resultMap id="BaseResultMap" type="com.ewfresh.pay.model.AccountFlow" >
+        <id column="acc_flow_id" property="accFlowId" jdbcType="INTEGER" />
+        <result column="pay_flow_id" property="payFlowId" jdbcType="INTEGER" />
+        <result column="user_id" property="userId" jdbcType="BIGINT" />
+        <result column="uname" property="uname" jdbcType="VARCHAR" />
+        <result column="balance" property="balance" jdbcType="DECIMAL" />
+        <result column="freeze_amount" property="freezeAmount" jdbcType="DECIMAL" />
+        <result column="direction" property="direction" jdbcType="TINYINT" />
+        <result column="src_acc" property="srcAcc" jdbcType="VARCHAR" />
+        <result column="target_acc" property="targetAcc" jdbcType="VARCHAR" />
+        <result column="acc_type" property="accType" jdbcType="TINYINT" />
+        <result column="amount" property="amount" jdbcType="DECIMAL" />
+        <result column="busi_type" property="busiType" jdbcType="TINYINT" />
+        <result column="busi_no" property="busiNo" jdbcType="VARCHAR" />
+        <result column="is_induce" property="isInduce" jdbcType="TINYINT" />
+        <result column="is_balance" property="isBalance" jdbcType="TINYINT" />
+        <result column="is_settle" property="isSettle" jdbcType="TINYINT" />
+        <result column="occ_time" property="occTime" jdbcType="TIMESTAMP" />
+        <result column="balance_time" property="balanceTime" jdbcType="TIMESTAMP" />
+        <result column="settle_time" property="settleTime" jdbcType="TIMESTAMP" />
+        <result column="risk_days" property="riskDays" jdbcType="INTEGER" />
+        <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+        <result column="operator" property="operator" jdbcType="VARCHAR" />
+        <result column="desp" property="desp" jdbcType="VARCHAR" />
+        <result column="is_individual" property="isIndividual" jdbcType="TINYINT" />
+        <result column="src_acc_type" property="srcAccType" jdbcType="TINYINT" />
+        <result column="target_acc_type" property="targetAccType" jdbcType="TINYINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    acc_flow_id, pay_flow_id, user_id, balance, freeze_amount, direction, src_acc, target_acc, acc_type,
+    amount, busi_type, busi_no, is_induce, is_balance, is_settle, occ_time, balance_time, 
+    settle_time, risk_days, last_modify_time, operator, desp,uname, is_individual, src_acc_type, target_acc_type
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from t_account_flow
+    where acc_flow_id = #{accFlowId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_account_flow
+    where acc_flow_id = #{accFlowId,jdbcType=INTEGER}
+  </delete>
+  <insert id="addAccountFlow" useGeneratedKeys="true" keyProperty="accFlowId" keyColumn="acc_flow_id" >
+    insert into t_account_flow ( user_id,
+      <if test="payFlowId != null" >
+        pay_flow_id,
+      </if>
+      balance, direction,uname,
+      <if test=" srcAcc != null and srcAcc != ''">
+         src_acc ,
+      </if>
+      <if test=" targetAcc != null and targetAcc != ''">
+         target_acc,
+      </if>
+      <if test=" busiNo != null and busiNo != ''">
+        busi_no,
+      </if>
+      acc_type, amount,
+      <if test=" operator != null and operator != ''">
+        operator,
+      </if>
+      <if test=" desp != null and desp != ''">
+        desp,
+      </if>
+      <if test=" targetAccType != null ">
+        target_acc_type,
+      </if>
+      <if test=" srcAccType != null ">
+        src_acc_type,
+      </if>
+      busi_type,freeze_amount
+      )
+    values (#{userId,jdbcType=BIGINT},
+      <if test="payFlowId != null" >
+        #{payFlowId,jdbcType=INTEGER},
+      </if>
+      #{balance,jdbcType=DECIMAL}, #{direction,jdbcType=TINYINT},
+      #{uname,jdbcType=VARCHAR},
+      <if test=" srcAcc != null and srcAcc != ''">
+        #{srcAcc,jdbcType=VARCHAR} ,
+      </if>
+      <if test=" targetAcc != null and targetAcc != ''">
+        #{targetAcc,jdbcType=VARCHAR},
+      </if>
+      <if test=" busiNo != null and busiNo != ''">
+        #{busiNo,jdbcType=VARCHAR},
+      </if>
+      #{accType,jdbcType=TINYINT}, #{amount,jdbcType=DECIMAL},
+      <if test=" operator != null and operator != ''">
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test=" desp != null and desp != ''">
+        #{desp,jdbcType=VARCHAR},
+      </if>
+      <if test=" targetAccType != null ">
+        #{targetAccType,jdbcType=TINYINT},
+      </if>
+      <if test=" srcAccType != null ">
+        #{srcAccType,jdbcType=TINYINT},
+      </if>
+      #{busiType,jdbcType=TINYINT},#{freezeAmount,jdbcType=DECIMAL}
+    )
+  </insert>
+  <insert id="addFreezeAccFlow" useGeneratedKeys="true" keyProperty="accFlowId" keyColumn="acc_flow_id" >
+    INSERT INTO t_account_flow (user_id,
+          balance, direction, src_acc,
+          target_acc, acc_type, amount,busi_no,
+          busi_type, freeze_amount,uname,desp
+    )
+    VALUES (#{userId,jdbcType=BIGINT},
+        #{balance,jdbcType=DECIMAL}, #{direction,jdbcType=TINYINT},
+        #{srcAcc,jdbcType=VARCHAR},#{targetAcc,jdbcType=VARCHAR},
+        #{accType,jdbcType=TINYINT}, #{amount,jdbcType=DECIMAL},#{busiNo},
+        #{busiType,jdbcType=TINYINT}, #{freezeAmount,jdbcType=DECIMAL},#{uname,jdbcType=VARCHAR},
+        #{desp,jdbcType=VARCHAR}
+    )
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.ewfresh.pay.model.AccountFlow" >
+    update t_account_flow
+    set pay_flow_id = #{payFlowId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=BIGINT},
+      balance = #{balance,jdbcType=DECIMAL},
+      direction = #{direction,jdbcType=TINYINT},
+      src_acc = #{srcAcc,jdbcType=VARCHAR},
+      target_acc = #{targetAcc,jdbcType=VARCHAR},
+      acc_type = #{accType,jdbcType=TINYINT},
+      amount = #{amount,jdbcType=DECIMAL},
+      busi_type = #{busiType,jdbcType=TINYINT},
+      busi_no = #{busiNo,jdbcType=VARCHAR},
+      is_induce = #{isInduce,jdbcType=TINYINT},
+      is_balance = #{isBalance,jdbcType=TINYINT},
+      is_settle = #{isSettle,jdbcType=TINYINT},
+      occ_time = #{occTime,jdbcType=TIMESTAMP},
+      balance_time = #{balanceTime,jdbcType=TIMESTAMP},
+      settle_time = #{settleTime,jdbcType=TIMESTAMP},
+      risk_days = #{riskDays,jdbcType=INTEGER},
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      operator = #{operator,jdbcType=VARCHAR},
+      desp = #{desp,jdbcType=VARCHAR}
+    where acc_flow_id = #{accFlowId,jdbcType=INTEGER}
+  </update>
+
+  <resultMap id="AccountFlowVo" type="com.ewfresh.pay.model.vo.AccountFlowVo" extends="BaseResultMap">
+
+  </resultMap>
+
+  <!-- 根据uid查询最近的一条资金账户流水-->
+  <select id="getAccountFlowByUid" resultMap="AccountFlowVo">
+      SELECT
+          <include refid="Base_Column_List" />
+      FROM
+          t_account_flow
+      WHERE
+          user_id = #{userId}
+      ORDER BY
+          acc_flow_id DESC
+          limit 1
+  </select>
+
+
+  <!--获取支付冻结金额的资金账户流水-->
+  <select id="getFreezeAccFlow" resultMap="AccountFlowVo">
+      SELECT
+          <include refid="Base_Column_List" />
+      FROM
+          t_account_flow
+      WHERE
+          busi_no = #{unfreezeOrderId}
+          <if test="amount != null">
+              AND amount = #{amount}
+          </if>
+      AND
+          busi_type = 7
+      ORDER BY
+          acc_flow_id DESC
+      limit 1
+  </select>
+
+
+    <!--DXM 根据订单ID获取使用余额支付的资金账户流水-->
+    <select id="getPayAccountFlow" resultMap="AccountFlowVo">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            t_account_flow
+        WHERE
+            busi_no = #{unfreezeOrderId} AND acc_type = 4 AND busi_type = 3
+        ORDER BY
+            acc_flow_id DESC
+        limit 1
+    </select>
+    <!--DXM 根据订单ID获取使用余额支付的资金账户流水-->
+    <select id="getPayAccountFlowAfterFreezen" resultMap="AccountFlowVo">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            t_account_flow
+        WHERE
+            busi_no = #{busiNo} AND acc_type = 4 AND busi_type = 3 AND acc_flow_id > #{unfreezeOAccFlowId}
+        ORDER BY
+            acc_flow_id DESC
+        limit 1
+    </select>
+  <update id="updateFreezeStatus" >
+    UPDATE t_account_flow
+    SET
+        is_balance = #{unfreezeStatus}
+    WHERE
+        acc_flow_id = #{accFlowId,jdbcType=INTEGER}
+  </update>
+
+  <!--获取支付冻结金额的资金账户流水-->
+  <select id="getAccFlowById" resultMap="AccountFlowVo">
+    SELECT
+        <include refid="Base_Column_List" />
+    FROM
+        t_account_flow
+    WHERE
+        acc_flow_id = #{accFlowId,jdbcType=INTEGER}
+  </select>
+
+
+  <select id="getAccountsByUid" resultMap="BaseResultMap">
+      SELECT
+          acc_flow_id,
+          busi_no,
+          occ_time,
+          amount,
+          balance,
+          acc_type,
+          busi_type,
+          uname,
+          direction,
+          desp
+      FROM
+          t_account_flow
+      <where>
+          user_id = #{uid}
+          AND
+          busi_type != 7
+          AND
+          busi_type != 8
+          <if test="explain != null">
+              AND desp LIKE CONCAT(CONCAT('%', #{explain}), '%')
+          </if>
+          <if test="amount != null">
+              AND amount LIKE CONCAT('%', #{amount},'%')
+          </if>
+          <if test="endTime != null">
+              AND occ_time &lt;= #{endTime}
+          </if>
+          <if test="startTime != null">
+              AND occ_time &gt;= #{startTime}
+          </if>
+      </where>
+      ORDER BY
+          acc_flow_id
+      DESC
+  </select>
+
+    <select id="getAccountsByUidList" resultMap="BaseResultMap">
+        SELECT
+            acc_flow_id,
+            busi_no,
+            occ_time,
+            amount,
+            balance,
+            busi_type,
+            acc_type,
+            uname,
+            direction,
+            desp
+        FROM
+            t_account_flow
+        <where>
+            user_id = #{userId}
+            AND
+            busi_type != 7
+            AND
+            busi_type != 8
+            <if test="explain != null">
+                AND desp LIKE CONCAT(CONCAT('%', #{explain}), '%')
+            </if>
+            <if test="amount != null">
+                AND amount LIKE CONCAT('%', #{amount},'%')
+            </if>
+            <if test="endTime != null" >
+                AND  occ_time  &lt;= #{endTime}
+            </if>
+            <if test="startTime != null">
+                AND  occ_time &gt;= #{startTime}
+            </if>
+        </where>
+        ORDER BY
+            acc_flow_id
+        DESC
+    </select>
+  
+  <resultMap id="getAccFlowListMap" type="com.ewfresh.pay.model.vo.AccountFlowListVo">
+    <result column="balance" property="balance" jdbcType="DECIMAL" />
+    <result column="user_id" property="uid" jdbcType="BIGINT" />
+    <result column="uname" property="uname" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="getAccountFlowIdByParm" resultMap="getAccFlowListMap">
+     SELECT
+       user_id,
+       uname,
+       balance
+     FROM
+       t_account_flow
+     WHERE
+     acc_flow_id IN
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <select id="getAccountFlowList" resultType="java.lang.Long">
+    SELECT
+       MAX(acc_flow_id)
+    FROM
+    t_account_flow
+    <where>
+      <if test="uname != null">
+        uname  LIKE CONCAT('%',#{uname},'%')
+      </if>
+      <if test="occTime != null">
+        and occ_time &lt;= #{occTime}
+      </if>
+    </where>
+    GROUP BY
+    user_id
+  </select>
+
+    <select id="getAccountFlowLists" resultType="java.lang.Long">
+    SELECT
+       MAX(acc_flow_id) as id
+    FROM
+    t_account_flow
+    <where>
+        <if test="timeStart != null">
+            AND occ_time <![CDATA[>=]]> #{timeStart}
+        </if>
+        <if test="timeEnd != null">
+            AND #{timeEnd} <![CDATA[>=]]> occ_time
+        </if>
+    </where>
+    GROUP BY
+    user_id
+  </select>
+
+  <select id="getAll" resultMap="AccountFlowVo">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    t_account_flow
+    ORDER BY acc_flow_id ASC
+  </select>
+</mapper>

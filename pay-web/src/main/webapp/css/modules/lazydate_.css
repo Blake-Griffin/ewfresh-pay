@@ -1,0 +1,15 @@
+/*
+ 	时间选择器样式
+ 	author：李明伟
+ * 
+ * */
+.JLbox .JLform .JLtextInput.laydate-icon {
+	background-image: url(../../plugins/laydate/skins/yalan/icon.png);
+    padding-right: 20px;
+    border: 1px solid #C6C6C6;
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-color: #fff;
+    outline: 0;
+    width: 150px;
+}

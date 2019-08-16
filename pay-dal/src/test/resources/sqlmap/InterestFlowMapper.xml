@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ewfresh.pay.dao.InterestFlowDao">
+  <resultMap id="BaseResultMap" type="com.ewfresh.pay.model.InterestFlow">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="bill_id" jdbcType="INTEGER" property="billId" />
+    <result column="bill_repay_id" jdbcType="INTEGER" property="billRepayId" />
+    <result column="bill_flow" jdbcType="VARCHAR" property="billFlow" />
+    <result column="uname" jdbcType="VARCHAR" property="uname" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="total_Interest" jdbcType="DECIMAL" property="totalInterest" />
+    <result column="repaid_interest" jdbcType="DECIMAL" property="repaidInterest" />
+    <result column="repay_time" jdbcType="TIMESTAMP" property="repayTime" />
+    <result column="repay_type" jdbcType="TINYINT" property="repayType" />
+    <result column="repay_channel" jdbcType="TINYINT" property="repayChannel" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, bill_id, bill_repay_id, bill_flow, uname, user_id, total_Interest, repaid_interest, 
+    repay_time, repay_type, repay_channel, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_Interest_flow
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_Interest_flow
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ewfresh.pay.model.InterestFlow" useGeneratedKeys="true">
+    insert into t_Interest_flow (bill_id, bill_repay_id, bill_flow, 
+      uname, user_id, total_Interest, 
+      repaid_interest, repay_time, repay_type, 
+      repay_channel, create_time)
+    values (#{billId,jdbcType=INTEGER}, #{billRepayId,jdbcType=INTEGER}, #{billFlow,jdbcType=VARCHAR}, 
+      #{uname,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, #{totalInterest,jdbcType=DECIMAL}, 
+      #{repaidInterest,jdbcType=DECIMAL}, #{repayTime,jdbcType=TIMESTAMP}, #{repayType,jdbcType=TINYINT}, 
+      #{repayChannel,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ewfresh.pay.model.InterestFlow" useGeneratedKeys="true">
+    insert into t_Interest_flow
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="billId != null">
+        bill_id,
+      </if>
+      <if test="billRepayId != null">
+        bill_repay_id,
+      </if>
+      <if test="billFlow != null">
+        bill_flow,
+      </if>
+      <if test="uname != null">
+        uname,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="totalInterest != null">
+        total_Interest,
+      </if>
+      <if test="repaidInterest != null">
+        repaid_interest,
+      </if>
+      <if test="repayTime != null">
+        repay_time,
+      </if>
+      <if test="repayType != null">
+        repay_type,
+      </if>
+      <if test="repayChannel != null">
+        repay_channel,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="billId != null">
+        #{billId,jdbcType=INTEGER},
+      </if>
+      <if test="billRepayId != null">
+        #{billRepayId,jdbcType=INTEGER},
+      </if>
+      <if test="billFlow != null">
+        #{billFlow,jdbcType=VARCHAR},
+      </if>
+      <if test="uname != null">
+        #{uname,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="totalInterest != null">
+        #{totalInterest,jdbcType=DECIMAL},
+      </if>
+      <if test="repaidInterest != null">
+        #{repaidInterest,jdbcType=DECIMAL},
+      </if>
+      <if test="repayTime != null">
+        #{repayTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="repayType != null">
+        #{repayType,jdbcType=TINYINT},
+      </if>
+      <if test="repayChannel != null">
+        #{repayChannel,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ewfresh.pay.model.InterestFlow">
+    update t_Interest_flow
+    <set>
+      <if test="billId != null">
+        bill_id = #{billId,jdbcType=INTEGER},
+      </if>
+      <if test="billRepayId != null">
+        bill_repay_id = #{billRepayId,jdbcType=INTEGER},
+      </if>
+      <if test="billFlow != null">
+        bill_flow = #{billFlow,jdbcType=VARCHAR},
+      </if>
+      <if test="uname != null">
+        uname = #{uname,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="totalInterest != null">
+        total_Interest = #{totalInterest,jdbcType=DECIMAL},
+      </if>
+      <if test="repaidInterest != null">
+        repaid_interest = #{repaidInterest,jdbcType=DECIMAL},
+      </if>
+      <if test="repayTime != null">
+        repay_time = #{repayTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="repayType != null">
+        repay_type = #{repayType,jdbcType=TINYINT},
+      </if>
+      <if test="repayChannel != null">
+        repay_channel = #{repayChannel,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ewfresh.pay.model.InterestFlow">
+    update t_Interest_flow
+    set bill_id = #{billId,jdbcType=INTEGER},
+      bill_repay_id = #{billRepayId,jdbcType=INTEGER},
+      bill_flow = #{billFlow,jdbcType=VARCHAR},
+      uname = #{uname,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER},
+      total_Interest = #{totalInterest,jdbcType=DECIMAL},
+      repaid_interest = #{repaidInterest,jdbcType=DECIMAL},
+      repay_time = #{repayTime,jdbcType=TIMESTAMP},
+      repay_type = #{repayType,jdbcType=TINYINT},
+      repay_channel = #{repayChannel,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <resultMap id="repayFlowVo" type="com.ewfresh.pay.model.vo.RepayFlowVo">
+    <id column="bill_id" jdbcType="INTEGER" property="billId" />
+    <result column="bill_repay_id" jdbcType="INTEGER" property="billRepayId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="uname" jdbcType="VARCHAR" property="uName" />
+    <result column="bill_flow" jdbcType="VARCHAR" property="billFlow" />
+    <result column="total_interest" jdbcType="DECIMAL" property="totalInterest" />
+    <result column="interest_amount" jdbcType="DECIMAL" property="interestAmount" />
+    <result column="repay_time" jdbcType="TIMESTAMP" property="repayTime" />
+    <result column="repay_channel" jdbcType="TINYINT" property="repay_channel" />
+    <result column="repay_type" jdbcType="TINYINT" property="repay_type" />
+    <result column="orderId" jdbcType="BIGINT" property="orderId" />
+  </resultMap>
+  <select id="getInterestFlow" resultMap="repayFlowVo">
+    SELECT
+    t2.id as bill_id,
+    t1.id as bill_repay_id,
+    t2.user_id as user_id,
+    t2.uname as uname,
+    t2.bill_flow as bill_flow,
+    t2.total_interest as total_interest,
+    t1.interest_amount as interest_amount,
+    t1.repay_time as repay_time,
+    t1.repay_channel as repay_channel,
+    t1.repay_type as repay_type,
+    t1.orderId as orderId
+    FROM t_bill_repay_flow t1 LEFT JOIN t_bill t2 on t1.bill_id = t2.id
+    where
+    total_interest > 0
+    AND t1.id
+    And date_format(t1.repay_time,'%Y-%m-%d') between #{startTime} and #{endTime}
+  </select>
+</mapper>

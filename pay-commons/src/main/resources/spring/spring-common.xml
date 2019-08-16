@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+                http://www.springframework.org/schema/context
+                http://www.springframework.org/schema/context/spring-context-4.2.xsd
+                http://www.springframework.org/schema/tx
+                http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+                http://www.springframework.org/schema/aop
+                http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+                http://www.springframework.org/schema/task
+                http://www.springframework.org/schema/task/spring-task.xsd">
+
+    <context:component-scan base-package="com.ewfresh">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+    <!-- 自动扫描包 ,将带有注解的类 纳入spring容器管理 -->
+    <context:annotation-config/>
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+    <bean id="configProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>classpath:app.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <context:property-placeholder location="classpath:app.properties" order="1" ignore-unresolvable="true"/>
+    <!-- 配置任务线性池 -->
+    <!-- 任务执行器线程数量 -->
+    <task:executor id="executor" pool-size="5" />
+    <!-- 任务调度器线程数量 -->
+    <task:scheduler id="scheduler" pool-size="5" />
+    <!-- 启用annotation方式 -->
+    <task:annotation-driven scheduler="scheduler" executor="executor" proxy-target-class="true" />
+    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+
+    <!--创建数据源对象-->
+    <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+        <!-- 数据库驱动 -->
+        <property name="driverClass" value="${db.driver}"/>
+        <!-- 相应驱动的jdbcUrl,你懂的 -->
+        <property name="jdbcUrl" value="${db.url}"/>
+        <!-- 数据库的用户名 -->
+        <property name="username" value="${db.username}"/>
+        <!-- 数据库的密码 -->
+        <property name="password" value="${db.password}"/>
+        <property name="connectionTestStatement" value="select 1"/>
+        <property name="maxConnectionAgeInSeconds" value="1800"/>
+        <!-- 检查数据库连接池中空闲连接的间隔时间，单位是分，默认值：240，如果要取消则设置为0 -->
+        <property name="idleConnectionTestPeriodInMinutes" value="${db.idleConnectionTestPeriodInMinutes}"/>
+        <!-- 连接池中未使用的链接最大存活时间，单位是分，默认值：60，如果要永远存活设置为0 -->
+        <property name="idleMaxAgeInMinutes" value="${db.idleMaxAgeInMinutes}"/>
+        <property name="connectionTimeoutInMs" value="${db.connectionTimeoutInMs}"/>
+        <property name="acquireRetryDelayInMs" value="${db.acquireRetryDelayInMs}"/>
+        <property name="acquireRetryAttempts" value="${db.acquireRetryAttempts}"/>
+        <!-- 每个分区最大的连接数 -->
+        <property name="maxConnectionsPerPartition" value="${db.maxConnectionsPerPartition}"/>
+        <!-- 每个分区最小的连接数 -->
+        <property name="minConnectionsPerPartition" value="${db.minConnectionsPerPartition}"/>
+        <!-- 分区数 ，默认值2，最小1，推荐3-4，视应用而定-->
+        <property name="partitionCount" value="${db.partitionCount}"/>
+        <!-- 每次去拿数据库连接的时候一次性要拿几个,默认值：2 -->
+        <property name="acquireIncrement" value="${db.acquireIncrement}"/>
+        <!-- 缓存prepared statements的大小，默认值：0 -->
+        <property name="statementsCacheSize" value="${db.statementsCacheSize}"/>
+        <property name="disableConnectionTracking" value="true"/>
+    </bean>
+
+    <bean id="redisClusterConfiguration" class="org.springframework.data.redis.connection.RedisClusterConfiguration">
+        <property name="clusterNodes">
+            <set>
+                <bean class="org.springframework.data.redis.connection.RedisNode">
+                    <constructor-arg name="host" value="${redis.node1.ip}"/>
+                    <constructor-arg name="port" value="${redis.node1.port}"/>
+                </bean>
+                <bean class="org.springframework.data.redis.connection.RedisNode">
+                    <constructor-arg name="host" value="${redis.node2.ip}"/>
+                    <constructor-arg name="port" value="${redis.node2.port}"/>
+                </bean>
+                <bean class="org.springframework.data.redis.connection.RedisNode">
+                    <constructor-arg name="host" value="${redis.node3.ip}"/>
+                    <constructor-arg name="port" value="${redis.node3.port}"/>
+                </bean>
+                <bean class="org.springframework.data.redis.connection.RedisNode">
+                    <constructor-arg name="host" value="${redis.node4.ip}"/>
+                    <constructor-arg name="port" value="${redis.node4.port}"/>
+                </bean>
+                <bean class="org.springframework.data.redis.connection.RedisNode">
+                    <constructor-arg name="host" value="${redis.node5.ip}"/>
+                    <constructor-arg name="port" value="${redis.node5.port}"/>
+                </bean>
+                <bean class="org.springframework.data.redis.connection.RedisNode">
+                    <constructor-arg name="host" value="${redis.node6.ip}"/>
+                    <constructor-arg name="port" value="${redis.node6.port}"/>
+                </bean>
+            </set>
+        </property>
+    </bean>
+    <!--配置jedisConnection-->
+    <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+        <property name="usePool" value="true"/>
+        <property name="timeout" value="${redis.timeout}"/>
+        <constructor-arg name="clusterConfig" ref="redisClusterConfiguration"/>
+    </bean>
+
+    <bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
+        <property name="connectionFactory" ref="jedisConnectionFactory"/>
+    </bean>
+
+    <!--创建事务管理器-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!-- 编程式事务模板,Spring的编程式事务可以通过TransactionTemplate的execute(TransactionCallback<T> action)方法来完成 -->
+    <bean id="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+        <property name="transactionManager" ref="transactionManager" />
+    </bean>
+    <!--配置注解式事务生效-->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+
+    <!--以下为项目中的实体基础配置-->
+    <!--配置阿里微信以及中国银行的config-->
+    <bean id="config" class="com.ewfresh.pay.configure.Configure">
+        <property name="appId" value="${alipay.appid}"/>
+        <property name="pid" value="${alipay.pid}"/>
+        <property name="gateWay" value="${alipay.gateway}"/>
+        <property name="publicKey" value="${alipay.publicKey}"/>
+        <property name="privateKey" value="${alipay.privateKey}"/>
+        <property name="notifyUrl" value="${alipay.notifyUrl}"/>
+        <property name="returnUrl" value="${alipay.returnUrl}"/>
+        <property name="format" value="${alipay.format}"/>
+        <property name="charset" value="${alipay.charset}"/>
+        <property name="signType" value="${alipay.signType}"/>
+    </bean>
+
+    <!--配置微信的config-->
+    <bean id="weixinPayConfig" class="com.ewfresh.pay.configure.WeiXinPayConfigure">
+        <property name="appId" value="${weixinpay.appid}"/>
+        <property name="secret" value="${weixinpay.secret}"/>
+        <property name="mchId" value="${weixinpay.mchid}"/>
+        <property name="api" value="${weixinpay.api}"/>
+        <property name="getPrepayUrl" value="${weixinpay.prePayUrl}"/>
+        <property name="refundUrl" value="${weixinpay.refundUrl}"/>
+        <property name="downLoadBill" value="${weixinpay.downLoadBill}"/>
+        <property name="refundQuery" value="${weixinpay.refundQuery}"/>
+        <property name="notifyUrl" value="${weixinpay.notifyUrl}"/>
+        <property name="orderQuery" value="${weixinpay.orderQuery}"/>
+        <property name="refundNotifyUrl" value="${weixinpay.refundNotifyUrl}"/>
+        <property name="signEncode" value="${weixinpay.signEncode}"/>
+        <property name="tradeTypeSm" value="${weixinpay.tradeTypeSM}"/>
+        <property name="tradeTypeApp" value="${weixinpay.tradeTypeApp}"/>
+        <property name="deviceInfo" value="${weixinpay.deviceInfo}"/>
+        <property name="subMchId" value="${weixinpay.subMCHId}"/>
+    </bean>
+
+    <!--中国银行的config     jiudongdong-->
+    <bean id="BOCPayConfigure" class="com.ewfresh.pay.configure.BOCPayConfigure">
+        <property name="merchantNo" value="${BOCPay.merchantNo}"/>
+        <property name="payType" value="${BOCPay.payType}"/>
+        <property name="curCode" value="${BOCPay.curCode}"/>
+        <property name="orderNote" value="${BOCPay.orderNote}"/>
+        <property name="orderUrl" value="${BOCPay.orderUrl}"/>
+        <property name="orderPayUrl" value="${BOCPay.orderPayUrl}"/>
+        <property name="queryOrderUrl" value="${BOCPay.queryOrderUrl}"/>
+        <property name="commonQueryOrderUrl" value="${BOCPay.commonQueryOrderUrl}"/>
+        <property name="refundOrderUrl" value="${BOCPay.refundOrderUrl}"/>
+        <property name="getTicketUrl" value="${BOCPay.getTicketUrl}"/>
+        <property name="merchantUploadFileUrl" value="${BOCPay.merchantUploadFileUrl}"/>
+        <property name="merchantDownloadFileUrl" value="${BOCPay.merchantDownloadFileUrl}"/>
+        <property name="uploadFileBaseURI" value="${BOCPay.uploadFileBaseURI}"/>
+        <property name="downloadFileBaseURI" value="${BOCPay.downloadFileBaseURI}"/>
+        <property name="keyStorePassword" value="${BOCPay.keyStorePassword}"/>
+        <property name="keyPassword" value="${BOCPay.keyPassword}"/>
+    </bean>
+
+    <!--北京银行的config     jiudongdong-->
+    <bean id="BOBPayConfigure" class="com.ewfresh.pay.configure.BOBPayConfigure">
+        <property name="merId" value="${BOB.merId}"/>
+        <property name="merchantCertPath" value="${BOB.Merchant_Cert_Path}"/>
+        <property name="merchantCertPss" value="${BOB.Merchant_Cert_Pss}"/>
+        <property name="merchantPubPath" value="${BOB.Merchant_pub_Path}"/>
+        <property name="frontEndUrl" value="${BOB.frontEndUrl}"/>
+        <property name="frontFailUrl" value="${BOB.frontFailUrl}"/>
+        <property name="backEndUrl" value="${BOB.backEndUrl}"/>
+        <property name="payUrl" value="${BOB.pay_url}"/>
+        <property name="refundUrl" value="${BOB.refund_url}"/>
+        <property name="singleUrl" value="${BOB.single_url}"/>
+        <property name="orderAccountUrl" value="${BOB.orderaccount_url}"/>
+        <property name="orderAccUrl" value="${BOB.orderAccUrl}"/>
+    </bean>
+
+    <!--99bill的config     jiudongdong-->
+    <bean id="Bill99PayConfigure" class="com.ewfresh.pay.configure.Bill99PayConfigure">
+        <property name="merId" value="${bill99.merId}"/>
+        <property name="merIdNotHat" value="${bill99.merIdNotHat}"/>
+        <property name="merchantAcctId" value="${bill99.merchantAcctId}"/>
+        <property name="merchantAcctIdNotHat" value="${bill99.merchantAcctIdNotHat}"/>
+        <property name="merchantCertPath" value="${bill99.Merchant_Cert_Path}"/>
+        <property name="merchantCertPss" value="${bill99.Merchant_Cert_Pss}"/>
+        <property name="refundPss" value="${bill99.refund_Pss}"/>
+        <property name="refundPssNotHat" value="${bill99.refund_Pss_not_hat}"/>
+        <property name="refundPassword" value="${bill99.refund_password}"/>
+        <property name="refundPasswordNotHat" value="${bill99.refund_password_not_hat}"/>
+        <property name="merchantPubPath" value="${bill99.Merchant_pub_Path}"/>
+        <property name="frontEndUrl" value="${bill99.frontEndUrl}"/>
+        <property name="frontFailUrl" value="${bill99.frontFailUrl}"/>
+        <property name="bgUrl" value="${bill99.bgUrl}"/>
+        <property name="payUrl" value="${bill99.pay_url}"/>
+        <property name="refundUrl" value="${bill99.refund_url}"/>
+        <property name="refundWebServiceUrl" value="${bill99.refund_webService_url}"/>
+        <property name="singleUrl" value="${bill99.single_url}"/>
+        <property name="orderAccountUrl" value="${bill99.orderaccount_url}"/>
+        <property name="orderAccUrl" value="${bill99.orderAccUrl}"/>
+        <property name="withDrawBgUrl" value="${bill99.withDrawBgUrl}"/>
+        <property name="domainName" value="${bill99.domainName}"/>
+        <property name="platformCode" value="${bill99.platformCode}"/>
+        <property name="hatPublicKey" value="${hatPublicKey}"/>
+        <property name="hatPrivateKey" value="${hatPrivateKey}"/>
+    </bean>
+
+    <!--99bill.share的config     jiudongdong-->
+    <bean id="Bill99SharePayConfigure" class="com.ewfresh.pay.configure.Bill99SharePayConfigure">
+        <property name="payeeContact" value="${bill99.share.payeeContact}"/>
+        <property name="shopPayeeContact" value="${bill99.share.freight.shop.payeeContact}"/>
+        <property name="pid" value="${bill99.share.pid}"/>
+        <property name="merchantCertPath" value="${bill99.share.Merchant_Cert_Path}"/>
+        <property name="merchantCertPss" value="${bill99.share.Merchant_Cert_Pss}"/>
+        <property name="merchantPubPath" value="${bill99.share.Merchant_pub_Path}"/>
+        <property name="frontFailUrl" value="${bill99.share.frontFailUrl}"/>
+        <property name="bgUrl" value="${bill99.share.bgUrl}"/>
+        <property name="payUrl" value="${bill99.share.pay_url}"/>
+        <property name="refundUrl" value="${bill99.share.refund_url}"/>
+    </bean>
+
+    <!--99bill快捷支付的config     jiudongdong-->
+    <bean id="Bill99QuickPayConfigure" class="com.ewfresh.pay.configure.Bill99QuickPayConfigure">
+        <property name="merId" value="${bill99.quick.merId}"/>
+        <property name="merIdNotHat" value="${bill99.quick.merIdNotHat}"/>
+        <property name="merchantAcctId" value="${bill99.quick.merchantAcctId}"/>
+        <property name="merchantAcctIdNotHat" value="${bill99.quick.merchantAcctIdNotHat}"/>
+        <property name="terminalId1" value="${bill99.quick.terminalId1}"/>
+        <property name="terminalIdNotHat1" value="${bill99.quick.terminalIdNotHat1}"/>
+        <property name="merchantCertPath" value="${bill99.quick.Merchant_Cert_Path}"/>
+        <property name="merchantCertPss" value="${bill99.quick.Merchant_Cert_Pss}"/>
+        <property name="merchantPubPath" value="${bill99.quick.Merchant_pub_Path}"/>
+        <property name="pciQueryUrl" value="${bill99.quick.pciQueryUrl}"/>
+        <property name="pciDeleteUrl" value="${bill99.quick.pciDeleteUrl}"/>
+        <property name="cardQueryUrl" value="${bill99.quick.cardQueryUrl}"/>
+        <property name="indAuthUrl" value="${bill99.quick.indAuthUrl}"/>
+        <property name="tokenUrl" value="${bill99.quick.tokenUrl}"/>
+        <property name="indAuthVerifyUrl" value="${bill99.quick.indAuthVerifyUrl}"/>
+        <property name="quickPayCommonUrl" value="${bill99.quick.quickPayCommonUrl}"/>
+        <property name="quickPayCommonTr3Url" value="${bill99.quick.quickPayCommonTr3Url}"/>
+        <property name="payDynNumUrl" value="${bill99.quick.payDynNumUrl}"/>
+        <property name="queryOrderUrl" value="${bill99.quick.queryOrderUrl}"/>
+        <property name="refundUrl" value="${bill99.quick.refundUrl}"/>
+    </bean>
+
+    <!--银联B2C，web、wap的config     jiudongdong-->
+    <bean id="sdkConfig" class="com.ewfresh.pay.util.unionpayb2cwebwap.SDKConfig">
+        <property name="merId" value="${acpsdk.merId}"/>
+        <property name="encoding" value="${acpsdk.encoding}"/>
+        <property name="frontFailUrl" value="${acpsdk.frontFailUrl}"/>
+        <property name="frontTransUrl" value="${acpsdk.frontTransUrl}"/>
+        <property name="backTransUrl" value="${acpsdk.backTransUrl}"/>
+        <property name="singleQueryUrl" value="${acpsdk.singleQueryUrl}"/>
+        <property name="batchTransUrl" value="${acpsdk.batchTransUrl}"/>
+        <property name="fileTransUrl" value="${acpsdk.fileTransUrl}"/>
+        <property name="appTransUrl" value="${acpsdk.appTransUrl}"/>
+        <property name="cardTransUrl" value="${acpsdk.cardTransUrl}"/>
+        <property name="jfFrontTransUrl" value="${acpsdk.jfFrontTransUrl}"/>
+        <property name="jfBackTransUrl" value="${acpsdk.jfBackTransUrl}"/>
+        <property name="jfSingleQueryUrl" value="${acpsdk.jfSingleQueryUrl}"/>
+        <property name="jfCardTransUrl" value="${acpsdk.jfCardTransUrl}"/>
+        <property name="jfAppTransUrl" value="${acpsdk.jfAppTransUrl}"/>
+        <property name="version" value="${acpsdk.version}"/>
+        <property name="signMethod" value="${acpsdk.signMethod}"/>
+        <property name="ifValidateCNName" value="${acpsdk.ifValidateCNName}"/>
+        <property name="ifValidateRemoteCert" value="${acpsdk.ifValidateRemoteCert}"/>
+        <property name="backUrl" value="${acpsdk.backUrl}"/>
+        <property name="backRefundUrl" value="${acpsdk.backRefundUrl}"/>
+        <property name="frontUrl" value="${acpsdk.frontUrl}"/>
+        <property name="signCertPath" value="${acpsdk.signCert.path}"/>
+        <property name="signCertPwd" value="${acpsdk.signCert.pwd}"/>
+        <property name="signCertType" value="${acpsdk.signCert.type}"/>
+        <property name="encryptCertPath" value="${acpsdk.encryptCert.path}"/>
+        <property name="middleCertPath" value="${acpsdk.middleCert.path}"/>
+        <property name="rootCertPath" value="${acpsdk.rootCert.path}"/>
+    </bean>
+
+
+    <!--配置阿里客户端-->
+    <bean id="alipayClient" class="com.alipay.api.DefaultAlipayClient">
+        <!--阿里网关-->
+        <constructor-arg index="0" type="java.lang.String" value="${alipay.gateway}"/>
+        <!--appId-->
+        <constructor-arg index="1" type="java.lang.String" value="${alipay.appid}"/>
+        <!--商户私钥-->
+        <constructor-arg index="2" type="java.lang.String" value="${alipay.privateKey}"/>
+        <!--json-->
+        <constructor-arg index="3" type="java.lang.String" value="${alipay.format}"/>
+        <!--utf-8-->
+        <constructor-arg index="4" type="java.lang.String" value="${alipay.charset}"/>
+        <!--支付宝公钥-->
+        <constructor-arg index="5" type="java.lang.String" value="${alipay.publicKey}"/>
+        <!--验签格式RSA2-->
+        <constructor-arg index="6" type="java.lang.String" value="${alipay.signType}"/>
+    </bean>
+
+    <bean id="getSysIdToken" class="com.ewfresh.pay.util.GetSysIdToken">
+        <property name="httpDeal" ref="httpDeal"/>
+    </bean>
+
+    <bean id="idUtils" class="com.ewfresh.pay.util.IdUtils">
+        <property name="httpDeal" ref="httpDeal"/>
+    </bean>
+
+    <bean id="getParam" class="com.ewfresh.pay.util.GetParam">
+        <property name="getbillIDURL" value="${getBillURL}"/>
+        <property name="modifyOrderStatusURL" value="${modifyOrderStatusURL}"/>
+        <property name="supplementModifyURL" value="${supplementModifyURL}"/>
+        <property name="shopBond" value="${shopBond}"/>
+        <property name="httpDeal" ref="httpDeal"/>
+    </bean>
+
+    <!-- 定义httpclient连接池 -->
+    <bean id="httpClientConnectionManager" class="org.apache.http.impl.conn.PoolingHttpClientConnectionManager"
+          destroy-method="close">
+        <!-- 设置连接总数 -->
+        <property name="maxTotal" value="${http.pool.maxTotal}"/>
+        <!-- 设置每个地址的并发数 -->
+        <property name="defaultMaxPerRoute" value="${http.pool.defaultMaxPerRoute}"/>
+    </bean>
+
+    <!-- 定义 HttpClient工厂，这里使用HttpClientBuilder构建-->
+    <bean id="httpClientBuilder" class="org.apache.http.impl.client.HttpClientBuilder" factory-method="create">
+        <property name="connectionManager" ref="httpClientConnectionManager"/>
+    </bean>
+
+    <!-- 得到httpClient的实例 -->
+    <bean id="httpClient" factory-bean="httpClientBuilder" factory-method="build" scope="prototype"/>
+    <!--httdeal实例-->
+    <bean id="httpDeal" class="com.ewfresh.commons.client.HttpDeal">
+        <property name="httpclient" ref="httpClient"/>
+    </bean>
+
+    <!-- 定期清理无效的连接 -->
+    <bean class="com.ewfresh.commons.client.ConnectionEvictor" destroy-method="shutdown">
+        <constructor-arg index="0" ref="httpClientConnectionManager"/>
+        <!-- 间隔一分钟清理一次 -->
+        <constructor-arg index="1" value="60000"/>
+    </bean>
+
+    <!-- 定义requestConfig的工厂 -->
+    <bean id="requestConfigBuilder" class="org.apache.http.client.config.RequestConfig.Builder">
+        <!-- 从连接池中获取到连接的最长时间 -->
+        <property name="connectionRequestTimeout" value="${http.request.connectionRequestTimeout}"/>
+        <!-- 创建连接的最长时间 -->
+        <property name="connectTimeout" value="${http.request.connectTimeout}"/>
+        <!-- 数据传输的最长时间 -->
+        <property name="socketTimeout" value="${http.request.socketTimeout}"/>
+        <!-- 提交请求前测试连接是否可用 -->
+        <property name="staleConnectionCheckEnabled" value="${http.request.staleConnectionCheckEnabled}"/>
+    </bean>
+</beans>

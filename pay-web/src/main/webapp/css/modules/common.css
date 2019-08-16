@@ -1,0 +1,101 @@
+
+/*通用样式*/
+*{
+    margin:0;
+    padding:0;
+}
+input{
+    outline:none;
+}
+ul, li {
+    list-style:none;
+}
+
+em, i, u {
+    font-style: normal;
+}
+img {
+    border:none;
+}
+
+a {
+    text-decoration:none;
+    color:#333;
+}
+.fl{
+    float: left;
+}
+.fr{
+    float: right;
+}
+.clearfix{
+    clear: both;
+}
+.clearfix:after{
+    content: " ." ;
+    display: block ;
+    height: 0 ;
+    clear: both ;
+    visibility: hidden ;
+    overflow: hidden;
+}
+/*店铺首页主要样式*/
+body {
+    margin:0 auto;
+    width:100%;
+    background:#fff;
+    color:#333;
+    font-size:12px;
+    min-width:1200px;
+}
+.container{
+    width:1200px;
+    margin:0 auto;
+}
+
+
+
+/*左侧导航*/
+.left-menu{
+    width:185px;
+}
+.menu-item .sort-type{
+    float: left;
+    color:#333;
+    background: #fff;
+    width: 33.3%;
+    box-sizing: border-box;
+}
+.menu-list{
+    border:1px solid #bfbfbf;
+}
+.menu-item a{
+    display: block;
+    background: #ddd;
+    padding:10px 0 10px 10px;
+    border-bottom:1px solid #bfbfbf;
+}
+.classify-a{
+    font-weight: bold;
+}
+.menu-item:last-child a{
+    border-bottom:none;
+}
+.goods-classify a{
+    background: #d00000;
+    color:#fff;
+}
+.find-all{
+    background: #ddd;
+}
+.inner-item a{
+    display: block;
+    padding:10px 0 10px 10px;
+    border-bottom:1px solid #bfbfbf;
+    background: #ffffff;
+}
+.no-data{
+    text-align: center;
+    padding:10px 0;
+    color:#d00000;
+}

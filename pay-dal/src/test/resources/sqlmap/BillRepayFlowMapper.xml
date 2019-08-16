@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ewfresh.pay.dao.BillRepayFlowDao">
+  <resultMap id="BaseResultMap" type="com.ewfresh.pay.model.BillRepayFlow">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="bill_id" jdbcType="INTEGER" property="billId" />
+    <result column="repay_amount" jdbcType="DECIMAL" property="repayAmount" />
+    <result column="principal_amount" jdbcType="DECIMAL" property="principalAmount" />
+    <result column="interest_amount" jdbcType="DECIMAL" property="interestAmount" />
+    <result column="repay_channel" jdbcType="TINYINT" property="repayChannel" />
+    <result column="repay_type" jdbcType="TINYINT" property="repayType" />
+    <result column="repay_time" jdbcType="TIMESTAMP" property="repayTime" />
+    <result column="operator" jdbcType="BIGINT" property="operator" />
+    <result column="orderId" jdbcType="BIGINT" property="orderId"/>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, bill_id, repay_amount, principal_amount, interest_amount, repay_channel, repay_type, 
+    repay_time, `operator`
+  </sql>
+  <!--  根据orderId 查询还款几录 -->
+  <select id="selectByOrderId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_bill_repay_flow
+    where orderId = #{orderId,jdbcType=BIGINT}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_bill_repay_flow
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="addBillRepayFlow" keyColumn="id" keyProperty="id" parameterType="com.ewfresh.pay.model.BillRepayFlow" useGeneratedKeys="true">
+    insert into t_bill_repay_flow (bill_id, repay_amount, principal_amount, 
+      interest_amount, repay_channel, repay_type, 
+      repay_time, `operator`)
+    values (#{billId,jdbcType=INTEGER}, #{repayAmount,jdbcType=DECIMAL}, #{principalAmount,jdbcType=DECIMAL}, 
+      #{interestAmount,jdbcType=DECIMAL}, #{repayChannel,jdbcType=TINYINT}, #{repayType,jdbcType=TINYINT}, 
+      #{repayTime,jdbcType=TIMESTAMP}, #{operator,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ewfresh.pay.model.BillRepayFlow" useGeneratedKeys="true">
+    insert into t_bill_repay_flow
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="billId != null">
+        bill_id,
+      </if>
+      <if test="repayAmount != null">
+        repay_amount,
+      </if>
+      <if test="principalAmount != null">
+        principal_amount,
+      </if>
+      <if test="interestAmount != null">
+        interest_amount,
+      </if>
+      <if test="repayChannel != null">
+        repay_channel,
+      </if>
+      <if test="repayType != null">
+        repay_type,
+      </if>
+      <if test="repayTime != null">
+        repay_time,
+      </if>
+      <if test="operator != null">
+        `operator`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="billId != null">
+        #{billId,jdbcType=INTEGER},
+      </if>
+      <if test="repayAmount != null">
+        #{repayAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="principalAmount != null">
+        #{principalAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="interestAmount != null">
+        #{interestAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="repayChannel != null">
+        #{repayChannel,jdbcType=TINYINT},
+      </if>
+      <if test="repayType != null">
+        #{repayType,jdbcType=TINYINT},
+      </if>
+      <if test="repayTime != null">
+        #{repayTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operator != null">
+        #{operator,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ewfresh.pay.model.BillRepayFlow">
+    update t_bill_repay_flow
+    <set>
+      <if test="billId != null">
+        bill_id = #{billId,jdbcType=INTEGER},
+      </if>
+      <if test="repayAmount != null">
+        repay_amount = #{repayAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="principalAmount != null">
+        principal_amount = #{principalAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="interestAmount != null">
+        interest_amount = #{interestAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="repayChannel != null">
+        repay_channel = #{repayChannel,jdbcType=TINYINT},
+      </if>
+      <if test="repayType != null">
+        repay_type = #{repayType,jdbcType=TINYINT},
+      </if>
+      <if test="repayTime != null">
+        repay_time = #{repayTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operator != null">
+        `operator` = #{operator,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ewfresh.pay.model.BillRepayFlow">
+    update t_bill_repay_flow
+    set bill_id = #{billId,jdbcType=INTEGER},
+      repay_amount = #{repayAmount,jdbcType=DECIMAL},
+      principal_amount = #{principalAmount,jdbcType=DECIMAL},
+      interest_amount = #{interestAmount,jdbcType=DECIMAL},
+      repay_channel = #{repayChannel,jdbcType=TINYINT},
+      repay_type = #{repayType,jdbcType=TINYINT},
+      repay_time = #{repayTime,jdbcType=TIMESTAMP},
+      `operator` = #{operator,jdbcType=BIGINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+<select id="selectByBillFlow"  resultMap="BaseResultMap">
+  select
+  <include refid="Base_Column_List" />
+  from
+  t_bill_repay_flow
+  where
+  bill_id = #{billId,jdbcType=INTEGER}
+</select>
+</mapper>

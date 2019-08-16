@@ -1,0 +1,144 @@
+
+input{
+	border:1px solid gray;
+}
+.release-detail{
+	margin:0 20px;
+	font-size: 13px;
+	font-weight: 700;
+	background:#e6ebed;
+	min-width: 1000px;
+}
+.release-sku{
+	/*margin:0 20px;*/
+	font-size: 16px;
+	padding-bottom: 20px;
+	font-weight: 700;
+	/*background: #FAFAFA*/
+	height: 40px;
+	line-height: 40px;
+}
+textarea{
+	padding: 5px 10px;
+	background: #fff;
+	border: solid 1px #bcc8cf;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	border-radius: 5px;
+	box-shadow: 0 1px 1px #cdd1d3;
+	margin-left: 6px;
+}
+.release-sku p{
+	margin-left: 10px;
+	color: #056DAE;
+}
+.release-each-line{
+	min-width:1000px;
+	/*display: flex;*/
+	/*margin: 0 auto;*/
+	margin-left: 30px;
+	padding-bottom: 20px;
+	padding-top: 20px;
+}
+.relaese-two{
+	width: 90%;
+	/*display: flex;*/
+	/*justify-content: space-between;*/
+}
+.relaese-two >div {
+	float: left;
+}
+.relaese-two >p {
+	float: left;
+}
+.relaese-two p{
+	width: 470px;
+}
+.goods-info-float{
+	float: left;
+}
+.relaese-two p:nth-child(1){
+	/*margin-right: 20%;*/
+}
+.release-each-line input{
+	/*width: 50%;*/
+	height: 30px;
+	line-height: 30px;
+	padding: 0 10px;
+	background: #fff;
+	border: solid 1px #bcc8cf;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	border-radius: 5px;
+	/*margin-left: -6px;*/
+	/*box-shadow: 0 1px 1px #cdd1d3;*/
+	/*float: left;*/
+}
+#goodsClass{
+	margin-left: -6px
+}
+#goodsBrand{
+	margin-left: 0
+}
+#death,#lossWater{
+	width: 230px;
+}
+.release-each-line select{
+	width: 250px;
+	height: 30px;
+	line-height: 30px;
+	padding: 0 10px;
+	background: #fff;
+	border: solid 1px #bcc8cf;
+	/*margin-left: -6px;*/
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	border-radius: 5px;
+	box-shadow: 0 1px 1px #cdd1d3;
+	/*float: left;*/
+}
+.release-each-line span{
+	display: inline-block;
+	width: 100px;
+	color: #75777c;
+}
+.release-single{
+	display: flex;
+}
+.btn-file{
+    display: none;
+}
+.file-upload img{
+	display: inline-block;
+	width: 80px;
+	height: 80px;
+	margin-right: 5px;
+	border: 1px solid #ddd
+}
+#language,#city,#area{
+	width: 250px;
+}
+#content{
+	width: 750px;
+	overflow-y: hidden;
+	height: 540px;
+}
+#sub,#ret{
+	display: inline-block;
+    height: 31px;
+    width: 50px;
+    cursor: pointer;
+    border-radius: 4px;
+    border: 1px solid #0090d9;
+    background: #5196b9;
+    color: white;
+    font-size: 13px;
+    margin: 10px;
+}
+.goods-flex{
+	padding-left: 450px;
+	/*text-align: center;*/
+}

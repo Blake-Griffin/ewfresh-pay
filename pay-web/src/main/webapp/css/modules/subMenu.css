@@ -1,0 +1,171 @@
+
+/*通用样式*/
+*{
+    margin:0;
+    padding:0;
+}
+input{
+    outline:none;
+}
+ul, li {
+    list-style:none;
+}
+
+em, i, u {
+    font-style: normal;
+}
+img {
+    border:none;
+}
+
+a {
+    text-decoration:none;
+    color:#333;
+}
+.fl{
+    float: left;
+}
+.fr{
+    float: right;
+}
+.clearfix{
+    clear: both;
+}
+.clearfix:after{
+    content: " ." ;
+    display: block ;
+    height: 0 ;
+    clear: both ;
+    visibility: hidden ;
+    overflow: hidden;
+}
+/*店铺首页主要样式*/
+body {
+    margin:0 20px;
+    background:#fff;
+    color:#333;
+    font-size:12px;
+    min-width:1200px;
+}
+.container{
+}
+.layout{
+    margin: 0 20px;
+    /*width: 100%;*/
+}
+
+
+/*页面最顶部的小导航*/
+.login-sign{
+    margin-left:20px;
+}
+.yw-index{
+    margin-right:50px;
+
+}
+.login,.sign{
+    line-height:30px;
+}
+.seller-center-top {
+    width: 100%;
+    background: #ccc;
+}
+
+.seller-center-top ul {
+
+    /*width: 1180px;*/
+    /*width: 50%;*/
+
+    height: 30px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.seller-center-top ul li {
+    line-height: 30px;
+    margin: 0 10px;
+    color: #666;
+}
+
+.seller-center-top ul li a {
+    color: #666;
+}
+
+.seller-center-top ul li a i {
+    font-style: normal;
+}
+
+.seller-center-header {
+    width: 1180px;
+    height: 120px;
+    margin: 0 auto;
+    padding: 30px 0;
+    box-sizing: border-box;
+    border-bottom: 1px solid #bfbfbf;
+    margin-bottom: 19px;
+}
+
+
+
+/*左侧导航*/
+.left-menu{
+    width:20%;
+}
+.menu-item .sort-type{
+    float: left;
+    color:#333;
+    background: #fff;
+    width: 33.3%;
+    box-sizing: border-box;
+}
+.menu-list{
+    border:1px solid #bfbfbf;
+}
+.menu-item a{
+    display: block;
+    background: #ddd;
+    padding:10px 0 10px 10px;
+    border-bottom:1px solid #bfbfbf;
+}
+.classify-a{
+    font-weight: bold;
+}
+.menu-item a.firType{
+    padding:10px 0 10px 10px;
+}
+.menu-item a.firType.on{
+    font-weight:bold;
+    color:#d00000;
+}
+.menu-item a.secType{
+    padding:10px 0 10px 20px;
+}
+.menu-item a.thiType{
+    padding:10px 0 10px 40px;
+}
+.secInner{
+    /*display: none;*/
+}
+.secInner.on{
+    display: block;
+}
+.thiInner{
+    /*display: none;*/
+}
+.thiInner.on{
+    display: block;
+}
+.goods-classify a{
+    background: #d00000;
+    color:#fff;
+}
+.find-all{
+    background: #ddd;
+}
+.inner-item a{
+    display: block;
+    padding:10px 0 10px 10px;
+    border-bottom:1px solid #bfbfbf;
+    background: #ffffff;
+}
+

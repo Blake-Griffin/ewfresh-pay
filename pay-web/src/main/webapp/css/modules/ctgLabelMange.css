@@ -1,0 +1,73 @@
+.window_left{
+	display: inline-block;
+	width: 100px;
+	line-height: 32px;
+	vertical-align: middle;
+	height: 32px;
+}
+#textErr{
+	text-align: center;
+	color: #D00000;
+	padding-top: 10px;
+}
+/*.info{
+	width:300px;
+	height:40px;
+	text-align: center;
+	background: rgba(0,0,0,0.5);
+	color:#fff;
+	position:fixed;
+	left: 50%;
+	top:50%;
+	margin-left: -150px;
+	margin-top: -20px;
+	border-radius: 3px 3px;
+	line-height: 40px;
+	font-size: 16px;
+	z-index: 9999;
+}*/
+.click_delete{
+	cursor: pointer;
+}
+#treeLine #trees{
+	position: absolute;
+	top: 48px;
+	left: 102px;
+	z-index: 999;
+}
+#treeLine #goodsClass,#reClass,#rePoint{
+	width: 230px;
+	height: 30px;
+	line-height: 30px;
+	padding: 0 10px;
+}
+.wl{
+	width: 60px;
+	display: inline-block;
+	vertical-align: middle;
+	text-align: right;
+}
+#ctgTree{
+	display: none;
+	position:relative;
+	left: 106px;
+    top: -3px;
+    background: #fff;
+}
+#act_edit,#act_delect{
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 30%;
+	margin: -50px auto;
+}
+/*.fix{
+	position:relative;
+}*/
+/*.fix:after{
+    content:'';
+    clear:both;
+    overflow:hidden;
+    height:0px;
+    zoom:1;
+}*/

@@ -1,0 +1,136 @@
+/*select*/
+.JLserach_warp{ height:38px; background:url(../../images/jlzcpt_bg.png) no-repeat 0 -107px; margin:10px 0 6px 20px;  display:inline-block;*display:inline;*zoom:1;}
+.JLserach_warp2{ height:35px; background:url(../../images/jlzcpt_bg.png) no-repeat right -612px; float:left; margin-left:5px; padding:3px 5px 0 0;}
+.JLselect{ float:left; margin-right:10px;}
+.select_box{  height:31px; background:url(../../images/jlzcpt_bg.png) no-repeat -695px -682px;}
+.tag_select{ background:url(../../images/jlzcpt_bg.png) no-repeat right -744px;}
+.select_box_hover{ background:url(../../images/jlzcpt_bg.png) no-repeat -695px -713px;}
+.tag_select,.tag_select_hover,.tag_select_open{ height:31px; line-height:31px; color:#549abc; text-shadow:1px 1px 1px #fff; overflow:hidden; padding-right:30px;  text-indent:15px; margin-left:5px;}
+.tag_select_hover,.tag_select_open{ background:url(../../images/jlzcpt_bg.png) no-repeat right -775px;}
+.tag_options{ border:solid 1px #bcc8cf; border-top:none; background:#fff; color:#857369; line-height:30px; box-shadow:1px 1px 1px #cdd1d3; margin-top:-2px;}
+.tag_options li{ line-height:20px; padding:5px 15px;}
+.tag_options li:hover{ background:#339ed2; color:#fff;}
+.JLinputwrap{ float:left; height:30px; background:url(../../images/jlzcpt_bg.png) no-repeat 0 -367px;}
+.JLinput{ border:0; color:#549abc; text-shadow:1px 1px 1px #fff; height:16px; line-height:16px; padding:8px 10px 6px 0; margin-left:13px; float:left; background:url(../../images/jlzcpt_bg.png) no-repeat right -651px;}
+.JLbtn{ height:31px; width:80px; cursor:pointer; text-indent:-999px; border:0; float:left; background:url(../../images/jlzcpt_bg.png) no-repeat -402px -313px; margin-left:-3px;}
+.w170 .JLinput{ width:170px;}
+
+/*tableMod*/
+.JLbox{ border:solid 1px #f3f6f7; border-top:none; margin:0 20px; background:#e6ebed;}
+.JLbd{ background:#e6ebed; border:1px solid #c3c8c9; border-top:none; padding-top:20px; border:solid 1px #f3f6f7;}
+.JLhd{ height:40px; background:url(../../images/jlzcpt_xbg.png) repeat-x 0 -118px; padding-left:10px; border:1px solid #c3c8c9; margin:0 20px;}
+.JLhd .JLh3{ font:bold 16px/40px "Microsoft YaHei","黑体"; color:#3a3f41; text-shadow:1px 1px 1px #939798; margin-left:15px;}
+
+.JLhandle{ height:40px; background:url(../../images/jlzcpt_xbg.png) repeat-x 0 -118px; padding-left:10px; margin:0 20px; border:solid 1px #f3f6f7; overflow:hidden;}
+.JLdel,.JLadd,.JLedit{ float:left; width:68px; height:27px; line-height:27px; background:url(../../images/jlzcpt_bg.png) no-repeat; color:#acb5b9; text-indent:26px; text-decoration:none !important; margin-top:7px;}
+.JLdel{ background-position:-422px -146px;}
+.JLadd{ background-position:-491px -146px;}
+.JLedit{ background-position:-561px -146px;}
+
+/*form*/
+.JLbox .JLform{ position:relative; padding:20px 0;}
+.JLbox .fl{ height:32px;margin:10px 0;}
+.JLbox .JLform .JLleft{ float:left; width:93px; color:#75777c; text-shadow:1px 1px 1px #fff; text-align:right; margin:8px 10px 0 0;}
+.JLbox .JLform .JLdis{ color:#999;}/*fix by lidong*/
+.JLbox .JLform .JLtextInput{ width:150px; height:30px; line-height:30px; padding:0 10px; background:#fff; border:solid 1px #bcc8cf; -moz-border-radius:5px; -webkit-border-radius:5px; -khtml-border-radius:5px; border-radius:5px; box-shadow:0 1px 1px #cdd1d3; float:left;}
+.JLbox .JLform .JLtextInput:active,.JLbox .JLform .JLtextInput:focus{  border:solid 1px #6cb5d8;}
+.JLbox .JLform .error{ height:30px; line-height:30px; background:#c3d4dd url(../../images/jlzcpt_bg.png) no-repeat -693px -515px; color:#75777c; padding:0 40px 0 18px; float:left; margin-left:10px;}
+.JLbox .JLform .JLcheckbox{ float:left; margin-top:8px; white-space:nowrap;}
+.JLbox .JLform .JLcheckbox label{ color:#75777c; margin-left:15px;}
+.JLbox .JLform .JLcheckbox input{ vertical-align:middle;}
+.JLbox .JLform .JLmovelist{ clear:both; width:169px; height:149px; background:#fff; border:solid 1px #bcc8cf; -moz-border-radius:5px; -webkit-border-radius:5px; -khtml-border-radius:5px; border-radius:5px; box-shadow:1px 1px 1px #cdd1d3; float:left; margin:20px 0 0 103px;}
+.JLbox .JLform .JLmovelist .JLlist ul li{ height:30px; line-height:30px; overflow:hidden; padding-left:15px;}
+.JLbox .JLform .JLmovelist .JLlist ul li a{ display:block; width:154px; height:30px; color:#75777c;}
+.JLbox .JLform .JLmovelist .JLlist ul li:hover{ background:#339ed2; cursor:pointer;}
+.JLbox .JLform .JLmovelist .JLlist ul li a:hover{ color:#fff; text-decoration:none;}
+
+.JLbox .JLform .JLmovelist select{ border:none; width:169px; height:149px;}
+.JLbox .JLform .JLmovelist select option{ padding:11px 0 10px 0; overflow:hidden; padding-left:15px; color:#75777c;}
+.JLbox .JLform .JLmovelist select option:hover{ background:#339ed2; cursor:pointer; color:#fff;}
+
+.JLbox .JLform .JLbutton01,.JLbox .JLform .JLbutton02,.JLbox .JLform .JLbutton03,.JLbox .JLform .JLbutton04{ position:absolute; left:313px; width:92px; height:23px; background:url(../../images/jlzcpt_bg.png) no-repeat; cursor:pointer;}
+.JLbox .JLform .JLbutton01{ background-position:0 -343px; top:260px;}
+.JLbox .JLform .JLbutton02{ background-position:-93px -343px; top:290px;}
+.JLbox .JLform .JLbutton03{ background-position:-186px -343px; top:320px;}
+.JLbox .JLform .JLbutton04{ background-position:-279px -343px; top:350px;}
+.JLbox .JLform .JLmovelist1{ clear:none; margin-left:170px;}
+.JLbox .JLform textarea{ width:697px; height:89px; background:#fff; border:solid 1px #bcc8cf; -moz-border-radius:5px; -webkit-border-radius:5px; -khtml-border-radius:5px; border-radius:5px; box-shadow:1px 1px 1px #cdd1d3; font-size:12px; line-height:18px; padding:10px 0 0 10px;}
+/*JLft1*/
+.JLft1{ margin-top:-1px; height:43px; background:url(../../images/jlzcpt_xbg.png) repeat-x 0 -198px; padding-right:40px; margin:0 20px; border:solid 1px #f3f6f7; border-top:none; border-bottom:none;}
+.JLft1 .JLsubmit,.JLft1 .JLreset{ float:right; height:27px; line-height:27px; text-align:center; background:url(../../images/jlzcpt_bg.png) no-repeat; color:#cfe0e8; text-shadow:1px 1px 1px #000; margin:10px 0 0 10px; cursor:pointer;}
+.JLft1 .JLsubmit{ width:91px; background-position:-212px -281px;}
+.JLft1 .JLreset{ width:65px; background-position:-212px -309px;}
+.JLitem{ min-height:32px; height:auto !important; height:32px;min-width: 1100px;}
+/*JLtable*/
+.JLtable{ width:100%; }
+.JLtable .JLtit{ background:url(../../images/jlzcpt_xbg.png) repeat-x 0 -159px;}
+.JLtable th{ height:37px; line-height:37px; color:#4e5b61; font-weight:bold; text-align:left; white-space:nowrap;}
+.JLtable td{ height:38px; line-height:38px; border-top:solid 1px #d6d6d6; color:#6a777d; white-space:nowrap;}
+.JLtable td a{ color:#357799;}
+.JLtable .JLodd{ background:#e6ebed;}
+.JLtable .JLeven{ background:#dce1e3;}
+.JLtable .JLnum,.JLtable .JLtabtn{ text-align:center;}
+.JLtable .JLfirst{ padding-left:25px;}
+/*.JLtable th.JLfirst{ text-indent:-999px;}*/
+.JLtable .JLname{ padding-left:50px;}
+.JLtable td .JLdel2,.JLtable td .JLadd2,.JLtable td .JLadd_no{ width:16px; height:16px; background:url(../../images/jlzcpt_bg.png) no-repeat; display:inline-block; text-indent:-9999px; float:none;}
+.JLtable td .JLdel2{ background-position:-629px -40px;}
+.JLtable td .JLadd2{ background-position:-608px -40px;}
+.JLtable td .JLadd_no{ background-position:-576px -71px;}
+/*JLft2*/
+.JLft2{ margin-top:-1px; height:58px; line-height:57px; background:url(../../images/jlzcpt_xbg.png) repeat-x 0 -198px; padding:0 0 0 25px; margin:-1px 20px 0 20px; border:solid 1px #f3f6f7; border-top:none; border-bottom:none; overflow:hidden;}
+.JLft2 .JLdel{ display:inline-block; float:none;}
+.JLft2 input{ vertical-align:middle; margin-right:5px;}
+/*分页*/
+.JLpages{ margin:15px 20px 0 0;}
+.JLpages li{ float:left; text-align:center; cursor:pointer;}
+.JLpages li a{color:#acb5b9; display:block; background:url(../../images/jlzcpt_bg.png) no-repeat -156px -177px; width:25px; height:24px; line-height:24px;}
+.JLpages li a:hover{ background-position:-186px -178px; color:#fff;text-decoration:none !important;}
+.JLpages .JLprevious a{ width:77px; background-position:0 -177px; text-align:left; text-indent:30px;}
+.JLpages .JLnext a{ width:77px; background-position:-78px -177px; text-align:left; text-indent:10px;}
+.JLpages .JLprevious a:hover{ background-position:-212px -178px;}
+.JLpages .JLnext a:hover{ background-position:-290px -178px;}
+
+/*tab*/
+.JLtab{ height:36px; line-height:36px; background:url(../../images/jlzcpt_xbg.png) repeat-x 0 -293px; margin:0 21px; overflow:hidden;}
+.JLtab a{ font-size:14px; color:#e6ebed; text-shadow:1px 1px 1px #000; text-decoration:none; display:block; padding:0 21px 0 23px; margin-right:2px;}
+.JLtab .tab_button{ float:left; cursor:pointer;}
+.JLtab .tab_current{ background:url(../../images/jlzcpt_bg.png) no-repeat right -296px;}
+.JLtab .tab_current a{ background:url(../../images/jlzcpt_bg.png) no-repeat -513px -333px;}
+/*login*/
+.JLlogin_wrap{ background:url(../../images/login_xbg.png) repeat-x;}
+.JLlogin{ width:606px; height:800px; margin:0 auto; background:url(../../images/login_bg.png) no-repeat; position:relative;}
+.JLlogin_wrap .JLform{ position:absolute; left:0; top:480px;}
+.JLlogin_wrap .JLform label{ display:inline-block; width:122px; height:24px; font-size:12px; background:url(../../images/jlzcpt_bg.png) no-repeat -279px -313px; margin-left:5px; }
+.JLlogin_wrap .JLform .JLuser,.JLlogin_wrap .JLform .JLpassword{ float:left; font-size:13px; color:#282828; height:24px; line-height:24px; background:url(../../images/jlzcpt_bg.png) no-repeat;}
+.JLlogin_wrap .JLform .JLuser{ padding-left:19px; background-position:-686px -553px; margin-left:31px;}
+.JLlogin_wrap .JLform .JLpassword{ padding-left:22px; background-position:-686px -580px; margin-left:18px;}
+.JLlogin_wrap .JLform .JLtxt{ background:none; width:110px; margin:5px 0 0 5px; height:14px;}
+.JLlogin_wrap .JLform .JLbutton,.JLlogin_wrap .JLform .JLreset{ width:62px; height:24px; text-indent:-9999px; float:left; background:url(../../images/jlzcpt_bg.png) no-repeat; cursor:pointer; margin-left:10px;}
+.JLlogin_wrap .JLform .JLbutton{ background-position:-305px -284px;}
+.JLlogin_wrap .JLform .JLreset{ background-position:-368px -284px;}
+/*新增列表*/
+.eXtremeTable .tableHeader{ height:37px; line-height:37px; color:#4e5b61; font-weight:bold; text-align:left; white-space:nowrap; padding:0; background:url(../../images/jlzcpt_xbg.png) repeat-x 0 -159px; font-size:12px;}
+.tableBody td{ height:38px; line-height:38px; border-top:solid 1px #d6d6d6; color:#6a777d; white-space:nowrap; padding:0;}
+.tableBody td a{ color:#357799;}
+.tableBody input,.eXtremeTable .tableHeader input{ margin-left:25px;}
+.eXtremeTable .odd{ background:#e6ebed;}
+.eXtremeTable .even{ background:#dce1e3;}
+.eXtremeTable img{ margin:0 0 0 5px;}
+.compactToolbar .currentNum,.compactToolbar .pageNum{color:#acb5b9; display:inline-block; background:url(../../images/jlzcpt_bg.png) no-repeat -156px -177px; min-width:25px; width:25px; white-space:nowrap; zoom:1; height:24px; line-height:24px; text-align:center;}
+.compactToolbar .currentNum,.compactToolbar .pageNum:hover{ background-position:-186px -178px; color:#fff;text-decoration:none !important;}
+.compactToolbar tr{ float:right;}
+.eXtremeTable{ margin:0 20px;}
+.tableRegion{ width:100% !important; margin:0 !important;}
+.tableRegion{ background:#E6EBED;}
+.tableRegion tr{ background:none;}
+.tableRegion tbody{ border:none;}
+.tableRegion td,.tableRegion th{ padding:5px;}
+.compactToolbar table{ float:right; width:auto !important;}
+/*login 新增*/
+.empty,.errors{ width:244px; height:18px; line-height:18px; padding-left:25px; position:absolute; left:102px; top:506px; background:url(../../images/empty.jpg) no-repeat;/*后面的属性控制隐藏显示*/ display:none;}
+
+/*没有数据样式*/
+.JLtable td.td-nothing{
+    text-align: center;
+}

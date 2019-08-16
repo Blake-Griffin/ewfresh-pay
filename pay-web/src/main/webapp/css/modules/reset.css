@@ -1,0 +1,27 @@
+@charset "utf-8";
+/* reset */
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td {padding: 0;margin: 0;}
+table {border-collapse: collapse;border-spacing: 0;}
+fieldset,img,abbr,acronym{border: 0;}
+address,caption,cite,code,dfn,em,th,var {font-weight: normal;font-style: normal;}
+ol,ul {list-style: none;}
+caption,th {text-align: left;}
+h1,h2,h3,h4,h5,h6 {font-weight: normal;font-size: 100%;}
+q:before,q:after {content:"";}
+body{font-size:12px;font-family:"宋体"; color:#333;}
+textarea {outline: none; resize: none; overflow:auto;}
+img{vertical-align:middle;}
+:focus{outline:0;}
+.fix,.wrap990,.wrap988{*zoom: 1;}
+.fix:after,.wrap990:after,.wrap988:after{content: "";visibility: hidden;display: block;height: 0;clear: both;}
+a{color:#333; text-decoration:none;}a:hover{ c9olor:#f70;text-decoration:underline;}
+a img {border: none;text-decoration: none;}
+button,a {cursor: pointer;}
+p{word-wrap:break-word;}
+input{ border:none;}
+.clearfix {
+    content: '';
+    height: 0;
+    clear: both;
+    display: block;
+}

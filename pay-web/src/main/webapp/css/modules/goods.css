@@ -1,0 +1,212 @@
+.goods-warp{ 
+	height:38px; 
+	background:url(../../images/jlzcpt_bg.png) no-repeat 0 -107px;
+	margin:10px 0 6px 20px;  
+	display:inline-block;
+	*display:inline;
+	*zoom:1;
+}
+.goods-Mar10{
+	margin-top:10px;
+}
+.goods-hd,.goods-bd {
+	clear: both;
+	overflow: hidden;
+}
+.goods-bd{ 
+	background:#e6ebed; 
+	border:1px solid #c3c8c9; 
+	border-top:none; 
+	padding-top:20px; 
+	border:solid 1px #f3f6f7;
+}
+.goods-hd{
+	height:40px;
+	background:url(../../images/jlzcpt_xbg.png) repeat-x 0 -118px;
+	padding-left:10px; 
+	border:1px solid #c3c8c9; 
+	margin:0 20px;
+}
+.goods-hd .goods-h3{ 
+	font:bold 16px/40px "Microsoft YaHei","黑体"; 
+	color:#3a3f41; 
+	text-shadow:1px 1px 1px #939798; 
+	margin-left:15px;
+}
+.goods-change{
+	padding:20px 0;
+	position:relative;
+	display: flex;
+}
+.goods-search{ 
+	border:solid 1px #f3f6f7;
+	border-top:none; 
+	margin:0 20px; 
+	background:#e6ebed; 
+}
+.active-purchase{
+	font-size: 20px;
+	color: red;
+	/*margin: 0 auto;*/
+}
+.management{
+	margin-left: 20px;
+	font-size: 13px;
+	margin-right: 20px;
+	color: grey;
+}
+.management input{
+	height: 20px;
+	width: 200px;
+}
+.management select{
+	height: 22px;
+	width: 200px;
+}
+.active-manag{
+	line-height: 30px;
+	margin-left: 80px;
+}
+.pay-price{
+	border: 0;
+	background:url(../../images/jlzcpt_xbg.png);
+}
+.goods-add{
+	height: 31px;
+    min-width: 80px;
+    cursor: pointer;
+    border-radius: 4px;
+    border: 1px solid #0090d9;
+    background: #5196b9;
+    color: white;
+    font-size: 13px;
+    margin-left: 10px;
+    margin-right: 20px;
+    padding: 0 10px;
+}
+.goods-spread{
+	line-height: 31px;
+	font-size: 13px;
+}
+.goods-spread span a{
+	color: gray;
+}
+.goods-table{ 
+	width:100%;
+}
+.goods-table .goods-tit{ 
+	background:url(../../images/jlzcpt_xbg.png)
+	repeat-x 0 -159px;
+}
+.goods-table th{ 
+	height:37px; 
+	line-height:37px; 
+	color:#4e5b61; 
+	font-weight:bold; 
+	text-align:left; 
+	white-space:nowrap;
+}
+.goods-table td{ 
+	height:38px; 
+	line-height:38px; 
+	border-top:solid 1px #d6d6d6; 
+	color:#6a777d; 
+	white-space:nowrap;
+}
+.goods-table td a{ 
+	color:#357799;
+}
+.goods-table .JLodd{ 
+	background:#e6ebed;
+}
+.goods-table .JLeven{ 
+	background:#dce1e3;
+}
+.goods-table .JLnum,.goods-table .JLtabtn{ 
+	text-align:center;
+}
+.goods-table .JLfirst{ 
+	padding-left:25px;
+}
+.goods-table th.JLfirst{ 
+	text-indent:-999px;
+}
+.goods-table .JLname{ 
+	padding-left:50px;
+}
+.goods-table td .JLdel2,.goods-table td .JLadd2,.goods-table td .JLadd_no{ 
+	width:16px; 
+	height:16px; 
+	background:url(../../images/jlzcpt_bg.png) no-repeat;
+	display:inline-block; 
+	text-indent:-9999px; 
+	float:none;
+}
+.goods-table td .JLdel2{ 
+	background-position:-629px -40px;
+}
+.goods-table td .JLadd2{ 
+	background-position:-608px -40px;
+}
+.goods-table td .JLadd_no{ 
+	background-position:-576px -71px;
+}
+.goods-table td.td_nothing {
+	text-align: center;
+}
+.goods-table .goods-name {
+	padding-left: 15px;
+}
+/*分页样式开始*/
+.page_box .page{
+    color: #333;
+}
+.page_box .page a.prev-btn, .page_box .page a.next-btn {
+	width: 77px;
+	height: 24px;
+	line-height: 24px;
+	text-indent: 30px;
+	text-align: left;
+    color: #acb5b9;
+    display: inline-block;
+    background: url(../../images/jlzcpt_bg.png) no-repeat -156px -177px;
+}
+.page_box .page a.prev-btn {
+    background-position: 0 -177px;
+}
+.page_box .page a.next-btn {
+    background-position: -78px -177px;
+    text-indent: 10px;
+}
+
+.btn-file{
+	display: none;
+}
+#posRe{
+	position: relative;
+}
+#trees{
+	display: none;
+	/*position: absolute;*/
+	/*top: 300px;*/
+	/*left: 900px;*/
+}
+#treea{
+	/*display: none;*/
+	/*position: absolute;*/
+	/*top: 300px;*/
+	/*left: 900px;*/
+	display: none;
+	margin-left: -190px;
+	margin-top: 0;
+}
+#dataFlex{
+	display: flex;
+}
+/*#skuShowTime{*/
+/*display: none;*/
+/*}*/
+#upDown{
+	width: auto;
+	max-width: 200px;
+}

@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ewfresh.pay.dao.BarDealFlowDao">
+    <resultMap id="BaseResultMap" type="com.ewfresh.pay.model.BarDealFlow">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="uid" jdbcType="BIGINT" property="uid"/>
+        <result column="uname" jdbcType="VARCHAR" property="uname"/>
+        <result column="used_limit" jdbcType="DECIMAL" property="usedLimit"/>
+        <result column="amount" jdbcType="DECIMAL" property="amount"/>
+        <result column="direction" jdbcType="TINYINT" property="direction"/>
+        <result column="shop_id" jdbcType="BIGINT" property="shopId"/>
+        <result column="shop_name" jdbcType="VARCHAR" property="shopName"/>
+        <result column="order_id" jdbcType="BIGINT" property="orderId"/>
+        <result column="deal_type" jdbcType="TINYINT" property="dealType"/>
+        <result column="occ_time" jdbcType="TIMESTAMP" property="occTime"/>
+        <result column="bill_flow" jdbcType="VARCHAR" property="billFlow"/>
+        <result column="pay_flow_id" jdbcType="INTEGER" property="payFlowId"/>
+        <result column="last_modify_time" jdbcType="TIMESTAMP" property="lastModifyTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, `uid`, uname, used_limit, amount, direction, shop_id, shop_name, order_id, deal_type, 
+    occ_time, bill_flow, pay_flow_id, last_modify_time
+  </sql>
+    <sql id="T_Base_Column_List">
+    t.id, t.uid, t.uname, t.used_limit, t.amount, t.direction, t.shop_id, t.shop_name, t.order_id, t.deal_type,
+    t.occ_time, t.bill_flow, t.pay_flow_id, t.last_modify_time
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_bar_deal_flow
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <!--根据uid查询白条交易流水信息-->
+    <select id="getBarDealFlowByUid" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_bar_deal_flow
+        where uid = #{uid,jdbcType=BIGINT}
+        <if test="end != null">
+            AND occ_time &lt;= #{end}
+        </if>
+        <if test="start != null">
+            AND occ_time &gt;= #{start}
+        </if>
+        ORDER BY
+        id DESC
+    </select>
+    <!--导出白条交易流水信息-->
+    <select id="exportBarDealFlowList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_bar_deal_flow
+        where uid = #{uid,jdbcType=BIGINT}
+        <if test="endTime != null">
+            AND occ_time &lt;= #{endTime}
+        </if>
+        <if test="startTime != null">
+            AND occ_time &gt;= #{startTime}
+        </if>
+        ORDER BY
+        id
+        DESC
+    </select>
+    <!--根据日期用户id查询用户全部流水交易数据  gyq-->
+    <select id="getBarDealFlowByPrimaryKey" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_bar_deal_flow
+        where DATE_FORMAT(occ_time, '%Y-%m-%d')= #{date ,jdbcType=DATE}
+        <if test="uid != null">
+            and uid = #{uid}
+        </if>
+        and bill_flow = ''
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_bar_deal_flow
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ewfresh.pay.model.BarDealFlow"
+            useGeneratedKeys="true">
+    insert into t_bar_deal_flow (`uid`, uname, used_limit, 
+      amount, direction, shop_id, 
+      shop_name, order_id, deal_type, 
+      occ_time, bill_flow, last_modify_time
+      )
+    values (#{uid,jdbcType=BIGINT}, #{uname,jdbcType=VARCHAR}, #{usedLimit,jdbcType=DECIMAL}, 
+      #{amount,jdbcType=DECIMAL}, #{direction,jdbcType=TINYINT}, #{shopId,jdbcType=BIGINT}, 
+      #{shopName,jdbcType=VARCHAR}, #{orderId,jdbcType=BIGINT}, #{dealType,jdbcType=TINYINT}, 
+      #{occTime,jdbcType=TIMESTAMP}, #{billFlow,jdbcType=VARCHAR}, #{lastModifyTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+
+
+    <!--添加白条流水记录  zhaoqun-->
+    <insert id="addBardealFlow" keyColumn="id" keyProperty="id" parameterType="com.ewfresh.pay.model.BarDealFlow"
+            useGeneratedKeys="true">
+        insert into t_bar_deal_flow
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            uid,
+            <if test="uname != null">
+                uname,
+            </if>
+            used_limit,
+            amount,
+            direction,
+            shop_id,
+            <if test="shopName != null">
+                shop_name,
+            </if>
+            order_id,
+            deal_type,
+            <if test="occTime != null">
+                occ_time,
+            </if>
+            <if test="billFlow != null">
+                bill_flow,
+            </if>
+            <if test="payFlowId != null">
+                pay_flow_id,
+            </if>
+            <if test="lastModifyTime != null">
+                last_modify_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{uid,jdbcType=BIGINT},
+            <if test="uname != null">
+                #{uname,jdbcType=VARCHAR},
+            </if>
+            #{usedLimit,jdbcType=DECIMAL},
+            #{amount,jdbcType=DECIMAL},
+            #{direction,jdbcType=TINYINT},
+            #{shopId,jdbcType=BIGINT},
+            <if test="shopName != null">
+                #{shopName,jdbcType=VARCHAR},
+            </if>
+            #{orderId,jdbcType=BIGINT},
+            #{dealType,jdbcType=TINYINT},
+            <if test="occTime != null">
+                #{occTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="billFlow != null">
+                #{billFlow,jdbcType=VARCHAR},
+            </if>
+            <if test="payFlowId != null">
+                #{payFlowId,jdbcType=INTEGER},
+            </if>
+            <if test="lastModifyTime != null">
+                #{lastModifyTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <!--<insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ewfresh.pay.model.BarDealFlow"
+            useGeneratedKeys="true">
+        insert into t_bar_deal_flow
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="uid != null">
+                `uid`,
+            </if>
+            <if test="uname != null">
+                uname,
+            </if>
+            <if test="usedLimit != null">
+                used_limit,
+            </if>
+            <if test="amount != null">
+                amount,
+            </if>
+            <if test="direction != null">
+                direction,
+            </if>
+            <if test="shopId != null">
+                shop_id,
+            </if>
+            <if test="shopName != null">
+                shop_name,
+            </if>
+            <if test="orderId != null">
+                order_id,
+            </if>
+            <if test="dealType != null">
+                deal_type,
+            </if>
+            <if test="occTime != null">
+                occ_time,
+            </if>
+            <if test="billFlow != null">
+                bill_flow,
+            </if>
+            <if test="lastModifyTime != null">
+                last_modify_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="uid != null">
+                #{uid,jdbcType=BIGINT},
+            </if>
+            <if test="uname != null">
+                #{uname,jdbcType=VARCHAR},
+            </if>
+            <if test="usedLimit != null">
+                #{usedLimit,jdbcType=DECIMAL},
+            </if>
+            <if test="amount != null">
+                #{amount,jdbcType=DECIMAL},
+            </if>
+            <if test="direction != null">
+                #{direction,jdbcType=TINYINT},
+            </if>
+            <if test="shopId != null">
+                #{shopId,jdbcType=BIGINT},
+            </if>
+            <if test="shopName != null">
+                #{shopName,jdbcType=VARCHAR},
+            </if>
+            <if test="orderId != null">
+                #{orderId,jdbcType=BIGINT},
+            </if>
+            <if test="dealType != null">
+                #{dealType,jdbcType=TINYINT},
+            </if>
+            <if test="occTime != null">
+                #{occTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="billFlow != null">
+                #{billFlow,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModifyTime != null">
+                #{lastModifyTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>-->
+    <!--更新账单流水表 gyq-->
+    <update id="updateBarDealFlow" parameterType="com.ewfresh.pay.model.BarDealFlow">
+        update t_bar_deal_flow
+        <set>
+            <if test="uname != null">
+                uname = #{uname,jdbcType=VARCHAR},
+            </if>
+            <if test="usedLimit != null">
+                used_limit = #{usedLimit,jdbcType=DECIMAL},
+            </if>
+            <if test="amount != null">
+                amount = #{amount,jdbcType=DECIMAL},
+            </if>
+            <if test="direction != null">
+                direction = #{direction,jdbcType=TINYINT},
+            </if>
+            <if test="shopId != null">
+                shop_id = #{shopId,jdbcType=BIGINT},
+            </if>
+            <if test="shopName != null">
+                shop_name = #{shopName,jdbcType=VARCHAR},
+            </if>
+            <if test="orderId != null">
+                order_id = #{orderId,jdbcType=BIGINT},
+            </if>
+            <if test="dealType != null">
+                deal_type = #{dealType,jdbcType=TINYINT},
+            </if>
+            <if test="billFlow != null">
+                bill_flow = #{billFlow,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModifyTime != null">
+                last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where uid = #{uid,jdbcType=INTEGER}
+        and DATE_FORMAT(occ_time, '%Y-%m-%d') = #{occTime ,jdbcType=DATE}
+        and bill_flow = ''
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.ewfresh.pay.model.BarDealFlow">
+
+    update t_bar_deal_flow
+    set `uid` = #{uid,jdbcType=BIGINT},
+      uname = #{uname,jdbcType=VARCHAR},
+      used_limit = #{usedLimit,jdbcType=DECIMAL},
+      amount = #{amount,jdbcType=DECIMAL},
+      direction = #{direction,jdbcType=TINYINT},
+      shop_id = #{shopId,jdbcType=BIGINT},
+      shop_name = #{shopName,jdbcType=VARCHAR},
+      order_id = #{orderId,jdbcType=BIGINT},
+      deal_type = #{dealType,jdbcType=TINYINT},
+      occ_time = #{occTime,jdbcType=TIMESTAMP},
+      bill_flow = #{billFlow,jdbcType=VARCHAR},
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+    <!--BarDealFlowVoMap    zhaoqun-->
+    <resultMap id="BarDealFlowVoMap" type="com.ewfresh.pay.model.vo.BarDealFlowVo" extends="BaseResultMap">
+        <result column="total_limit" jdbcType="DECIMAL" property="totalLimit"/>
+        <result column="use_status" jdbcType="TINYINT" property="useStatus"/>
+    </resultMap>
+
+    <!--BarDealFlowTwoVoMap    gyq-->
+    <resultMap id="BarDealFlowTwoVoMap" type="com.ewfresh.pay.model.vo.BarDealFlowTwoVo" extends="BaseResultMap">
+        <result column="explainInfo" jdbcType="VARCHAR" property="explainInfo"/>
+        <result column="uname" jdbcType="VARCHAR" property="uname"/>
+        <result column="used_limit" jdbcType="DECIMAL" property="usedLimit"/>
+        <result column="amount" jdbcType="DECIMAL" property="amount"/>
+        <result column="occ_time" jdbcType="TIMESTAMP" property="occTime"/>
+    </resultMap>
+    <!-- 根据uid查询最近的一条白条账户流水   zhaoqun-->
+    <select id="getDealFlowByUid" resultMap="BarDealFlowVoMap">
+    SELECT
+	b.use_status,
+	b.total_limit,
+    f.id, f.uid, f.uname, f.used_limit, f.amount, f.direction, f.shop_id, f.shop_name, f.order_id, f.deal_type,
+    f.occ_time, f.bill_flow, f.last_modify_time
+    FROM t_bar_deal_flow  f JOIN t_white_bar b ON  b.uid = f.uid
+    WHERE
+    f.uid = #{userId}
+    ORDER BY
+    f.id DESC
+    limit 1
+  </select>
+
+    <!-- 根据uiserId获取用户白条已使用额度   zhaoqun-->
+    <select id="getUsedLimitByUid" resultType="java.math.BigDecimal">
+    SELECT
+    used_limit
+    FROM t_bar_deal_flow
+    WHERE
+    uid = #{userId}
+    ORDER BY
+    id DESC
+    limit 1
+  </select>
+    <select id="getBillFlowByUid" parameterType="long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_bar_deal_flow
+        where `uid` = #{uid,jdbcType=BIGINT}
+
+    </select>
+    <!-- 根据白条账单批次号查询流水表明细   gyq-->
+    <select id="getBarDealFlow" parameterType="java.lang.String" resultMap="BarDealFlowTwoVoMap">
+        select
+        <include refid="Base_Column_List"/>,CONCAT( CASE WHEN deal_type = 1 THEN '订单付款' WHEN deal_type = 2 THEN '订单退款' ELSE '还款'
+        END, ':', order_id ) AS explainInfo
+        from t_bar_deal_flow
+        where bill_flow = #{billFlow,jdbcType=VARCHAR}
+    </select>
+
+
+    <!--添加多条白条流水的方法     zhaoqun-->
+    <insert id="addBardealFlows" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        <foreach collection="list" item="item" index="index" separator=";">
+            insert into t_bar_deal_flow
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                uid,
+                <if test="item.uname != null">
+                    uname,
+                </if>
+                used_limit,
+                amount,
+                direction,
+                shop_id,
+                shop_name,
+                order_id,
+                deal_type,
+                <if test="item.occTime != null">
+                    occ_time,
+                </if>
+                <if test="item.billFlow != null">
+                    bill_flow,
+                </if>
+                <if test="item.lastModifyTime != null">
+                    last_modify_time,
+                </if>
+            </trim>
+            <trim prefix="values (" suffix=")" suffixOverrides=",">
+                #{item.uid,jdbcType=BIGINT},
+                <if test="item.uname != null">
+                    #{item.uname,jdbcType=VARCHAR},
+                </if>
+                #{item.usedLimit,jdbcType=DECIMAL},
+                #{item.amount,jdbcType=DECIMAL},
+                #{item.direction,jdbcType=TINYINT},
+                #{item.shopId,jdbcType=BIGINT},
+                #{item.shopName,jdbcType=VARCHAR},
+                #{item.orderId,jdbcType=BIGINT},
+                #{item.dealType,jdbcType=TINYINT},
+                <if test="item.occTime != null">
+                    #{item.occTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="item.billFlow != null">
+                    #{item.billFlow,jdbcType=VARCHAR},
+                </if>
+                <if test="item.lastModifyTime != null">
+                    #{item.lastModifyTime,jdbcType=TIMESTAMP},
+                </if>
+            </trim>
+        </foreach>
+    </insert>
+
+
+    <!--  根据billFlow查询用户最近一条白条流水信息  huboyang  -->
+    <select id="getOneBarDealFlow" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        t_bar_deal_flow
+        where
+        uid = #{uid,jdbcType=BIGINT}
+        ORDER BY
+        id DESC
+        limit 1
+    </select>
+    <!--批量插入   gyq-->
+    <insert id="addBarDealFlowBatch" parameterType="java.util.List">
+        insert into t_bar_deal_flow (`uid`, uname, used_limit, amount,
+        direction, shop_id, shop_name, order_id, deal_type,
+        occ_time, bill_flow, last_modify_time)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            ( #{item.uid,jdbcType=BIGINT},
+            #{item.uname,jdbcType=VARCHAR},
+            #{item.usedLimit,jdbcType=DECIMAL},
+            #{item.amount,jdbcType=DECIMAL},
+            #{item.direction,jdbcType=TINYINT},
+            #{item.shopId,jdbcType=BIGINT},
+            #{item.shopName,jdbcType=VARCHAR},
+            #{item.orderId,jdbcType=BIGINT},
+            #{item.dealType,jdbcType=TINYINT},
+            #{item.occTime,jdbcType=TIMESTAMP},
+            #{item.billFlow,jdbcType=VARCHAR},
+            #{item.lastModifyTime,jdbcType=TIMESTAMP} )
+        </foreach>
+    </insert>
+
+    <!--  根据payFlowId查询billFlow    zhaoqun  -->
+    <select id="getBillFlowByPayFlowId" parameterType="java.lang.Integer" resultType="java.lang.String">
+        SELECT
+        	bill_flow
+        FROM
+        	t_bar_deal_flow
+        WHERE
+        pay_flow_id = #{payFlowId,jdbcType=INTEGER}
+    </select>
+    <!--  根据orderId 查询账单批次号 bill_flow ( 最早的)    zhaoqun  -->
+    <select id="getBillFlowByOrderIdAsc" parameterType="java.lang.Long" resultType="java.lang.String">
+		SELECT
+		bill_flow
+		FROM
+		t_bar_deal_flow
+		WHERE
+		order_id = #{orderId,jdbcType=BIGINT}
+		AND direction = 1
+		ORDER BY
+    	occ_time ASC
+	    limit 1
+	</select>
+    <!--  根据orderId 查询账单批次号 bill_flow ( 最晚的)   zhaoqun  -->
+    <select id="getBillFlowByOrderIdDesc" parameterType="java.lang.Long" resultType="java.lang.String">
+		SELECT
+		bill_flow
+		FROM
+		t_bar_deal_flow
+		WHERE
+		order_id = #{orderId,jdbcType=BIGINT}
+		AND direction = 1
+		ORDER BY
+    	occ_time DESC
+	    limit 1
+	</select>
+    <!-- 查询所有白条使用额度的详情 huboyang -->
+    <select id="getAllBarDealFlow" resultMap="BaseResultMap">
+        SELECT
+        <include refid="T_Base_Column_List"/>
+        FROM
+        (SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_bar_deal_flow
+        where
+        1=1
+        <if test="uname != null">
+            AND uname = #{uname}
+        </if>
+        <if test="end != null">
+            AND occ_time &lt;= #{end}
+        </if>
+        ORDER BY id
+        Desc ) t
+        GROUP BY t.uid
+        ORDER BY t.id
+    </select>
+    <!-- 查询所有白条使用额度的详情 huboyang  BarDealFlowDownLoadVo -->
+    <resultMap id="BarDealFlowDownLoadVoMap" type="com.ewfresh.pay.model.vo.BarDealFlowDownLoadVo" extends="BaseResultMap">
+        <result column="uname" jdbcType="VARCHAR" property="uname"/>
+        <result column="used_limit" jdbcType="DECIMAL" property="usedLimit"/>
+        <result column="occ_time" jdbcType="TIMESTAMP" property="occTime"/>
+    </resultMap>
+    <select id="getBarDealFlowMes" resultMap="BarDealFlowDownLoadVoMap">
+        SELECT
+        t.uname, t.used_limit,t.occ_time
+        FROM
+        (SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_bar_deal_flow
+        where
+        1=1
+        <if test="uname != null">
+            AND uname = #{uname}
+        </if>
+        <if test="end != null">
+            AND occ_time &lt;= #{end}
+        </if>
+        ORDER BY id
+        Desc ) t
+        GROUP BY t.uid
+        ORDER BY t.id
+    </select>
+
+    <!-- 根据UId查询所有白条使用额度的详情 gyq -->
+    <select id="getWhiteLimitbyUid" resultMap="BarDealFlowTwoVoMap">
+        SELECT
+        uname,amount, used_limit,
+        CONCAT( CASE WHEN deal_type = 1 THEN '订单付款' WHEN deal_type = 2 THEN '订单退款' ELSE '还款'
+        END, ':', order_id ) AS explainInfo
+        ,occ_time
+        FROM
+         t_bar_deal_flow
+        where uid = #{uid,jdbcType=BIGINT}
+        <if test="end != null">
+            AND occ_time &lt;= #{end}
+        </if>
+        <if test="start != null">
+            AND occ_time >= #{start}
+        </if>
+        ORDER BY
+        id DESC
+    </select>
+
+    <!--&lt;!&ndash; 根据白条账单批次号查询流水表明细   gyq&ndash;&gt;-->
+    <!--<select id="getBarDealFlowByBillFlow" parameterType="java.lang.String" resultMap="BaseResultMap">-->
+       <!--SELECT-->
+        <!--uname,amount, used_limit,-->
+        <!--CONCAT( CASE WHEN deal_type = 1 THEN '订单付款' WHEN deal_type = 2 THEN '订单退款' ELSE '还款'-->
+        <!--END, ':', order_id ) AS explainInfo-->
+        <!--,occ_time-->
+        <!--from t_bar_deal_flow-->
+        <!--where bill_flow = #{billFlow,jdbcType=VARCHAR}-->
+    <!--</select>-->
+</mapper>

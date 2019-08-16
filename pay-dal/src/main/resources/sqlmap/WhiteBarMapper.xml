@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ewfresh.pay.dao.WhiteBarDao">
+    <resultMap id="BaseResultMap" type="com.ewfresh.pay.model.WhiteBar">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <id column="period" jdbcType="TINYINT" property="period"/>
+        <result column="uid" jdbcType="BIGINT" property="uid"/>
+        <result column="uname" jdbcType="VARCHAR" property="uname"/>
+        <result column="reason" jdbcType="VARCHAR" property="reason"/>
+        <result column="total_limit" jdbcType="DECIMAL" property="totalLimit"/>
+        <result column="adjust_limit" jdbcType="DECIMAL" property="adjustLimit"/>
+        <result column="initial_limit" jdbcType="DECIMAL" property="initialLimit"/>
+        <result column="use_status" jdbcType="TINYINT" property="useStatus"/>
+        <result column="appr_status" jdbcType="TINYINT" property="apprStatus"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="last_adjust_time" jdbcType="TIMESTAMP" property="lastAdjustTime"/>
+        <result column="last_modify_time" jdbcType="TIMESTAMP" property="lastModifyTime"/>
+    </resultMap>
+    <resultMap id="WhiteBarVoMap" type="com.ewfresh.pay.model.vo.WhiteBarVo" extends="BaseResultMap">
+        <result column="bar_id" jdbcType="TINYINT" property="barId"/>
+        <result column="quota_limit" jdbcType="DECIMAL" property="quotaLimit" />
+        <result column="adjust_amount" jdbcType="DECIMAL" property="adjustAmount"/>
+        <result column="adjust_time" jdbcType="TIMESTAMP" property="adjustTime" />
+    </resultMap>
+    <resultMap id="WhiteBarVoOneMap" type="com.ewfresh.pay.model.vo.WhiteBarVoOne" extends="BaseResultMap">
+        <result column="bar_id" jdbcType="TINYINT" property="barId"/>
+        <result column="type" jdbcType="TINYINT" property="type" />
+        <result column="quota_limit" jdbcType="DECIMAL" property="quotaLimit" />
+        <result column="adjust_amount" jdbcType="DECIMAL" property="adjustLimit"/>
+        <result column="adjust_time" jdbcType="TIMESTAMP" property="adjustTime" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, `uid`, uname, total_limit, adjust_limit, use_status, appr_status , period, reason,
+    create_time, last_adjust_time, last_modify_time
+    </sql>
+    <sql id="Base_Column_ListOne">
+    r.id, r.bar_id, t.`uid`, t.uname, t.initial_limit, t.total_limit, t.adjust_limit, r.adjust_amount, t.use_status, r.appr_status ,t.period, t.reason,
+    t.create_time, t.last_adjust_time, t.last_modify_time, r.adjust_time, r.type, r.quota_limit
+    </sql>
+    <!--根据id查询白条额度信息-->
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="WhiteBarVoMap">
+        SELECT
+        <include refid="Base_Column_ListOne"/>
+        FROM
+        t_adjust_record r
+        LEFT JOIN t_white_bar t ON t.id = r.bar_id
+        WHERE r.id = #{recordId,jdbcType=INTEGER}
+    </select>
+    <!--根据uid查询白条额度状态和之前额度信息-->
+    <select id="getWhiteBarByAdjustLimit" parameterType="java.lang.Integer" resultMap="WhiteBarVoMap">
+        SELECT
+        <include refid="Base_Column_ListOne"/>
+        FROM
+        t_white_bar t
+        LEFT JOIN t_adjust_record r ON t.id = r.bar_id
+        WHERE r.bar_id = #{barId,jdbcType=INTEGER}
+        ORDER BY r.id
+        DESC
+        limit 1
+    </select>
+    <!--根据id查询白条额度信息-->
+    <select id="getById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_white_bar
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <!--根据id查询白条额度信息-->
+    <select id="getWhiteBarById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_white_bar
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <!--根据uid查询白条额度信息-->
+    <select id="getWhiteBarByUid" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_white_bar
+        where uid = #{uid,jdbcType=BIGINT}
+    </select>
+    <!--查询白条额度信息-->
+    <select id="getWhiteBarList" parameterType="java.lang.Integer" resultMap="WhiteBarVoMap">
+        SELECT
+        <include refid="Base_Column_ListOne"/>
+        FROM
+        t_adjust_record r
+        LEFT JOIN t_white_bar t ON t.id = r.bar_id
+        WHERE 1 = 1
+        <if test="uname != null and uname != ''">
+            AND t.uname LIKE CONCAT ('%',#{uname},'%')
+        </if>
+        <if test="apprStatus != null">
+            AND r.appr_status = #{apprStatus}
+        </if>
+        <if test="start != null and start != '' and end != null and end != ''">
+            AND t.create_time BETWEEN #{start} AND #{end}
+        </if>
+        ORDER BY
+        r.adjust_time DESC
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_white_bar
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ewfresh.pay.model.WhiteBar"
+            useGeneratedKeys="true">
+    insert into t_white_bar (`uid`, uname,
+      total_limit, adjust_limit, use_status, 
+      appr_status, period, create_time, last_adjust_time,
+      last_modify_time)
+    values (#{uid,jdbcType=BIGINT}, #{uname,jdbcType=VARCHAR},
+      #{totalLimit,jdbcType=DECIMAL}, #{adjustLimit,jdbcType=DECIMAL}, #{useStatus,jdbcType=TINYINT}, 
+      #{apprStatus,jdbcType=TINYINT}, #{period,jdbcType=TINYINT},#{createTime,jdbcType=TIMESTAMP}, #{lastAdjustTime,jdbcType=TIMESTAMP},
+      #{lastModifyTime,jdbcType=TIMESTAMP})
+  </insert>
+    <!--添加额度信息-->
+    <insert id="insertSelective" parameterType="com.ewfresh.pay.model.WhiteBar" useGeneratedKeys="true" keyProperty="id"
+            keyColumn="id">
+        insert into t_white_bar
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="uid != null">
+                `uid`,
+            </if>
+            <if test="uname != null">
+                uname,
+            </if>
+            <if test="totalLimit != null">
+                total_limit,
+            </if>
+            <if test="adjustLimit != null">
+                adjust_limit,
+            </if>
+            <if test="useStatus != null">
+                use_status,
+            </if>
+            <if test="period != null">
+                period,
+            </if>
+            <if test="apprStatus != null">
+                appr_status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="lastAdjustTime != null">
+                last_adjust_time,
+            </if>
+            <if test="lastModifyTime != null">
+                last_modify_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="uid != null">
+                #{uid,jdbcType=BIGINT},
+            </if>
+            <if test="uname != null">
+                #{uname,jdbcType=VARCHAR},
+            </if>
+            <if test="totalLimit != null">
+                #{totalLimit,jdbcType=DECIMAL},
+            </if>
+            <if test="adjustLimit != null">
+                #{adjustLimit,jdbcType=DECIMAL},
+            </if>
+            <if test="useStatus != null">
+                #{useStatus,jdbcType=TINYINT},
+            </if>
+            <if test="period != null">
+                #{period,jdbcType=TINYINT},
+            </if>
+            <if test="apprStatus != null">
+                #{apprStatus,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                now(),
+            </if>
+            <if test="lastAdjustTime != null">
+                now(),
+            </if>
+            <if test="lastModifyTime != null">
+                now(),
+            </if>
+        </trim>
+    </insert>
+    <!--修改白条信息-->
+    <update id="updateByPrimaryKeySelective" parameterType="com.ewfresh.pay.model.WhiteBar">
+        update t_white_bar
+        <set>
+            <if test="totalLimit != null">
+                total_limit = #{totalLimit,jdbcType=DECIMAL},
+            </if>
+            <if test="adjustLimit != null">
+                adjust_limit = #{adjustLimit,jdbcType=DECIMAL},
+            </if>
+            <if test="initialLimit != null">
+                initial_limit = #{initialLimit,jdbcType=DECIMAL},
+            </if>
+            <if test="apprStatus != null">
+                appr_status = #{apprStatus,jdbcType=TINYINT},
+            </if>
+            <if test="useStatus != null">
+                use_status = #{useStatus,jdbcType=TINYINT},
+            </if>
+            <if test="period != null">
+                period = #{period,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                create_time = now(),
+            </if>
+            <if test="lastAdjustTime != null">
+                last_adjust_time = now(),
+            </if>
+            <if test="lastModifyTime != null">
+                last_modify_time = now(),
+            </if>
+            <if test="reason != null">
+                reason = #{reason,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <!--修改审核状态-->
+    <update id="updateApprStatus" parameterType="com.ewfresh.pay.model.WhiteBar">
+    update t_white_bar
+    set
+    appr_status = #{apprStatus,jdbcType=TINYINT},
+    reason = #{reason,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <!--调额修改-->
+    <update id="updateWhiteBarNotThrough" parameterType="com.ewfresh.pay.model.WhiteBar">
+    update t_white_bar
+    set
+    appr_status = #{apprStatus,jdbcType=TINYINT},
+    reason = #{reason,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+    <!--修改使用状态-->
+    <update id="updateUseStatus" parameterType="com.ewfresh.pay.model.WhiteBar">
+    update t_white_bar
+    set
+    use_status = #{useStatus,jdbcType=TINYINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+    <resultMap id="BaseResultVoMap" type="com.ewfresh.pay.model.vo.WhiteBarVo" extends="BaseResultMap">
+
+    </resultMap>
+    <!--根据userId查询白条信息    zhaoqun-->
+    <select id="getWhiteBarVoByUid" resultMap="BaseResultVoMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_white_bar
+        WHERE
+        uid = #{uid,jdbcType=INTEGER}
+        ORDER BY
+        id DESC
+        limit 1
+    </select>
+
+    <!--修改使用状态-->
+    <update id="updateWhiteBar" parameterType="com.ewfresh.pay.model.WhiteBar">
+    update t_white_bar
+    set
+    use_status = #{useStatus,jdbcType=TINYINT}
+    where uid = #{uid,jdbcType=INTEGER}
+  </update>
+
+    <!--根据用户id查询白条额度信息-->
+    <select id="getWhiteBar" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_white_bar
+        where uid = #{uid,jdbcType=BIGINT}
+    </select>
+
+    <!-- 根据uid查询客户白条信息   louzifeng-->
+    <select id="getWhiteBarName" resultMap="WhiteBarVoOneMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_white_bar
+        WHERE 1 = 1
+        <if test="id != null">
+            AND id = #{id}
+        </if>
+        <if test="uname != null and uname != ''">
+            AND uname LIKE CONCAT ('%',#{uname},'%')
+        </if>
+        <if test="useStatus != null">
+            AND use_status = #{useStatus}
+        </if>
+        <if test="period != null">
+            AND period = #{period}
+        </if>
+        ORDER BY
+        id DESC
+    </select>
+    <!-- 根据uid查询上个月是否申请过额度   louzifeng-->
+    <select id="getWhiteBarMonthTotal" resultMap="WhiteBarVoOneMap">
+        SELECT
+        <include refid="Base_Column_ListOne"/>
+        FROM
+        t_white_bar t
+        LEFT JOIN t_adjust_record r ON t.id = r.bar_id
+        WHERE r.bar_id = #{barId,jdbcType=INTEGER}
+        ORDER BY r.id
+        DESC
+        limit 1
+    </select>
+</mapper>

@@ -1,0 +1,47 @@
+/*
+    文件说明： 
+    author：   信晓楠             date：
+*/
+/* common */
+.tMar10{ margin-top:10px;}
+.lMar10{ margin-left:10px;}
+.rMar10{ margin-right:10px;}
+.bMar10{ margin-bottom:10px;}
+.vMar10{ margin:10px 0;}
+.vMar5{ margin:5px 0;}
+.tMar5{ margin-top:5px;}
+.bMar5{ margin-bottom:5px;}
+.mar10{ margin:10px;}
+.padd10{ padding:10px;}
+.no{ display:none !important}
+.yes{ display:block !important;}
+.noBor{ border:none;}
+.fontA{ font-family:Arial;}
+.fontMS{ font-family:"Microsoft YaHei";}
+.f14{ font-size:14px;}
+.f16{ font-size:16px;}
+
+.col_left,.col_center,.col_right,.fl,.fr{ float:left; display:inline;} /* 左、中、右 */
+.col_right,.fr{ float:right;}
+.mod{ background:#fff;}
+.JLhd,.JLbd {clear: both;overflow: hidden;}
+.hd .more{ float:right; display:inline;} /* 标题上的更多 */
+.dotline,.jl .line{ overflow:hidden; height:1px;}/* 虚线、实线 */
+.more{ float:right; display:inline;}
+
+/*table 表没有数据*/
+.empty-row td {
+    text-align: center;
+}
+.inlineBlock {
+	display: inline-block;
+}
+.max-width-100 {
+	max-width: 100%;
+}
+.w100 {
+	width: 100px;
+}
+.h100 {
+	height: 100px;
+}

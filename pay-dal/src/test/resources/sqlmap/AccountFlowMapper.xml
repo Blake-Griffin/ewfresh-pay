@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ewfresh.pay.dao.AccountFlowDao" >
+  <resultMap id="BaseResultMap" type="com.ewfresh.pay.model.AccountFlow" >
+    <id column="acc_flow_id" property="accFlowId" jdbcType="INTEGER" />
+    <result column="pay_flow_id" property="payFlowId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="balance" property="balance" jdbcType="DECIMAL" />
+    <result column="direction" property="direction" jdbcType="TINYINT" />
+    <result column="src_acc" property="srcAcc" jdbcType="VARCHAR" />
+    <result column="target_acc" property="targetAcc" jdbcType="VARCHAR" />
+    <result column="acc_type" property="accType" jdbcType="TINYINT" />
+    <result column="amount" property="amount" jdbcType="DECIMAL" />
+    <result column="busi_type" property="busiType" jdbcType="TINYINT" />
+    <result column="busi_no" property="busiNo" jdbcType="VARCHAR" />
+    <result column="is_induce" property="isInduce" jdbcType="TINYINT" />
+    <result column="is_balance" property="isBalance" jdbcType="TINYINT" />
+    <result column="is_settle" property="isSettle" jdbcType="TINYINT" />
+    <result column="occ_time" property="occTime" jdbcType="TIMESTAMP" />
+    <result column="balance_time" property="balanceTime" jdbcType="TIMESTAMP" />
+    <result column="settle_time" property="settleTime" jdbcType="TIMESTAMP" />
+    <result column="risk_days" property="riskDays" jdbcType="INTEGER" />
+    <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="desp" property="desp" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    acc_flow_id, pay_flow_id, user_id, balance, direction, src_acc, target_acc, acc_type, 
+    amount, busi_type, busi_no, is_induce, is_balance, is_settle, occ_time, balance_time, 
+    settle_time, risk_days, last_modify_time, operator, desp
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_account_flow
+    where acc_flow_id = #{accFlowId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_account_flow
+    where acc_flow_id = #{accFlowId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ewfresh.pay.model.AccountFlow" >
+    insert into t_account_flow (acc_flow_id, pay_flow_id, user_id, 
+      balance, direction, src_acc, 
+      target_acc, acc_type, amount, 
+      busi_type, busi_no, is_induce, 
+      is_balance, is_settle, occ_time, 
+      balance_time, settle_time, risk_days, 
+      last_modify_time, operator, desp
+      )
+    values (#{accFlowId,jdbcType=INTEGER}, #{payFlowId,jdbcType=INTEGER}, #{userId,jdbcType=BIGINT}, 
+      #{balance,jdbcType=DECIMAL}, #{direction,jdbcType=TINYINT}, #{srcAcc,jdbcType=VARCHAR}, 
+      #{targetAcc,jdbcType=VARCHAR}, #{accType,jdbcType=TINYINT}, #{amount,jdbcType=DECIMAL}, 
+      #{busiType,jdbcType=TINYINT}, #{busiNo,jdbcType=VARCHAR}, #{isInduce,jdbcType=TINYINT}, 
+      #{isBalance,jdbcType=TINYINT}, #{isSettle,jdbcType=TINYINT}, #{occTime,jdbcType=TIMESTAMP}, 
+      #{balanceTime,jdbcType=TIMESTAMP}, #{settleTime,jdbcType=TIMESTAMP}, #{riskDays,jdbcType=INTEGER}, 
+      #{lastModifyTime,jdbcType=TIMESTAMP}, #{operator,jdbcType=VARCHAR}, #{desp,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ewfresh.pay.model.AccountFlow" >
+    insert into t_account_flow
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="accFlowId != null" >
+        acc_flow_id,
+      </if>
+      <if test="payFlowId != null" >
+        pay_flow_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="balance != null" >
+        balance,
+      </if>
+      <if test="direction != null" >
+        direction,
+      </if>
+      <if test="srcAcc != null" >
+        src_acc,
+      </if>
+      <if test="targetAcc != null" >
+        target_acc,
+      </if>
+      <if test="accType != null" >
+        acc_type,
+      </if>
+      <if test="amount != null" >
+        amount,
+      </if>
+      <if test="busiType != null" >
+        busi_type,
+      </if>
+      <if test="busiNo != null" >
+        busi_no,
+      </if>
+      <if test="isInduce != null" >
+        is_induce,
+      </if>
+      <if test="isBalance != null" >
+        is_balance,
+      </if>
+      <if test="isSettle != null" >
+        is_settle,
+      </if>
+      <if test="occTime != null" >
+        occ_time,
+      </if>
+      <if test="balanceTime != null" >
+        balance_time,
+      </if>
+      <if test="settleTime != null" >
+        settle_time,
+      </if>
+      <if test="riskDays != null" >
+        risk_days,
+      </if>
+      <if test="lastModifyTime != null" >
+        last_modify_time,
+      </if>
+      <if test="operator != null" >
+        operator,
+      </if>
+      <if test="desp != null" >
+        desp,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="accFlowId != null" >
+        #{accFlowId,jdbcType=INTEGER},
+      </if>
+      <if test="payFlowId != null" >
+        #{payFlowId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="balance != null" >
+        #{balance,jdbcType=DECIMAL},
+      </if>
+      <if test="direction != null" >
+        #{direction,jdbcType=TINYINT},
+      </if>
+      <if test="srcAcc != null" >
+        #{srcAcc,jdbcType=VARCHAR},
+      </if>
+      <if test="targetAcc != null" >
+        #{targetAcc,jdbcType=VARCHAR},
+      </if>
+      <if test="accType != null" >
+        #{accType,jdbcType=TINYINT},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="busiType != null" >
+        #{busiType,jdbcType=TINYINT},
+      </if>
+      <if test="busiNo != null" >
+        #{busiNo,jdbcType=VARCHAR},
+      </if>
+      <if test="isInduce != null" >
+        #{isInduce,jdbcType=TINYINT},
+      </if>
+      <if test="isBalance != null" >
+        #{isBalance,jdbcType=TINYINT},
+      </if>
+      <if test="isSettle != null" >
+        #{isSettle,jdbcType=TINYINT},
+      </if>
+      <if test="occTime != null" >
+        #{occTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="balanceTime != null" >
+        #{balanceTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="settleTime != null" >
+        #{settleTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="riskDays != null" >
+        #{riskDays,jdbcType=INTEGER},
+      </if>
+      <if test="lastModifyTime != null" >
+        #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operator != null" >
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="desp != null" >
+        #{desp,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ewfresh.pay.model.AccountFlow" >
+    update t_account_flow
+    <set >
+      <if test="payFlowId != null" >
+        pay_flow_id = #{payFlowId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="balance != null" >
+        balance = #{balance,jdbcType=DECIMAL},
+      </if>
+      <if test="direction != null" >
+        direction = #{direction,jdbcType=TINYINT},
+      </if>
+      <if test="srcAcc != null" >
+        src_acc = #{srcAcc,jdbcType=VARCHAR},
+      </if>
+      <if test="targetAcc != null" >
+        target_acc = #{targetAcc,jdbcType=VARCHAR},
+      </if>
+      <if test="accType != null" >
+        acc_type = #{accType,jdbcType=TINYINT},
+      </if>
+      <if test="amount != null" >
+        amount = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="busiType != null" >
+        busi_type = #{busiType,jdbcType=TINYINT},
+      </if>
+      <if test="busiNo != null" >
+        busi_no = #{busiNo,jdbcType=VARCHAR},
+      </if>
+      <if test="isInduce != null" >
+        is_induce = #{isInduce,jdbcType=TINYINT},
+      </if>
+      <if test="isBalance != null" >
+        is_balance = #{isBalance,jdbcType=TINYINT},
+      </if>
+      <if test="isSettle != null" >
+        is_settle = #{isSettle,jdbcType=TINYINT},
+      </if>
+      <if test="occTime != null" >
+        occ_time = #{occTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="balanceTime != null" >
+        balance_time = #{balanceTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="settleTime != null" >
+        settle_time = #{settleTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="riskDays != null" >
+        risk_days = #{riskDays,jdbcType=INTEGER},
+      </if>
+      <if test="lastModifyTime != null" >
+        last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operator != null" >
+        operator = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="desp != null" >
+        desp = #{desp,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where acc_flow_id = #{accFlowId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ewfresh.pay.model.AccountFlow" >
+    update t_account_flow
+    set pay_flow_id = #{payFlowId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=BIGINT},
+      balance = #{balance,jdbcType=DECIMAL},
+      direction = #{direction,jdbcType=TINYINT},
+      src_acc = #{srcAcc,jdbcType=VARCHAR},
+      target_acc = #{targetAcc,jdbcType=VARCHAR},
+      acc_type = #{accType,jdbcType=TINYINT},
+      amount = #{amount,jdbcType=DECIMAL},
+      busi_type = #{busiType,jdbcType=TINYINT},
+      busi_no = #{busiNo,jdbcType=VARCHAR},
+      is_induce = #{isInduce,jdbcType=TINYINT},
+      is_balance = #{isBalance,jdbcType=TINYINT},
+      is_settle = #{isSettle,jdbcType=TINYINT},
+      occ_time = #{occTime,jdbcType=TIMESTAMP},
+      balance_time = #{balanceTime,jdbcType=TIMESTAMP},
+      settle_time = #{settleTime,jdbcType=TIMESTAMP},
+      risk_days = #{riskDays,jdbcType=INTEGER},
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      operator = #{operator,jdbcType=VARCHAR},
+      desp = #{desp,jdbcType=VARCHAR}
+    where acc_flow_id = #{accFlowId,jdbcType=INTEGER}
+  </update>
+</mapper>
