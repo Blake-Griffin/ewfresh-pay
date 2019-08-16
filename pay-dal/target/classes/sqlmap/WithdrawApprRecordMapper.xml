@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ewfresh.pay.dao.WithdrawApprRecordDao" >
+	<resultMap id="BaseResultMap" type="com.ewfresh.pay.model.WithdrawApprRecord" >
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="withdto_id" property="withdtoId" jdbcType="BIGINT" />
+		<result column="before_status" property="beforeStatus" jdbcType="TINYINT" />
+		<result column="appr_status" jdbcType="TINYINT" property="apprStatus" />
+		<result column="approver" property="approver" jdbcType="BIGINT" />
+		<result column="appr_time" property="apprTime" jdbcType="TIMESTAMP" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="desp" property="desp" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List" >
+		id, withdto_id, before_status, appr_status, approver, appr_time, create_time, desp
+	</sql>
+	<select id="getWdApprRecordList" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+		select
+		<include refid="Base_Column_List" />
+		from t_withdraw_appr_record
+		where withdto_id = #{withdtoId, jdbcType=BIGINT}
+		ORDER BY appr_time ASC
+	</select>
+	<!--获取最新一条提现记录-->
+	<select id="getWithdrawApprRecord" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+		select
+		<include refid="Base_Column_List" />
+		from t_withdraw_appr_record
+		where withdto_id = #{withdtoId, jdbcType=BIGINT}
+		ORDER BY appr_time DESC
+		LIMIT 1
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+		delete from t_withdraw_appr_record
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+	<!--获取最新beforeStatus   zhaoqun-->
+	<select id="getBeforeStatus" resultType="java.lang.Long">
+		SELECT before_status
+		FROM t_withdraw_appr_record
+		WHERE withdto_id = #{withdtoId, jdbcType=BIGINT}
+	</select>
+  <!--添加提现审批记录  zhaoqun-->
+  <insert id="addWdApprRecord" parameterType="com.ewfresh.pay.model.WithdrawApprRecord" >
+	  insert into t_withdraw_appr_record
+	  <trim prefix="(" suffix=")" suffixOverrides="," >
+		  <if test="withdtoId != null" >
+			  withdto_id,
+		  </if>
+		  <if test="beforeStatus != null" >
+			  	before_status,
+		  </if>
+		  <if test="apprStatus != null" >
+			  appr_status,
+		  </if>
+		  <if test="approver != null" >
+			  approver,
+		  </if>
+		  <if test="apprTime != null" >
+			  appr_time,
+		  </if>
+		  <if test="createTime != null" >
+			  create_time,
+		  </if>
+		  <if test="desp != null" >
+			  desp,
+		  </if>
+	  </trim>
+	  <trim prefix="values (" suffix=")" suffixOverrides="," >
+		  <if test="withdtoId != null" >
+			  #{withdtoId,jdbcType=BIGINT},
+		  </if>
+		  <if test="beforeStatus != null" >
+			  #{beforeStatus,jdbcType=TINYINT},
+		  </if>
+		  <if test="apprStatus != null" >
+			  #{apprStatus,jdbcType=TINYINT},
+		  </if>
+		  <if test="approver != null" >
+			  #{approver,jdbcType=BIGINT},
+		  </if>
+		  <if test="apprTime != null" >
+			  #{apprTime,jdbcType=TIMESTAMP},
+		  </if>
+		  <if test="createTime != null" >
+			  #{createTime,jdbcType=TIMESTAMP},
+		  </if>
+		  <if test="desp != null" >
+			  #{desp,jdbcType=VARCHAR},
+		  </if>
+	  </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ewfresh.pay.model.WithdrawApprRecord" >
+    update t_withdraw_appr_record
+    <set >
+      <if test="beforeStatus != null" >
+        before_status = #{beforeStatus,jdbcType=TINYINT},
+      </if>
+      <if test="approver != null" >
+        approver = #{approver,jdbcType=BIGINT},
+      </if>
+      <if test="apprTime != null" >
+        appr_time = #{apprTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="desp != null" >
+        desp = #{desp,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ewfresh.pay.model.WithdrawApprRecord" >
+    update t_withdraw_appr_record
+    set before_status = #{beforeStatus,jdbcType=TINYINT},
+      approver = #{approver,jdbcType=BIGINT},
+      appr_time = #{apprTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      desp = #{desp,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

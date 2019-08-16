@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ewfresh.pay.dao.BillDao">
+  <resultMap id="BaseResultMap" type="com.ewfresh.pay.model.Bill">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="bill_flow" jdbcType="VARCHAR" property="billFlow" />
+    <result column="bill_amount" jdbcType="DECIMAL" property="billAmount" />
+    <result column="repaid_amount" jdbcType="DECIMAL" property="repaidAmount" />
+    <result column="total_interest" jdbcType="DECIMAL" property="totalInterest" />
+    <result column="repaid_interest" jdbcType="DECIMAL" property="repaidInterest" />
+    <result column="bill_time" jdbcType="DATE" property="billTime" />
+    <result column="last_repaid_time" jdbcType="TIMESTAMP" property="lastRepaidTime" />
+    <result column="bill_status" jdbcType="TINYINT" property="billStatus" />
+    <result column="last_modify_time" jdbcType="TIMESTAMP" property="lastModifyTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, bill_flow, bill_amount, repaid_amount, total_interest, repaid_interest, bill_time, 
+    last_repaid_time, bill_status, last_modify_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_bill
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_bill
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ewfresh.pay.model.Bill" useGeneratedKeys="true">
+    insert into t_bill (bill_flow, bill_amount, repaid_amount, 
+      total_interest, repaid_interest, bill_time, 
+      last_repaid_time, bill_status, last_modify_time
+      )
+    values (#{billFlow,jdbcType=VARCHAR}, #{billAmount,jdbcType=DECIMAL}, #{repaidAmount,jdbcType=DECIMAL}, 
+      #{totalInterest,jdbcType=DECIMAL}, #{repaidInterest,jdbcType=DECIMAL}, #{billTime,jdbcType=DATE}, 
+      #{lastRepaidTime,jdbcType=TIMESTAMP}, #{billStatus,jdbcType=TINYINT}, #{lastModifyTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ewfresh.pay.model.Bill" useGeneratedKeys="true">
+    insert into t_bill
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="billFlow != null">
+        bill_flow,
+      </if>
+      <if test="billAmount != null">
+        bill_amount,
+      </if>
+      <if test="repaidAmount != null">
+        repaid_amount,
+      </if>
+      <if test="totalInterest != null">
+        total_interest,
+      </if>
+      <if test="repaidInterest != null">
+        repaid_interest,
+      </if>
+      <if test="billTime != null">
+        bill_time,
+      </if>
+      <if test="lastRepaidTime != null">
+        last_repaid_time,
+      </if>
+      <if test="billStatus != null">
+        bill_status,
+      </if>
+      <if test="lastModifyTime != null">
+        last_modify_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="billFlow != null">
+        #{billFlow,jdbcType=VARCHAR},
+      </if>
+      <if test="billAmount != null">
+        #{billAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="repaidAmount != null">
+        #{repaidAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="totalInterest != null">
+        #{totalInterest,jdbcType=DECIMAL},
+      </if>
+      <if test="repaidInterest != null">
+        #{repaidInterest,jdbcType=DECIMAL},
+      </if>
+      <if test="billTime != null">
+        #{billTime,jdbcType=DATE},
+      </if>
+      <if test="lastRepaidTime != null">
+        #{lastRepaidTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="billStatus != null">
+        #{billStatus,jdbcType=TINYINT},
+      </if>
+      <if test="lastModifyTime != null">
+        #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ewfresh.pay.model.Bill">
+    update t_bill
+    <set>
+      <if test="billFlow != null">
+        bill_flow = #{billFlow,jdbcType=VARCHAR},
+      </if>
+      <if test="billAmount != null">
+        bill_amount = #{billAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="repaidAmount != null">
+        repaid_amount = #{repaidAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="totalInterest != null">
+        total_interest = #{totalInterest,jdbcType=DECIMAL},
+      </if>
+      <if test="repaidInterest != null">
+        repaid_interest = #{repaidInterest,jdbcType=DECIMAL},
+      </if>
+      <if test="billTime != null">
+        bill_time = #{billTime,jdbcType=DATE},
+      </if>
+      <if test="lastRepaidTime != null">
+        last_repaid_time = #{lastRepaidTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="billStatus != null">
+        bill_status = #{billStatus,jdbcType=TINYINT},
+      </if>
+      <if test="lastModifyTime != null">
+        last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ewfresh.pay.model.Bill">
+    update t_bill
+    set bill_flow = #{billFlow,jdbcType=VARCHAR},
+      bill_amount = #{billAmount,jdbcType=DECIMAL},
+      repaid_amount = #{repaidAmount,jdbcType=DECIMAL},
+      total_interest = #{totalInterest,jdbcType=DECIMAL},
+      repaid_interest = #{repaidInterest,jdbcType=DECIMAL},
+      bill_time = #{billTime,jdbcType=DATE},
+      last_repaid_time = #{lastRepaidTime,jdbcType=TIMESTAMP},
+      bill_status = #{billStatus,jdbcType=TINYINT},
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <resultMap id="BillVo" type="com.ewfresh.pay.model.vo.BillVo" extends="BaseResultMap">
+    <result column="overdueMeg" property="overdueMeg" jdbcType="TINYINT" />
+    <result column="payableAmount" property="payableAmount"  jdbcType="DECIMAL"/>
+    <result column="payableInterest" property="payableInterest"  jdbcType="DECIMAL"/>
+    <result column="overdueDays" property="overdueDays"  jdbcType="BIGINT"/>
+  </resultMap>
+  <select id="getBillByBillId"  resultMap="BillVo">
+    select
+    <include refid="Base_Column_List" />
+    from t_bill
+      where id = #{billId,jdbcType=INTEGER}
+  </select>
+  <select id="getBillByBillFlow"  resultMap="BillVo" >
+    select
+    <include refid="Base_Column_List" />
+    from t_bill
+    where bill_flow = #{billFlow,jdbcType=VARCHAR}
+  </select>
+</mapper>

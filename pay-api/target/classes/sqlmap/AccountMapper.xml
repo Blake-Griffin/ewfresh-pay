@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ewfresh.pay.dao.AccountDao" >
+  <resultMap id="BaseResultMap" type="com.ewfresh.pay.model.Account" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="induce_date" property="induceDate" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="total_income" property="totalIncome" jdbcType="DECIMAL" />
+    <result column="total_expend" property="totalExpend" jdbcType="DECIMAL" />
+    <result column="today_income" property="todayIncome" jdbcType="DECIMAL" />
+    <result column="today_expend" property="todayExpend" jdbcType="DECIMAL" />
+    <result column="type" property="type" jdbcType="TINYINT" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="inducer" property="inducer" jdbcType="INTEGER" />
+    <result column="induce_time" property="induceTime" jdbcType="TIMESTAMP" />
+    <result column="approver" property="approver" jdbcType="INTEGER" />
+    <result column="appr_time" property="apprTime" jdbcType="TIMESTAMP" />
+    <result column="desp" property="desp" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, induce_date, user_id, total_income, total_expend, today_income, today_expend, 
+    type, status, inducer, induce_time, approver, appr_time, desp
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_account
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_account
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.ewfresh.pay.model.Account" >
+    insert into t_account (id, induce_date, user_id, 
+      total_income, total_expend, today_income, 
+      today_expend, type, status, 
+      inducer, induce_time, approver, 
+      appr_time, desp)
+    values (#{id,jdbcType=BIGINT}, #{induceDate,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT}, 
+      #{totalIncome,jdbcType=DECIMAL}, #{totalExpend,jdbcType=DECIMAL}, #{todayIncome,jdbcType=DECIMAL}, 
+      #{todayExpend,jdbcType=DECIMAL}, #{type,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, 
+      #{inducer,jdbcType=INTEGER}, #{induceTime,jdbcType=TIMESTAMP}, #{approver,jdbcType=INTEGER}, 
+      #{apprTime,jdbcType=TIMESTAMP}, #{desp,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ewfresh.pay.model.Account" >
+    insert into t_account
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="induceDate != null" >
+        induce_date,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="totalIncome != null" >
+        total_income,
+      </if>
+      <if test="totalExpend != null" >
+        total_expend,
+      </if>
+      <if test="todayIncome != null" >
+        today_income,
+      </if>
+      <if test="todayExpend != null" >
+        today_expend,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="inducer != null" >
+        inducer,
+      </if>
+      <if test="induceTime != null" >
+        induce_time,
+      </if>
+      <if test="approver != null" >
+        approver,
+      </if>
+      <if test="apprTime != null" >
+        appr_time,
+      </if>
+      <if test="desp != null" >
+        desp,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="induceDate != null" >
+        #{induceDate,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="totalIncome != null" >
+        #{totalIncome,jdbcType=DECIMAL},
+      </if>
+      <if test="totalExpend != null" >
+        #{totalExpend,jdbcType=DECIMAL},
+      </if>
+      <if test="todayIncome != null" >
+        #{todayIncome,jdbcType=DECIMAL},
+      </if>
+      <if test="todayExpend != null" >
+        #{todayExpend,jdbcType=DECIMAL},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=TINYINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="inducer != null" >
+        #{inducer,jdbcType=INTEGER},
+      </if>
+      <if test="induceTime != null" >
+        #{induceTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approver != null" >
+        #{approver,jdbcType=INTEGER},
+      </if>
+      <if test="apprTime != null" >
+        #{apprTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="desp != null" >
+        #{desp,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ewfresh.pay.model.Account" >
+    update t_account
+    <set >
+      <if test="induceDate != null" >
+        induce_date = #{induceDate,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="totalIncome != null" >
+        total_income = #{totalIncome,jdbcType=DECIMAL},
+      </if>
+      <if test="totalExpend != null" >
+        total_expend = #{totalExpend,jdbcType=DECIMAL},
+      </if>
+      <if test="todayIncome != null" >
+        today_income = #{todayIncome,jdbcType=DECIMAL},
+      </if>
+      <if test="todayExpend != null" >
+        today_expend = #{todayExpend,jdbcType=DECIMAL},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="inducer != null" >
+        inducer = #{inducer,jdbcType=INTEGER},
+      </if>
+      <if test="induceTime != null" >
+        induce_time = #{induceTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approver != null" >
+        approver = #{approver,jdbcType=INTEGER},
+      </if>
+      <if test="apprTime != null" >
+        appr_time = #{apprTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="desp != null" >
+        desp = #{desp,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ewfresh.pay.model.Account" >
+    update t_account
+    set induce_date = #{induceDate,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=BIGINT},
+      total_income = #{totalIncome,jdbcType=DECIMAL},
+      total_expend = #{totalExpend,jdbcType=DECIMAL},
+      today_income = #{todayIncome,jdbcType=DECIMAL},
+      today_expend = #{todayExpend,jdbcType=DECIMAL},
+      type = #{type,jdbcType=TINYINT},
+      status = #{status,jdbcType=TINYINT},
+      inducer = #{inducer,jdbcType=INTEGER},
+      induce_time = #{induceTime,jdbcType=TIMESTAMP},
+      approver = #{approver,jdbcType=INTEGER},
+      appr_time = #{apprTime,jdbcType=TIMESTAMP},
+      desp = #{desp,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+
+</mapper>

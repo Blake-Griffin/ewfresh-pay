@@ -1,0 +1,682 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ewfresh.pay.dao.BankAccountDao">
+    <resultMap id="BaseResultMap" type="com.ewfresh.pay.model.BankAccount">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="bank_name" property="bankName" jdbcType="VARCHAR"/>
+        <result column="bank_code" property="bankCode" jdbcType="VARCHAR"/>
+        <result column="bank_acc_name" property="bankAccName" jdbcType="VARCHAR"/>
+        <result column="card_type" property="cardType" jdbcType="VARCHAR"/>
+        <result column="card_code" property="cardCode" jdbcType="VARCHAR"/>
+        <result column="user_card_type" property="userCardType" jdbcType="TINYINT"/>
+        <result column="user_card_code" property="userCardCode" jdbcType="VARCHAR"/>
+        <result column="mobile_phone" property="mobilePhone" jdbcType="VARCHAR"/>
+        <result column="is_able" property="isAble" jdbcType="TINYINT"/>
+        <result column="is_kuai_qian" property="isKuaiQian" jdbcType="TINYINT"/>
+        <result column="pay_token" property="payToken" jdbcType="VARCHAR"/>
+        <result column="expired_date" property="expiredDate" jdbcType="VARCHAR"/>
+        <result column="cvv" property="cvv" jdbcType="VARCHAR"/>
+        <result column="is_def" property="isDef" jdbcType="TINYINT"/>
+        <result column="province" property="province" jdbcType="VARCHAR"/>
+        <result column="city" property="city" jdbcType="VARCHAR"/>
+        <result column="area" property="area" jdbcType="VARCHAR"/>
+        <result column="bank_logo" property="bankLogo" jdbcType="VARCHAR"/>
+        <result column="street" property="street" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP"/>
+        <result column="is_shop" property="isShop" jdbcType="TINYINT"/>
+        <result column="account_type" property="accountType" jdbcType="TINYINT"/>
+        <result column="deal" property="deal" jdbcType="VARCHAR"/>
+        <result column="phone_changed_expired" property="phoneChangedExpired" jdbcType="TINYINT"/>
+        <result column="bank_card_type" property="bankCardType" jdbcType="TINYINT"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, user_id, bank_name, bank_code, bank_acc_name, card_type, card_code, user_card_type,
+    user_card_code, mobile_phone, is_able, is_kuai_qian, pay_token, expired_date, cvv, is_def, province, city, area,
+    street, create_time, modify_time, bank_logo, is_shop, account_type, deal, phone_changed_expired,bank_card_type
+    </sql>
+    <!--查询用户在快钱的默认银行卡   jiudongdong-->
+    <select id="getBill99DefaultBankByUserId" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            t_bank_account
+        WHERE
+            user_id = #{userId}
+        AND
+            is_kuai_qian = 1
+        AND
+            is_def = 1
+        AND
+            is_able = 1
+    </select>
+
+    <!--查询用户在快钱的所有银行卡   jiudongdong-->
+    <select id="getAllBanksByUserId" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            t_bank_account
+        WHERE
+            user_id = #{userId}
+        AND
+            is_kuai_qian = 1
+    </select>
+
+    <!--查询用户在快钱绑定的的所有有效的快捷银行卡   jiudongdong-->
+    <select id="getAllAbleBanksByUserId" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            t_bank_account
+        WHERE
+            user_id = #{userId}
+        AND
+            is_kuai_qian = 1
+        AND
+            is_able = 1
+    </select>
+
+    <!--根据银行卡号查询用户快钱的卡信息   jiudongdong-->
+    <select id="getBill99BankInfoByCardCode" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            t_bank_account
+        WHERE
+            card_code = #{cardCode}
+        AND
+            is_kuai_qian = 1
+    </select>
+
+    <!--根据签约协议号查询用户快钱的有效的卡信息   jiudongdong-->
+    <select id="getBill99BankInfoByPayToken" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            t_bank_account
+        WHERE
+            pay_token = #{payToken}
+        AND
+            is_kuai_qian = 1
+        AND
+            is_able = 1
+    </select>
+
+    <!--根据卡号更改快钱默认银行卡状态   jiudongdong-->
+    <update id="updateIsDefaultByCardCode">
+        UPDATE
+            t_bank_account
+        SET
+            is_def = #{isDef},
+            modify_time = now()
+        WHERE
+            card_code = #{cardCode}
+        AND
+            is_kuai_qian = 1
+    </update>
+
+    <!--批量更新-根据卡号更改快钱默认银行卡状态   jiudongdong-->
+    <update id="updateIsDefaultByCardCodes" parameterType="java.util.List">
+        <foreach collection="list" item="bankAccount" separator=";">
+            UPDATE
+                t_bank_account
+            SET
+                is_def = #{bankAccount.isDef},
+                modify_time = now()
+            WHERE
+                card_code = #{bankAccount.cardCode}
+            AND
+                is_kuai_qian = 1
+        </foreach>
+    </update>
+
+    <!--根据卡号更改快钱银行卡失效状态   jiudongdong-->
+    <update id="updateIsAbleByCardCode">
+        UPDATE
+            t_bank_account
+        SET
+            is_able = #{isAble},
+            modify_time = now()
+        WHERE
+            card_code = #{cardCode}
+        AND
+            is_kuai_qian = 1
+    </update>
+
+    <!--插入一条新的绑卡信息      jiudongdong-->
+    <insert id="insertBankAccount" parameterType="com.ewfresh.pay.model.BankAccount" >
+        INSERT INTO t_bank_account
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="userId != null" >
+                user_id,
+            </if>
+            <if test="bankName != null" >
+                bank_name,
+            </if>
+            <if test="bankCode != null" >
+                bank_code,
+            </if>
+            <if test="bankAccName != null" >
+                bank_acc_name,
+            </if>
+            <if test="cardType != null" >
+                card_type,
+            </if>
+            <if test="cardCode != null" >
+                card_code,
+            </if>
+            <if test="userCardType != null" >
+                user_card_type,
+            </if>
+            <if test="userCardCode != null" >
+                user_card_code,
+            </if>
+            <if test="mobilePhone != null" >
+                mobile_phone,
+            </if>
+            <if test="isAble != null" >
+                is_able,
+            </if>
+            <if test="isKuaiQian != null" >
+                is_kuai_qian,
+            </if>
+            <if test="payToken != null" >
+                pay_token,
+            </if>
+            <if test="expiredDate != null" >
+                expired_date,
+            </if>
+            <if test="cvv != null" >
+                cvv,
+            </if>
+            <if test="isDef != null" >
+                is_def,
+            </if>
+            <if test="province != null" >
+                province,
+            </if>
+            <if test="city != null" >
+                city,
+            </if>
+            <if test="area != null" >
+                area,
+            </if>
+            <if test="street != null" >
+                street,
+            </if>
+            <if test="createTime != null" >
+                create_time,
+            </if>
+            <if test="modifyTime != null" >
+                modify_time,
+            </if>
+            <if test="bankLogo != null" >
+                bank_logo,
+            </if>
+            <if test="isShop != null" >
+                is_shop,
+            </if>
+            <if test="accountType != null" >
+                account_type,
+            </if>
+            <if test="deal != null" >
+                deal,
+            </if>
+            <if test="phoneChangedExpired != null" >
+                phone_changed_expired,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null" >
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="bankName != null" >
+                #{bankName,jdbcType=VARCHAR},
+            </if>
+            <if test="bankCode != null" >
+                #{bankCode,jdbcType=VARCHAR},
+            </if>
+            <if test="bankAccName != null" >
+                #{bankAccName,jdbcType=VARCHAR},
+            </if>
+            <if test="cardType != null" >
+                #{cardType,jdbcType=VARCHAR},
+            </if>
+            <if test="cardCode != null" >
+                #{cardCode,jdbcType=VARCHAR},
+            </if>
+            <if test="userCardType != null" >
+                #{userCardType,jdbcType=TINYINT},
+            </if>
+            <if test="userCardCode != null" >
+                #{userCardCode,jdbcType=VARCHAR},
+            </if>
+            <if test="mobilePhone != null" >
+                #{mobilePhone,jdbcType=VARCHAR},
+            </if>
+            <if test="isAble != null" >
+                #{isAble,jdbcType=TINYINT},
+            </if>
+            <if test="isKuaiQian != null" >
+                #{isKuaiQian,jdbcType=TINYINT},
+            </if>
+            <if test="payToken != null" >
+                #{payToken,jdbcType=VARCHAR},
+            </if>
+            <if test="expiredDate != null" >
+                #{expiredDate,jdbcType=VARCHAR},
+            </if>
+            <if test="cvv != null" >
+                #{cvv,jdbcType=VARCHAR},
+            </if>
+            <if test="isDef != null" >
+                #{isDef,jdbcType=TINYINT},
+            </if>
+            <if test="province != null" >
+                #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null" >
+                #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="area != null" >
+                #{area,jdbcType=VARCHAR},
+            </if>
+            <if test="street != null" >
+                #{street,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null" >
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null" >
+                #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="bankLogo != null" >
+                #{bankLogo,jdbcType=VARCHAR},
+            </if>
+            <if test="isShop != null" >
+                #{isShop,jdbcType=TINYINT},
+            </if>
+            <if test="accountType != null" >
+                #{accountType,jdbcType=TINYINT},
+            </if>
+            <if test="deal != null" >
+                #{deal,jdbcType=VARCHAR},
+            </if>
+            <if test="phoneChangedExpired != null" >
+                #{phoneChangedExpired,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+
+    <!--根据卡号更改快钱银行卡状态      jiudongdong-->
+    <update id="updateBankAccountByCardCode" parameterType="com.ewfresh.pay.model.BankAccount" >
+        UPDATE t_bank_account
+        <set >
+            <if test="userId != null" >
+                user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="bankName != null" >
+                bank_name = #{bankName,jdbcType=VARCHAR},
+            </if>
+            <if test="bankCode != null" >
+                bank_code = #{bankCode,jdbcType=VARCHAR},
+            </if>
+            <if test="bankAccName != null" >
+                bank_acc_name = #{bankAccName,jdbcType=VARCHAR},
+            </if>
+            <if test="cardType != null" >
+                card_type = #{cardType,jdbcType=VARCHAR},
+            </if>
+            <if test="cardCode != null" >
+                card_code = #{cardCode,jdbcType=VARCHAR},
+            </if>
+            <if test="userCardType != null" >
+                user_card_type = #{userCardType,jdbcType=TINYINT},
+            </if>
+            <if test="userCardCode != null" >
+                user_card_code = #{userCardCode,jdbcType=VARCHAR},
+            </if>
+            <if test="mobilePhone != null" >
+                mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
+            </if>
+            <if test="isAble != null" >
+                is_able = #{isAble,jdbcType=TINYINT},
+            </if>
+            <if test="isKuaiQian != null" >
+                is_kuai_qian = #{isKuaiQian,jdbcType=TINYINT},
+            </if>
+            <if test="payToken != null" >
+                pay_token = #{payToken,jdbcType=VARCHAR},
+            </if>
+            <if test="expiredDate != null" >
+                expired_date = #{expiredDate,jdbcType=VARCHAR},
+            </if>
+            <if test="cvv != null" >
+                cvv = #{cvv,jdbcType=VARCHAR},
+            </if>
+            <if test="isDef != null" >
+                is_def = #{isDef,jdbcType=TINYINT},
+            </if>
+            <if test="province != null" >
+                province = #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null" >
+                city = #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="area != null" >
+                area = #{area,jdbcType=VARCHAR},
+            </if>
+            <if test="street != null" >
+                street = #{street,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null" >
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="bankLogo != null" >
+                bank_logo = #{bankLogo,jdbcType=VARCHAR},
+            </if>
+            <if test="isShop != null" >
+                is_shop = #{isShop,jdbcType=TINYINT},
+            </if>
+            <if test="accountType != null" >
+                account_type = #{accountType,jdbcType=TINYINT},
+            </if>
+            <if test="deal != null" >
+                deal = #{deal,jdbcType=VARCHAR},
+            </if>
+            <if test="phoneChangedExpired != null" >
+                phone_changed_expired = #{phoneChangedExpired,jdbcType=TINYINT},
+            </if>
+        </set>
+        WHERE
+            card_code = #{cardCode}
+        AND
+            is_kuai_qian = 1
+    </update>
+    
+    <!--将用户某个手机号下绑定的快钱快捷银行卡置为失效     jiudongdong-->
+    <update id="updatePhoneChangedExpired">
+        UPDATE
+            t_bank_account
+        SET
+            phone_changed_expired = #{phoneChangedExpired},
+            modify_time = now()
+        WHERE
+            user_id = #{userId}
+        AND
+            mobile_phone = #{mobilePhone}
+        AND
+            is_kuai_qian = 1
+    </update>
+
+    <resultMap id="BankAccountById" type="com.ewfresh.pay.model.vo.BankAccountVo" extends="BaseResultMap">
+        <result column="wholeBankName" property="wholeBankName" jdbcType="VARCHAR"/>
+    </resultMap>
+    <!--根据uid查询此用户绑定的所有银行卡-->
+    <select id="getBankAccountById" resultMap="BankAccountById">
+    SELECT
+      id,
+      right(card_code,4) AS  card_code,
+      card_code AS wholeBankName,
+      bank_logo,
+      deal,
+      bank_name,
+      is_kuai_qian,
+      insert(mobile_phone, 4, 4, '****') AS  mobile_phone,
+      is_def,
+      card_type,
+      bank_card_type
+    FROM t_bank_account
+    WHERE user_id = #{id,jdbcType=BIGINT}
+    AND is_able = 1
+     <if test="type==1">
+       AND  is_kuai_qian = 0
+    </if>
+    </select>
+
+    <delete id="delBankAccountById" parameterType="java.lang.Integer">
+    DELETE FROM t_bank_account
+    WHERE id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <insert id="addBankAccount" parameterType="com.ewfresh.pay.model.BankAccount">
+        INSERT INTO t_bank_account (
+           user_id,
+           bank_name,
+           bank_code,
+        <if test="bankAccName != null">
+           bank_acc_name,
+        </if>
+           card_code,
+        <if test="userCardCode != null">
+           user_card_code,
+        </if>
+           mobile_phone,
+        <if test="isAble != null">
+           is_able,
+        </if>
+        <if test="isKuaiQian != null">
+           is_kuai_qian,
+        </if>
+           is_def,
+           province, city, area,
+           street, create_time
+        <if test="bankLogo != null">
+           ,bank_logo
+        </if>
+        <if test="userCardType != null">
+            , user_card_code
+        </if>
+        <if test="isShop != null">
+            ,is_shop
+        </if>
+        <if test="accountType != null">
+            ,account_type
+        </if>
+        <if test="deal != null">
+            ,deal
+        </if>
+        <if test="bankCardType != null">
+            ,bank_card_type
+        </if>
+        <if test="phoneChangedExpired != null">
+            ,phone_changed_expired
+        </if>
+        )
+      VALUES (
+         #{userId,jdbcType=BIGINT},
+         #{bankName,jdbcType=VARCHAR},
+         #{bankCode,jdbcType=VARCHAR},
+        <if test="bankAccName != null">
+         #{bankAccName,jdbcType=VARCHAR},
+        </if>
+         #{cardCode,jdbcType=VARCHAR},
+        <if test="userCardCode != null">
+         #{userCardCode,jdbcType=VARCHAR},
+        </if>
+         #{mobilePhone,jdbcType=VARCHAR},
+        <if test="isAble != null">
+         #{isAble,jdbcType=TINYINT},
+        </if>
+        <if test="isKuaiQian != null">
+          #{isKuaiQian,jdbcType=TINYINT},
+        </if>
+         #{isDef,jdbcType=TINYINT},
+         #{province,jdbcType=VARCHAR},
+         #{city,jdbcType=VARCHAR},
+         #{area,jdbcType=VARCHAR},
+         #{street,jdbcType=VARCHAR}, now()
+        <if test="bankLogo != null">
+            ,#{bankLogo,jdbcType=VARCHAR}
+        </if>
+        <if test="userCardType != null">
+            , #{userCardType,jdbcType=VARCHAR}
+        </if>
+        <if test="isShop != null">
+            ,#{isShop,jdbcType=TINYINT}
+        </if>
+        <if test="accountType != null">
+            ,#{accountType,jdbcType=TINYINT}
+        </if>
+        <if test="deal != null">
+            ,#{deal,jdbcType=VARCHAR}
+        </if>
+        <if test="bankCardType != null">
+            ,#{bankCardType,jdbcType=TINYINT}
+        </if>
+        <if test="phoneChangedExpired != null">
+            ,#{phoneChangedExpired,jdbcType=TINYINT}
+        </if>
+        )
+    </insert>
+
+    <update id="updateBankAccountById" parameterType="com.ewfresh.pay.model.vo.BankAccountVo">
+    UPDATE t_bank_account
+    SET user_id = #{userId,jdbcType=BIGINT},
+      bank_name = #{bankName,jdbcType=VARCHAR},
+      bank_code = #{bankCode,jdbcType=VARCHAR},
+      <if test="bankAccName != null">
+        bank_acc_name = #{bankAccName,jdbcType=VARCHAR},
+      </if>
+      <if test="cardType != null">
+        card_type = #{cardType,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCardType != null">
+          bank_card_type = #{bankCardType,jdbcType=TINYINT},
+      </if>
+        card_code = #{cardCode,jdbcType=VARCHAR},
+      <if test="userCardType != null">
+        user_card_type = #{userCardType,jdbcType=TINYINT},
+      </if>
+      <if test="userCardCode != null">
+        user_card_code = #{userCardCode,jdbcType=VARCHAR},
+      </if>
+        mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
+      <if test="isAble != null">
+        is_able = #{isAble,jdbcType=TINYINT},
+      </if>
+      <if test="isKuaiQian != null">
+        is_kuai_qian = #{isKuaiQian,jdbcType=TINYINT},
+      </if>
+      <if test="payToken != null">
+        pay_token = #{payToken,jdbcType=VARCHAR},
+      </if>
+      <if test="expiredDate != null">
+        expired_date = #{expiredDate,jdbcType=VARCHAR},
+      </if>
+      <if test="cvv != null">
+        cvv = #{cvv,jdbcType=VARCHAR},
+      </if>
+        is_def = #{isDef,jdbcType=TINYINT},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      area = #{area,jdbcType=VARCHAR},
+      <if test="accountType != null">
+       account_type = #{accountType,jdbcType=TINYINT},
+      </if>
+      <if test="phoneChangedExpired != null">
+          phone_changed_expired = #{phoneChangedExpired,jdbcType=TINYINT},
+      </if>
+      street = #{street,jdbcType=VARCHAR},
+      modify_time = now()
+        WHERE id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <!--根据id更改银行卡失效状态   wangyaohui-->
+    <update id="updateIsAbleById">
+        UPDATE
+        t_bank_account
+        SET
+        is_able = #{isAble},
+        modify_time = now()
+        WHERE
+        id = #{id}
+    </update>
+    <!--根据用户更改银行卡默认  wangyaohui-->
+    <update id="updateIsDefByUserId">
+        UPDATE
+          t_bank_account
+        SET
+          is_def = 0
+        WHERE
+          user_id = #{userId}
+        and
+         is_kuai_qian = 0
+
+    </update>
+     <!--根据银行卡查询信息-->
+    <select id="getBankAccoutByBankCode" resultMap="BaseResultMap">
+        SELECT
+          <include refid="Base_Column_List"/>
+        FROM
+          t_bank_account
+        WHERE
+          card_code = #{cardCode}
+        AND
+         is_kuai_qian = 0
+        AND
+         is_able =1
+    </select>
+    <!--根据银行卡查询信息-->
+    <select id="getMobilePhoneByid" resultType="java.lang.String">
+        SELECT  mobile_phone
+        FROM  t_bank_account
+        WHERE  id = #{id}
+    </select>
+
+    <!--根据银行卡号数据id和用户丶查询用户快钱的卡信息   jwangyaohui-->
+    <select id="getBankByCardCode" resultMap="BaseResultMap">
+        SELECT
+          <include refid="Base_Column_List"/>
+        FROM
+          t_bank_account
+        WHERE
+          id = #{bankId}
+        AND
+          user_id = #{uid}
+        AND
+          is_kuai_qian = 0
+    </select>
+	
+	<!--查询用户默认银行卡   zhaoqun-->
+	<select id="getDefaultBankByUid" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List"/>
+		FROM
+		t_bank_account
+		WHERE
+		user_id = #{uid}
+		AND
+		is_kuai_qian = 0
+		AND
+		is_def = 1
+		AND
+		is_able = 1
+	</select>
+	
+	<!--根据id更改默认银行卡状态   zhaoqun-->
+	<update id="updateIsDefaultById" parameterType="java.util.List">
+		<foreach collection="list" item="bankAccount" separator=";">
+			UPDATE
+			t_bank_account
+			SET
+			is_def = #{bankAccount.isDef},
+			modify_time = now()
+			WHERE
+			id = #{bankAccount.id}
+			AND
+			is_kuai_qian = 0
+		</foreach>
+	</update>
+</mapper>

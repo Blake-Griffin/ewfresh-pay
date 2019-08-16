@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ewfresh.pay.dao.SettleRecordDao" >
+  <resultMap id="BaseResultMap" type="com.ewfresh.pay.model.SettleRecord" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="pay_flow_id" property="payFlowId" jdbcType="BIGINT" />
+    <result column="batch_no" property="batchNo" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="user_type" property="userType" jdbcType="TINYINT" />
+    <result column="settle_date" property="settleDate" jdbcType="DATE" />
+    <result column="shop_id" property="shopId" jdbcType="INTEGER" />
+    <result column="shop_name" property="shopName" jdbcType="VARCHAR" />
+    <result column="bank_code" property="bankCode" jdbcType="VARCHAR" />
+    <result column="bank_name" property="bankName" jdbcType="VARCHAR" />
+    <result column="acc_name" property="accName" jdbcType="VARCHAR" />
+    <result column="acc_no" property="accNo" jdbcType="VARCHAR" />
+    <result column="bank_province" property="bankProvince" jdbcType="VARCHAR" />
+    <result column="bank_city" property="bankCity" jdbcType="VARCHAR" />
+    <result column="bank_areas" property="bankAreas" jdbcType="VARCHAR" />
+    <result column="bank_full_name" property="bankFullName" jdbcType="VARCHAR" />
+    <result column="mobile_phone" property="mobilePhone" jdbcType="VARCHAR" />
+    <result column="amount" property="amount" jdbcType="DECIMAL" />
+    <result column="settle_fee" property="settleFee" jdbcType="DECIMAL" />
+    <result column="remit_amount" property="remitAmount" jdbcType="DECIMAL" />
+    <result column="settle_status" property="settleStatus" jdbcType="TINYINT" />
+    <result column="remit_time" property="remitTime" jdbcType="TIMESTAMP" />
+    <result column="bank_flow_no" property="bankFlowNo" jdbcType="VARCHAR" />
+    <result column="remit_confirm" property="remitConfirm" jdbcType="TIMESTAMP" />
+    <result column="desp" property="desp" jdbcType="VARCHAR" />
+    <result column="operator" property="operator" jdbcType="INTEGER" />
+    <result column="operate_time" property="operateTime" jdbcType="TIMESTAMP" />
+    <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, pay_flow_id, batch_no, user_id, user_name, user_type, settle_date, shop_id, shop_name,
+    bank_code, bank_name, acc_name, acc_no, bank_province, bank_city, bank_areas, bank_full_name, 
+    mobile_phone, amount, settle_fee, remit_amount, settle_status, remit_time, bank_flow_no, 
+    remit_confirm, desp, operator, operate_time, last_modify_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_settle_record
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!--通过店铺id查询账单记录-->
+  <select id="getSettleRecordByShopId" resultMap="BaseResultMap" >
+    SELECT
+        <include refid="Base_Column_List" />
+    FROM t_settle_record
+    WHERE shop_id = #{shopId}
+    ORDER BY
+        last_modify_time DESC
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_settle_record
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="addSettleRecord">
+    insert into t_settle_record (
+      id,settle_date,
+      shop_id, shop_name, amount,
+      settle_fee, remit_amount)
+    values (
+      #{id,jdbcType=INTEGER},#{settleDate},
+      #{shopId,jdbcType=INTEGER}, #{shopName,jdbcType=VARCHAR},  #{amount,jdbcType=DECIMAL},
+      #{settleFee,jdbcType=DECIMAL}, #{remitAmount,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ewfresh.pay.model.SettleRecord" >
+    insert into t_settle_record
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="payFlowId != null" >
+        pay_flow_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+      <if test="userType != null" >
+        user_type,
+      </if>
+      <if test="settleDate != null" >
+        settle_date,
+      </if>
+      <if test="shopId != null" >
+        shop_id,
+      </if>
+      <if test="shopName != null" >
+        shop_name,
+      </if>
+      <if test="bankCode != null" >
+        bank_code,
+      </if>
+      <if test="bankName != null" >
+        bank_name,
+      </if>
+      <if test="accName != null" >
+        acc_name,
+      </if>
+      <if test="accNo != null" >
+        acc_no,
+      </if>
+      <if test="bankProvince != null" >
+        bank_province,
+      </if>
+      <if test="bankCity != null" >
+        bank_city,
+      </if>
+      <if test="bankAreas != null" >
+        bank_areas,
+      </if>
+      <if test="bankFullName != null" >
+        bank_full_name,
+      </if>
+      <if test="mobilePhone != null" >
+        mobile_phone,
+      </if>
+      <if test="amount != null" >
+        amount,
+      </if>
+      <if test="settleFee != null" >
+        settle_fee,
+      </if>
+      <if test="remitAmount != null" >
+        remit_amount,
+      </if>
+      <if test="settleStatus != null" >
+        settle_status,
+      </if>
+      <if test="remitTime != null" >
+        remit_time,
+      </if>
+      <if test="bankFlowNo != null" >
+        bank_flow_no,
+      </if>
+      <if test="remitConfirm != null" >
+        remit_confirm,
+      </if>
+      <if test="desp != null" >
+        desp,
+      </if>
+      <if test="operator != null" >
+        operator,
+      </if>
+      <if test="operateTime != null" >
+        operate_time,
+      </if>
+      <if test="lastModifyTime != null" >
+        last_modify_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="payFlowId != null" >
+        #{payFlowId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userType != null" >
+        #{userType,jdbcType=TINYINT},
+      </if>
+      <if test="settleDate != null" >
+        #{settleDate,jdbcType=DATE},
+      </if>
+      <if test="shopId != null" >
+        #{shopId,jdbcType=INTEGER},
+      </if>
+      <if test="shopName != null" >
+        #{shopName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCode != null" >
+        #{bankCode,jdbcType=VARCHAR},
+      </if>
+      <if test="bankName != null" >
+        #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="accName != null" >
+        #{accName,jdbcType=VARCHAR},
+      </if>
+      <if test="accNo != null" >
+        #{accNo,jdbcType=VARCHAR},
+      </if>
+      <if test="bankProvince != null" >
+        #{bankProvince,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCity != null" >
+        #{bankCity,jdbcType=VARCHAR},
+      </if>
+      <if test="bankAreas != null" >
+        #{bankAreas,jdbcType=VARCHAR},
+      </if>
+      <if test="bankFullName != null" >
+        #{bankFullName,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilePhone != null" >
+        #{mobilePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="settleFee != null" >
+        #{settleFee,jdbcType=DECIMAL},
+      </if>
+      <if test="remitAmount != null" >
+        #{remitAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="settleStatus != null" >
+        #{settleStatus,jdbcType=TINYINT},
+      </if>
+      <if test="remitTime != null" >
+        #{remitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bankFlowNo != null" >
+        #{bankFlowNo,jdbcType=VARCHAR},
+      </if>
+      <if test="remitConfirm != null" >
+        #{remitConfirm,jdbcType=TIMESTAMP},
+      </if>
+      <if test="desp != null" >
+        #{desp,jdbcType=VARCHAR},
+      </if>
+      <if test="operator != null" >
+        #{operator,jdbcType=INTEGER},
+      </if>
+      <if test="operateTime != null" >
+        #{operateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifyTime != null" >
+        #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <!--获取结算记录列表的方法DXM-->
+  <select id="getSettleRecords" resultMap="BaseResultMap">
+      SELECT
+          <include refid="Base_Column_List"/>
+      FROM
+          t_settle_record
+      WHERE
+          1 = 1
+          <if test="shopName != null and shopName != ''">
+            AND shop_name = #{shopName}
+          </if>
+          <if test="shopId != null">
+            AND shop_id = #{shopId}
+          </if>
+          <if test="settleStatus != null">
+            AND settle_status = #{settleStatus}
+          </if>
+      ORDER BY
+          last_modify_time
+      DESC
+  </select>
+
+  <!--获取结算记录列表的方法DXM-->
+  <select id="getSettleRecordById" resultMap="BaseResultMap">
+      SELECT
+          <include refid="Base_Column_List"/>
+      FROM
+          t_settle_record
+      WHERE
+          1 = 1
+          AND id = #{id}
+  </select>
+
+  <!--审核分账数据的方法DXM-->
+  <update id="apprByBatchNo">
+      UPDATE t_settle_record
+      SET
+          settle_status = #{settleStatus,jdbcType=TINYINT},
+          desp = #{desp,jdbcType=VARCHAR},
+          operator = #{operator}
+      WHERE id = #{id}
+  </update>
+  <!--更新批次号的方法DXM-->
+  <update id="updateBatchNoById">
+      UPDATE t_settle_record
+      SET
+          batch_no = #{batchNo}
+          <if test="remitTime != null">
+            ,remit_time = #{remitTime}
+          </if>
+          <if test="remitConfirm != null">
+            ,remit_confirm = #{remitConfirm}
+          </if>
+          <if test="settleStatus != null">
+            ,settle_status = #{settleStatus}
+          </if>
+      WHERE id = #{id}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.ewfresh.pay.model.SettleRecord" >
+    update t_settle_record
+    set pay_flow_id = #{payFlowId,jdbcType=BIGINT},
+      user_id = #{userId,jdbcType=BIGINT},
+      user_name = #{userName,jdbcType=VARCHAR},
+      user_type = #{userType,jdbcType=TINYINT},
+      settle_date = #{settleDate,jdbcType=DATE},
+      shop_id = #{shopId,jdbcType=INTEGER},
+      shop_name = #{shopName,jdbcType=VARCHAR},
+      bank_code = #{bankCode,jdbcType=VARCHAR},
+      bank_name = #{bankName,jdbcType=VARCHAR},
+      acc_name = #{accName,jdbcType=VARCHAR},
+      acc_no = #{accNo,jdbcType=VARCHAR},
+      bank_province = #{bankProvince,jdbcType=VARCHAR},
+      bank_city = #{bankCity,jdbcType=VARCHAR},
+      bank_areas = #{bankAreas,jdbcType=VARCHAR},
+      bank_full_name = #{bankFullName,jdbcType=VARCHAR},
+      mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
+      amount = #{amount,jdbcType=DECIMAL},
+      settle_fee = #{settleFee,jdbcType=DECIMAL},
+      remit_amount = #{remitAmount,jdbcType=DECIMAL},
+      settle_status = #{settleStatus,jdbcType=TINYINT},
+      remit_time = #{remitTime,jdbcType=TIMESTAMP},
+      bank_flow_no = #{bankFlowNo,jdbcType=VARCHAR},
+      remit_confirm = #{remitConfirm,jdbcType=TIMESTAMP},
+      desp = #{desp,jdbcType=VARCHAR},
+      operator = #{operator,jdbcType=INTEGER},
+      operate_time = #{operateTime,jdbcType=TIMESTAMP},
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

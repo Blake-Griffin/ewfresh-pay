@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ewfresh.pay.dao.InterestFlowDao">
+  <resultMap id="BaseResultMap" type="com.ewfresh.pay.model.InterestFlow">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="bill_id" jdbcType="INTEGER" property="billId" />
+    <result column="bill_repay_id" jdbcType="INTEGER" property="billRepayId" />
+    <result column="bill_flow" jdbcType="VARCHAR" property="billFlow" />
+    <result column="uname" jdbcType="VARCHAR" property="uname" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="total_interest" jdbcType="DECIMAL" property="totalInterest" />
+    <result column="repaid_interest" jdbcType="DECIMAL" property="repaidInterest" />
+    <result column="repay_time" jdbcType="TIMESTAMP" property="repayTime" />
+    <result column="repay_type" jdbcType="TINYINT" property="repayType" />
+    <result column="repay_channel" jdbcType="TINYINT" property="repayChannel" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="bill_time" jdbcType="TIMESTAMP" property="billTime"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, bill_id, bill_repay_id, bill_flow, uname, user_id, total_interest, repaid_interest, 
+    repay_time, repay_type, repay_channel, create_time,bill_time
+  </sql>
+  <resultMap id="repayFlowVo" type="com.ewfresh.pay.model.vo.RepayFlowVo">
+    <id column="bill_id" jdbcType="INTEGER" property="billId" />
+    <result column="bill_repay_id" jdbcType="INTEGER" property="billRepayId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="uname" jdbcType="VARCHAR" property="uName" />
+    <result column="bill_flow" jdbcType="VARCHAR" property="billFlow" />
+    <result column="total_interest" jdbcType="DECIMAL" property="totalInterest" />
+    <result column="interest_amount" jdbcType="DECIMAL" property="interestAmount" />
+    <result column="repay_time" jdbcType="TIMESTAMP" property="repayTime" />
+    <result column="repay_channel" jdbcType="TINYINT" property="repayChannel" />
+    <result column="repay_type" jdbcType="TINYINT" property="repayType" />
+    <result column="orderId" jdbcType="BIGINT" property="orderId" />
+  </resultMap>
+  <!--  hby  查询每日新的逾期费支付流水   -->
+  <select id="getInterestFlow" resultMap="repayFlowVo">
+    SELECT
+    t2.id as bill_id,
+    t1.id as bill_repay_id,
+    t2.user_id as user_id,
+    t2.uname as uname,
+    t2.bill_flow as bill_flow,
+    t2.total_interest as total_interest,
+    t1.interest_amount as interest_amount,
+    t1.repay_time as repay_time,
+    t1.repay_channel as repay_channel,
+    t1.repay_type as repay_type,
+    t1.orderId as orderId,
+    t2.bill_time as bill_time
+    FROM t_bill_repay_flow t1 LEFT JOIN t_bill t2 on t1.bill_id = t2.id
+    where
+    t2.total_interest <![CDATA[>]]> 0
+    AND t1.interest_amount <![CDATA[>]]> 0
+    <if test="startTime != null">
+    And t1.repay_time  <![CDATA[>=]]> #{startTime}
+    </if>
+    And  t1.repay_time <![CDATA[<=]]> #{endTime}
+  </select>
+  <!--  hby 添加逾期费支付流水 -->
+  <insert id="addInterestFlow" parameterType="java.util.List">
+    INSERT INTO t_interest_flow(id,bill_id,bill_repay_id,bill_flow,
+        uname,user_id,total_interest,repaid_interest,repay_time,
+        repay_type,repay_channel,create_time,bill_time)
+     VALUES
+    <foreach collection="list" item="item" index="index" separator=",">
+      ( #{item.id},
+        #{item.billId},#{item.billRepayId},#{item.billFlow},#{item.uname},#{item.userId},#{item.totalInterest},
+      #{item.repaidInterest},#{item.repayTime},#{item.repayType},#{item.repayChannel},#{item.createTime},#{item.billTime})
+    </foreach>
+  </insert>
+  <!--  hby 查询逾期费支付流水  -->
+  <select id="getInterestFlowByCondition" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM t_interest_flow
+    WHERE
+    1=1
+    <if test="uname != null and uname != ''">
+      And uname = #{uname}
+    </if>
+    <if test="startTime != null  and startTime != ''">
+      And repay_time  <![CDATA[>]]> #{startTime}
+    </if>
+    <if test="endTime != null  and endTime != '' ">
+    And  repay_time <![CDATA[<]]> #{endTime}
+    </if>
+    order by id desc
+  </select>
+  <!-- hby导出逾期费流水信息  -->
+  <resultMap id="InterestFlowVo" type="com.ewfresh.pay.model.vo.InterestFlowVo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="uname" jdbcType="VARCHAR" property="uname" />
+    <result column="repaid_interest" jdbcType="DECIMAL" property="repaidInterest" />
+    <result column="repay_time" jdbcType="TIMESTAMP" property="repayTime" />
+    <result column="bill_time" jdbcType="TIMESTAMP" property="billTime"/>
+  </resultMap>
+  <select id="exportInterestFlow" resultMap="InterestFlowVo">
+     SELECT
+    id,
+    uname,
+    bill_time,
+    repaid_interest,
+    repay_time
+    FROM t_interest_flow
+    WHERE
+         repay_time   <![CDATA[>=]]> #{startTime}
+    And  repay_time <![CDATA[<=]]> #{endTime}
+    <if test="uname != null and uname != ''">
+      And uname = #{uname}
+    </if>
+    order by id desc
+  </select>
+</mapper>

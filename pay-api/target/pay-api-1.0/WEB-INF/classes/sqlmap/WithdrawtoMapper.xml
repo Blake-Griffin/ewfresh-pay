@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ewfresh.pay.dao.WithdrawtoDao">
+  <resultMap id="BaseResultMap" type="com.ewfresh.pay.model.Withdrawto">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="uid" jdbcType="BIGINT" property="uid" />
+    <result column="uname" jdbcType="VARCHAR" property="uname" />
+	  <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+	  <result column="acc_type" property="accType" jdbcType="TINYINT" />
+    <result column="bank_account_id" jdbcType="INTEGER" property="bankAccountId" />
+    <result column="appr_status" jdbcType="TINYINT" property="apprStatus" />
+      <result column="before_status" property="beforeStatus" jdbcType="TINYINT" />
+    <result column="approver" jdbcType="BIGINT" property="approver" />
+    <result column="cancel_id" jdbcType="BIGINT" property="cancelId" />
+    <result column="cancel_time" jdbcType="TIMESTAMP" property="cancelTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="version" property="version" jdbcType="INTEGER" />
+    <result column="last_modify_time" jdbcType="TIMESTAMP" property="lastModifyTime" />
+    <result column="remark" jdbcType="BLOB" property="remark" />
+	  <result column="out_trade_no" jdbcType="VARCHAR" property="outTradeNo" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, uid, uname, phone, amount, bank_account_id, appr_status, before_status, approver, cancel_id,
+    cancel_time, create_time, last_modify_time,version, acc_type, nick_name, out_trade_no
+  </sql>
+  <sql id="Base_Column_List_Alias">
+    w.id, w.uid, w.uname, w.phone, w.amount, w.bank_account_id, w.appr_status, w.before_status, w.approver, w.cancel_id,
+    w.cancel_time, w.create_time, w.last_modify_time, w.remark, w.version, w.acc_type, w.nick_name, w.out_trade_no
+  </sql>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_withdrawto
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="addWithdrawto" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO t_withdrawto (uid, uname,nick_name,
+      phone, amount, bank_account_id, acc_type)
+    VALUES (#{uid,jdbcType=BIGINT}, #{uname,jdbcType=VARCHAR},#{nickName,jdbcType=VARCHAR},
+      #{phone,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL}, #{bankAccountId,jdbcType=INTEGER},
+      #{accType,jdbcType=TINYINT})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.ewfresh.pay.model.Withdrawto">
+    update t_withdrawto
+    set uid = #{uid,jdbcType=BIGINT},
+      uname = #{uname,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      amount = #{amount,jdbcType=DECIMAL},
+      bank_account_id = #{bankAccountId,jdbcType=INTEGER},
+      appr_status = #{apprStatus,jdbcType=TINYINT},
+      approver = #{approver,jdbcType=BIGINT},
+      cancel_id = #{cancelId,jdbcType=BIGINT},
+      cancel_time = #{cancelTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--修改提现审核状态的方法 DXM-->
+  <update id="updateApprStatus">
+      UPDATE
+          t_withdrawto
+      SET
+          appr_status = #{apprStatus},
+		  before_status = #{beforeStatus},
+          approver = #{approver},
+          remark = #{remark},
+          version = (#{version} + 1)
+      WHERE
+          id = #{id,jdbcType = BIGINT} AND version = #{version}
+  </update>
+  <!-- -->
+  <update id="updateCancelWithdrawByid">
+      UPDATE
+          t_withdrawto
+      SET
+          appr_status = #{apprStatus},
+          before_status = #{beforeStatus},
+          cancel_id = #{cancelId},
+          cancel_time = #{cancelTime},
+          version = (#{version} + 1)
+      WHERE
+          id = #{id,jdbcType = BIGINT} AND version = #{version}
+  </update>
+  <!--根据提现Id 获取提现的具体内容的方法-->
+  <select id="getWithdrawtoByid" resultMap="WithdrawtosAndBack">
+      SELECT
+	  	  CONCAT(ba.bank_name,CASE ba.deal WHEN '' THEN '' ELSE CONCAT('(', ba.deal, ')') END) AS bank_name,
+          ba.user_id, ba.bank_code, ba.bank_acc_name,
+          ba.card_type, ba.card_code, ba.mobile_phone,
+          ba.is_def, ba.province, ba.city, ba.area, ba.street,
+          <include refid="Base_Column_List_Alias" />
+      FROM
+          t_withdrawto w
+      LEFT JOIN t_bank_account ba ON w.bank_account_id = ba.id
+      WHERE
+          w.id = #{id}
+  </select>
+  <!-- 根据uid查询最近的一条提现记录  DXM-->
+  <select id="getWithdrawtoByUid" resultMap="WithdrawtosAndBack">
+      SELECT
+          ba.user_id, ba.bank_name, ba.bank_code, ba.bank_acc_name,
+          ba.card_type, ba.card_code, ba.mobile_phone,
+          ba.is_def, ba.province, ba.city, ba.area, ba.street,
+          <include refid="Base_Column_List_Alias" />
+      FROM
+          t_withdrawto w
+      LEFT JOIN t_bank_account ba ON w.bank_account_id = ba.id
+      WHERE
+          w.uid = #{uid}
+	      <if test="id != null">
+		      AND w.id = #{id,jdbcType=BIGINT}
+	      </if>
+	  ORDER BY w.create_time
+	  DESC
+  </select>
+  <resultMap id="WithdrawtosAndBack" type="com.ewfresh.pay.model.vo.WithdrawtosVo" extends="BaseResultMap">
+	  <association property="bankAccount" javaType="com.ewfresh.pay.model.BankAccount">
+          <id column="id" property="id" jdbcType="INTEGER" />
+          <result column="user_id" property="userId" jdbcType="BIGINT" />
+          <result column="bank_name" property="bankName" jdbcType="VARCHAR" />
+          <result column="bank_code" property="bankCode" jdbcType="VARCHAR" />
+          <result column="bank_acc_name" property="bankAccName" jdbcType="VARCHAR" />
+          <result column="card_type" property="cardType" jdbcType="VARCHAR" />
+          <result column="card_code" property="cardCode" jdbcType="VARCHAR" />
+          <result column="mobile_phone" property="mobilePhone" jdbcType="VARCHAR" />
+          <result column="is_def" property="isDef" jdbcType="TINYINT" />
+          <result column="province" property="province" jdbcType="VARCHAR" />
+          <result column="city" property="city" jdbcType="VARCHAR" />
+          <result column="area" property="area" jdbcType="VARCHAR" />
+          <result column="street" property="street" jdbcType="VARCHAR" />
+		  <result column="deal" property="deal" jdbcType="VARCHAR"/>
+      </association>
+  </resultMap>
+  <!-- 根据条件查询提现记录  DXM-->
+  <select id="getWithdrawtos" resultMap="WithdrawtosAndBack">
+      SELECT
+          ba.user_id,
+	  	  CONCAT(ba.bank_name,CASE ba.deal WHEN '' THEN '' ELSE CONCAT('(', ba.deal, ')') END) AS bank_name,
+	  	  ba.bank_code, ba.bank_acc_name,
+          ba.card_type, ba.card_code, ba.mobile_phone,
+          ba.is_def, ba.province, ba.city, ba.area, ba.street,
+          <include refid="Base_Column_List_Alias" />
+      FROM
+          t_withdrawto w
+          LEFT JOIN t_bank_account ba ON w.bank_account_id = ba.id
+      WHERE
+            1 = 1
+          <if test=" uname != null and uname != ''">
+              AND w.uname LIKE CONCAT('%', #{uname}, '%')
+          </if>
+		  <if test=" nickName != null and nickName != ''">
+			  AND w.nick_name LIKE CONCAT('%', #{nickName}, '%')
+		  </if>
+          <if test=" status != null">
+              AND w.appr_status = #{status}
+          </if>
+		  <if test=" beforeStatus != null">
+			  AND w.before_status = #{beforeStatus}
+		  </if>
+          <if test=" startTime != null and startTime != '' and endTime != null  and endTime != ''">
+              AND w.create_time BETWEEN #{startTime} AND #{endTime}
+          </if>
+      ORDER BY w.create_time
+      DESC
+  </select>
+	<!--更新 提现信息    zhaoqun-->
+	<update id="updateWithdrawto" parameterType="com.ewfresh.pay.model.Withdrawto">
+		update t_withdrawto
+		<set>
+			<if test="uid != null">
+				uid = #{uid,jdbcType=BIGINT},
+			</if>
+			<if test="uname != null">
+				uname = #{uname,jdbcType=VARCHAR},
+			</if>
+			<if test="phone != null">
+				phone = #{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="amount != null">
+				amount = #{amount,jdbcType=DECIMAL},
+			</if>
+			<if test="bankAccountId != null">
+				bank_account_id = #{bankAccountId,jdbcType=INTEGER},
+			</if>
+			<if test="apprStatus != null">
+				appr_status = #{apprStatus,jdbcType=TINYINT},
+			</if>
+			<if test="beforeStatus != null">
+				before_status = #{beforeStatus,jdbcType=TINYINT},
+			</if>
+			<if test="approver != null">
+				approver = #{approver,jdbcType=BIGINT},
+			</if>
+			<if test="cancelId != null">
+				cancel_id = #{cancelId,jdbcType=BIGINT},
+			</if>
+			<if test="cancelTime != null">
+				cancel_time = #{cancelTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="lastModifyTime != null">
+				last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="accType != null">
+				acc_type = #{accType,jdbcType=TINYINT},
+			</if>
+			<if test="outTradeNo != null">
+				out_trade_no = #{outTradeNo,jdbcType=VARCHAR},
+			</if>
+			<if test="version != null">
+				version = #{outTradeNo,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<!-- 根据id查询提现记录   zhaoqun-->
+	<select id="getWithdrawtoInfoById" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		t_withdrawto
+		WHERE
+		id = #{id,jdbcType=BIGINT}
+	</select>
+</mapper>

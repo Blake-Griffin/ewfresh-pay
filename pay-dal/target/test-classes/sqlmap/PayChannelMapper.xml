@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ewfresh.pay.dao.PayChannelDao" >
+  <resultMap id="BaseResultMap" type="com.ewfresh.pay.model.PayChannel" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="channel_code" property="channelCode" jdbcType="VARCHAR" />
+    <result column="channel_name" property="channelName" jdbcType="VARCHAR" />
+    <result column="type_code" property="typeCode" jdbcType="VARCHAR" />
+    <result column="type_name" property="typeName" jdbcType="VARCHAR" />
+    <result column="pay_rate" property="payRate" jdbcType="DECIMAL" />
+    <result column="is_enabled" property="isEnabled" jdbcType="TINYINT" />
+    <result column="is_recharge" property="isRecharge" jdbcType="TINYINT" />
+    <result column="sorted" property="sorted" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, channel_code, channel_name, type_code, type_name, pay_rate, is_enabled, is_recharge, 
+    sorted
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_pay_channel
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_pay_channel
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ewfresh.pay.model.PayChannel" >
+    insert into t_pay_channel (ID, channel_code, channel_name, 
+      type_code, type_name, pay_rate, 
+      is_enabled, is_recharge, sorted
+      )
+    values (#{id,jdbcType=INTEGER}, #{channelCode,jdbcType=VARCHAR}, #{channelName,jdbcType=VARCHAR}, 
+      #{typeCode,jdbcType=VARCHAR}, #{typeName,jdbcType=VARCHAR}, #{payRate,jdbcType=DECIMAL}, 
+      #{isEnabled,jdbcType=TINYINT}, #{isRecharge,jdbcType=TINYINT}, #{sorted,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ewfresh.pay.model.PayChannel" >
+    insert into t_pay_channel
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="channelCode != null" >
+        channel_code,
+      </if>
+      <if test="channelName != null" >
+        channel_name,
+      </if>
+      <if test="typeCode != null" >
+        type_code,
+      </if>
+      <if test="typeName != null" >
+        type_name,
+      </if>
+      <if test="payRate != null" >
+        pay_rate,
+      </if>
+      <if test="isEnabled != null" >
+        is_enabled,
+      </if>
+      <if test="isRecharge != null" >
+        is_recharge,
+      </if>
+      <if test="sorted != null" >
+        sorted,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="channelCode != null" >
+        #{channelCode,jdbcType=VARCHAR},
+      </if>
+      <if test="channelName != null" >
+        #{channelName,jdbcType=VARCHAR},
+      </if>
+      <if test="typeCode != null" >
+        #{typeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="typeName != null" >
+        #{typeName,jdbcType=VARCHAR},
+      </if>
+      <if test="payRate != null" >
+        #{payRate,jdbcType=DECIMAL},
+      </if>
+      <if test="isEnabled != null" >
+        #{isEnabled,jdbcType=TINYINT},
+      </if>
+      <if test="isRecharge != null" >
+        #{isRecharge,jdbcType=TINYINT},
+      </if>
+      <if test="sorted != null" >
+        #{sorted,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ewfresh.pay.model.PayChannel" >
+    update t_pay_channel
+    <set >
+      <if test="channelCode != null" >
+        channel_code = #{channelCode,jdbcType=VARCHAR},
+      </if>
+      <if test="channelName != null" >
+        channel_name = #{channelName,jdbcType=VARCHAR},
+      </if>
+      <if test="typeCode != null" >
+        type_code = #{typeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="typeName != null" >
+        type_name = #{typeName,jdbcType=VARCHAR},
+      </if>
+      <if test="payRate != null" >
+        pay_rate = #{payRate,jdbcType=DECIMAL},
+      </if>
+      <if test="isEnabled != null" >
+        is_enabled = #{isEnabled,jdbcType=TINYINT},
+      </if>
+      <if test="isRecharge != null" >
+        is_recharge = #{isRecharge,jdbcType=TINYINT},
+      </if>
+      <if test="sorted != null" >
+        sorted = #{sorted,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ewfresh.pay.model.PayChannel" >
+    update t_pay_channel
+    set channel_code = #{channelCode,jdbcType=VARCHAR},
+      channel_name = #{channelName,jdbcType=VARCHAR},
+      type_code = #{typeCode,jdbcType=VARCHAR},
+      type_name = #{typeName,jdbcType=VARCHAR},
+      pay_rate = #{payRate,jdbcType=DECIMAL},
+      is_enabled = #{isEnabled,jdbcType=TINYINT},
+      is_recharge = #{isRecharge,jdbcType=TINYINT},
+      sorted = #{sorted,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

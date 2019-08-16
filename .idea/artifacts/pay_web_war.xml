@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="war" name="pay-web:war">
-    <output-path>$PROJECT_DIR$/pay-web/target</output-path>
-    <root id="archive" name="pay-web-1.0.war">
-      <element id="artifact" artifact-name="pay-web:war exploded" />
-    </root>
-  </artifact>
-</component>

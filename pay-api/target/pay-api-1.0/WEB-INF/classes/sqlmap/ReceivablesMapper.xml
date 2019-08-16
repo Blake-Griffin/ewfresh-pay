@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ewfresh.pay.dao.ReceivablesDao">
+  <resultMap id="BaseResultMap" type="com.ewfresh.pay.model.Receivables">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="pay_flow_id" jdbcType="BIGINT" property="payFlowId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="uname" jdbcType="VARCHAR" property="uname" />
+    <result column="financial_balance" jdbcType="DECIMAL" property="financialBalance" />
+    <result column="due_amout" jdbcType="DECIMAL" property="dueAmout" />
+    <result column="receive_time" jdbcType="TIMESTAMP" property="receiveTime" />
+    <result column="settle_fee" jdbcType="DECIMAL" property="settleFee" />
+    <result column="direction" jdbcType="TINYINT" property="direction" />
+    <result column="src_acc" jdbcType="VARCHAR" property="srcAcc" />
+    <result column="target_acc" jdbcType="VARCHAR" property="targetAcc" />
+    <result column="is_balance" jdbcType="TINYINT" property="isBalance" />
+    <result column="is_settle" jdbcType="TINYINT" property="isSettle" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="busi_no" jdbcType="VARCHAR" property="busiNo" />
+    <result column="is_induce" jdbcType="TINYINT" property="isInduce" />
+    <result column="busi_type" jdbcType="TINYINT" property="busiType" />
+    <result column="operator" jdbcType="VARCHAR" property="operator" />
+    <result column="desp" jdbcType="VARCHAR" property="desp" />
+    <result column="operate_time" jdbcType="TIMESTAMP" property="operateTime" />
+    <result column="last_modify_time" jdbcType="TIMESTAMP" property="lastModifyTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, pay_flow_id, user_id, uname, financial_balance, due_amout, receive_time, settle_fee, 
+    direction, src_acc, target_acc, is_balance, is_settle, amount, busi_no, is_induce, 
+    busi_type, operator, desp, operate_time, last_modify_time
+  </sql>
+  <insert id="addReceivables" parameterType="com.ewfresh.pay.model.Receivables">
+    insert into t_receivables
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="payFlowId != null">
+        pay_flow_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="uname != null">
+        uname,
+      </if>
+      <if test="financialBalance != null">
+        financial_balance,
+      </if>
+      <if test="dueAmout != null">
+        due_amout,
+      </if>
+      <if test="settleFee != null">
+        settle_fee,
+      </if>
+      <if test="direction != null">
+        direction,
+      </if>
+      <if test="srcAcc != null">
+        src_acc,
+      </if>
+      <if test="targetAcc != null">
+        target_acc,
+      </if>
+      <if test="isBalance != null">
+        is_balance,
+      </if>
+      <if test="isSettle != null">
+        is_settle,
+      </if>
+      <if test="amount != null">
+        amount,
+      </if>
+      <if test="busiNo != null">
+        busi_no,
+      </if>
+      <if test="isInduce != null">
+        is_induce,
+      </if>
+      <if test="busiType != null">
+        busi_type,
+      </if>
+      <if test="operator != null">
+        operator,
+      </if>
+      <if test="desp != null">
+        desp,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="payFlowId != null">
+        #{payFlowId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="uname != null">
+        #{uname,jdbcType=VARCHAR},
+      </if>
+      <if test="financialBalance != null">
+        #{financialBalance,jdbcType=DECIMAL},
+      </if>
+      <if test="dueAmout != null">
+        #{dueAmout,jdbcType=DECIMAL},
+      </if>
+      <if test="settleFee != null">
+        #{settleFee,jdbcType=DECIMAL},
+      </if>
+      <if test="direction != null">
+        #{direction,jdbcType=TINYINT},
+      </if>
+      <if test="srcAcc != null">
+        #{srcAcc,jdbcType=VARCHAR},
+      </if>
+      <if test="targetAcc != null">
+        #{targetAcc,jdbcType=VARCHAR},
+      </if>
+      <if test="isBalance != null">
+        #{isBalance,jdbcType=TINYINT},
+      </if>
+      <if test="isSettle != null">
+        #{isSettle,jdbcType=TINYINT},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="busiNo != null">
+        #{busiNo,jdbcType=VARCHAR},
+      </if>
+      <if test="isInduce != null">
+        #{isInduce,jdbcType=TINYINT},
+      </if>
+      <if test="busiType != null">
+        #{busiType,jdbcType=TINYINT},
+      </if>
+      <if test="operator != null">
+        #{operator,jdbcType=INTEGER},
+      </if>
+      <if test="desp != null">
+        #{desp,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+
+  <select id="getReceivablesByUid" resultMap="BaseResultMap">
+      SELECT
+          <include refid="Base_Column_List"/>
+      FROM
+          t_receivables
+      WHERE
+          user_id = #{uid}
+      ORDER BY id DESC
+          limit 1
+  </select>
+
+  <select id="getReceivablesListByUid" resultMap="BaseResultMap">
+      SELECT
+          id, uname, financial_balance,
+          due_amout, receive_time,
+          direction, amount, busi_no,
+          busi_type, desp
+      FROM
+          t_receivables
+      WHERE
+          user_id = #{uid}
+      <if test="explain != null and explain != '' ">
+          AND desp LIKE CONCAT(CONCAT('%', #{explain}), '%')
+      </if>
+      <if test="amount != null and amount != ''">
+          AND amount = #{amount}
+      </if>
+      <if test="endTime != null and endTime != '' and startTime != null and startTime != ''" >
+          AND  receive_time  BETWEEN #{startTime} AND #{endTime}
+      </if>
+      ORDER BY
+          id DESC
+  </select>
+
+  <select id="getReceivablesList" resultType="java.lang.Long">
+      SELECT
+          MAX(id)
+      FROM
+          t_receivables
+      <where>
+          <if test="uname != null and uname != ''">
+              uname = #{uname}
+          </if>
+          <if test="receiveTime != null and receiveTime != ''">
+              and receive_time  &lt;= #{receiveTime}
+          </if>
+      </where>
+      GROUP BY
+          user_id
+  </select>
+
+  <resultMap id="ReceivablesVo" type="com.ewfresh.pay.model.vo.ReceivablesVo" extends="BaseResultMap">
+
+  </resultMap>
+    <!--查询当前用户的财务余额详情-->
+  <select id="getReceivablesListByParm" resultMap="ReceivablesVo">
+      SELECT
+          <include refid="Base_Column_List" />
+      FROM
+          t_receivables
+      WHERE
+          id IN
+      <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+      </foreach>
+  </select>
+</mapper>

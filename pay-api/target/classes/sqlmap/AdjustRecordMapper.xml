@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ewfresh.pay.dao.AdjustRecordDao">
+  <resultMap id="BaseResultMap" type="com.ewfresh.pay.model.AdjustRecord">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="bar_id" jdbcType="INTEGER" property="barId" />
+    <result column="adjust_amount" jdbcType="DECIMAL" property="adjustAmount" />
+    <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="adjust_time" jdbcType="TIMESTAMP" property="adjustTime" />
+    <result column="quota_limit" jdbcType="DECIMAL" property="quotaLimit" />
+    <result column="appr_status" jdbcType="TINYINT" property="apprStatus" />
+    <result column="appr" jdbcType="INTEGER" property="appr" />
+    <result column="last_modify_time" jdbcType="TIMESTAMP" property="lastModifyTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, bar_id, adjust_amount, `type`, adjust_time, appr_status, appr,quota_limit, last_modify_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_adjust_record
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_adjust_record
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ewfresh.pay.model.AdjustRecord">
+    insert into t_adjust_record (bar_id, adjust_amount, `type`, 
+      adjust_time, appr_status, appr, 
+      last_modify_time)
+    values (#{barId,jdbcType=INTEGER}, #{adjustAmount,jdbcType=DECIMAL}, #{type,jdbcType=TINYINT}, 
+      #{adjustTime,jdbcType=TIMESTAMP}, #{apprStatus,jdbcType=TINYINT}, #{appr,jdbcType=INTEGER}, 
+      #{lastModifyTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ewfresh.pay.model.AdjustRecord">
+    insert into t_adjust_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="barId != null">
+        bar_id,
+      </if>
+      <if test="adjustAmount != null">
+        adjust_amount,
+      </if>
+      <if test="type != null">
+        `type`,
+      </if>
+      <if test="adjustTime != null">
+        adjust_time,
+      </if>
+       <if test="quotaLimit != null">
+        quota_limit,
+      </if>
+      <if test="apprStatus != null">
+        appr_status,
+      </if>
+      <if test="appr != null">
+        appr,
+      </if>
+      <if test="lastModifyTime != null">
+        last_modify_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="barId != null">
+        #{barId,jdbcType=INTEGER},
+      </if>
+      <if test="adjustAmount != null">
+        #{adjustAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=TINYINT},
+      </if>
+      <if test="adjustTime != null">
+        now(),
+      </if>
+      <if test="quotaLimit != null">
+        #{quotaLimit,jdbcType=DECIMAL},
+      </if>
+      <if test="apprStatus != null">
+        #{apprStatus,jdbcType=TINYINT},
+      </if>
+      <if test="appr != null">
+        #{appr,jdbcType=INTEGER},
+      </if>
+      <if test="lastModifyTime != null">
+        now(),
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ewfresh.pay.model.AdjustRecord">
+    update t_adjust_record
+    <set>
+      <if test="barId != null">
+        bar_id = #{barId,jdbcType=INTEGER},
+      </if>
+      <if test="adjustAmount != null">
+        adjust_amount = #{adjustAmount,jdbcType=DECIMAL},
+      </if>
+       <if test="quotaLimit != null">
+        quota_limit = #{quotaLimit,jdbcType=DECIMAL},
+      </if>
+      <if test="type != null">
+        `type` = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="adjustTime != null">
+        adjust_time = now(),
+      </if>
+      <if test="apprStatus != null">
+        appr_status = #{apprStatus,jdbcType=TINYINT},
+      </if>
+      <if test="appr != null">
+        appr = #{appr,jdbcType=INTEGER},
+      </if>
+      <if test="lastModifyTime != null">
+        last_modify_time = now(),
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <!--修改状态-->
+  <update id="updateApprStatus" parameterType="com.ewfresh.pay.model.AdjustRecord">
+    update t_adjust_record
+    set
+      appr_status = #{apprStatus,jdbcType=DECIMAL}
+    where id = #{recordId,jdbcType=INTEGER}
+  </update>
+</mapper>

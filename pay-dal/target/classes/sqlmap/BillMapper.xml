@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ewfresh.pay.dao.BillDao">
+    <resultMap id="BaseResultMap" type="com.ewfresh.pay.model.Bill">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="bill_flow" jdbcType="VARCHAR" property="billFlow"/>
+        <result column="bill_amount" jdbcType="DECIMAL" property="billAmount"/>
+        <result column="repaid_amount" jdbcType="DECIMAL" property="repaidAmount"/>
+        <result column="total_interest" jdbcType="DECIMAL" property="totalInterest"/>
+        <result column="repaid_interest" jdbcType="DECIMAL" property="repaidInterest"/>
+        <result column="bill_time" jdbcType="DATE" property="billTime"/>
+        <result column="last_repaid_time" jdbcType="TIMESTAMP" property="lastRepaidTime"/>
+        <result column="bill_status" jdbcType="TINYINT" property="billStatus"/>
+        <result column="last_modify_time" jdbcType="TIMESTAMP" property="lastModifyTime"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="uname" jdbcType="VARCHAR" property="uname"/>
+        <result column="create_time" jdbcType="VARCHAR" property="creatTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, bill_flow, bill_amount, repaid_amount, total_interest, repaid_interest, bill_time, 
+    last_repaid_time, bill_status, last_modify_time, user_id, uname
+  </sql>
+    <sql id="Base_Columns_List">
+        id, bill_flow, bill_amount, repaid_amount,(bill_amount-repaid_amount) as  payableAmount,
+        total_interest, repaid_interest,(total_interest-repaid_interest) as payableInterest,
+        DATE_FORMAT(bill_time,'%Y-%m-%d') as bill_time,uname,user_id,
+        DATE_FORMAT(last_repaid_time,'%Y-%m-%d')  as last_repaid_time, bill_status, last_modify_time,
+        datediff( CURDATE(),DATE_FORMAT(last_repaid_time,'%Y-%m-%d')) as
+        overduedays,((total_interest - repaid_interest) + (bill_amount - repaid_amount)) as totalSum
+        ,(total_interest + bill_amount) as historicalTotalSum
+    </sql>
+    <!--根据账单批次号查询用户id  gyq-->
+    <select id="getUidByBillFlow" parameterType="java.lang.String" resultType="java.util.Map">
+        select
+        b.uid
+        from t_bill a LEFT JOIN t_bar_deal_flow b on a.bill_flow = b.bill_flow
+        where a.bill_flow = #{billFlow,jdbcType=VARCHAR}
+        limit 1
+    </select>
+    <!--获取账单  gyq-->
+    <select id="getWhiteBillByUid" parameterType="java.util.Map" resultMap="BillVo">
+        SELECT
+        <include refid="Base_Columns_List"/>
+        FROM
+        t_bill
+        WHERE 1=1
+        <if test="uid != null and uid !=''">
+            and user_id = #{uid,jdbcType=BIGINT}
+        </if>
+        <if test="billStatus != null ">
+            and bill_status in
+            <foreach collection="billStatus" item="billStatus" index="index" open="(" close=")" separator=",">
+                #{billStatus}
+            </foreach>
+        </if>
+        <if test="billTime != null and billTime !=''">
+            and bill_time = #{billTime}
+        </if>
+        <if test="startRepaidTime != null and startRepaidTime !=''">
+            and last_repaid_time <![CDATA[>=]]> #{startRepaidTime}
+        </if>
+        <if test="endRepaidTime != null and endRepaidTime !=''">
+            and last_repaid_time <![CDATA[<=]]> #{endRepaidTime}
+        </if>
+        <if test="uname != null and uname !=''">
+            and uname = #{uname}
+        </if>
+        order by id
+    </select>
+    <!--根据用户id获取还款账期 gyq-->
+    <select id="getperiod" parameterType="java.lang.Long" resultType="java.util.Map">
+    select
+    DISTINCT a.period
+    from t_white_bar a LEFT JOIN t_bar_deal_flow b on a.uid = b.uid
+    where b.uid = #{uid,jdbcType=TINYINT}
+  </select>
+    <!--得到未还款账单 gyq-->
+    <select id="getByRecordingTime" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_bill
+        where bill_status = 1 OR bill_status = 3
+        ORDER BY id
+    </select>
+    <!--根据用户id查询 账单 gyq-->
+    <select id="getBillByUid" parameterType="java.lang.Long" resultMap="BillVo">
+        select
+        <include refid="Base_Column_List"/>
+        from t_bill
+        where user_id = #{uid,jdbcType=BIGINT}
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_bill
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_bill
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ewfresh.pay.model.Bill"
+            useGeneratedKeys="true">
+    insert into t_bill (bill_flow, bill_amount, repaid_amount, 
+      total_interest, repaid_interest, bill_time, 
+      last_repaid_time, bill_status
+      )
+    values (#{billFlow,jdbcType=VARCHAR}, #{billAmount,jdbcType=DECIMAL}, #{repaidAmount,jdbcType=DECIMAL}, 
+      #{totalInterest,jdbcType=DECIMAL}, #{repaidInterest,jdbcType=DECIMAL}, #{billTime,jdbcType=DATE}, 
+      #{lastRepaidTime,jdbcType=TIMESTAMP}, #{billStatus,jdbcType=TINYINT}
+      )
+  </insert>
+    <!--新增账单 gyq-->
+    <insert id="addBill" keyColumn="id" keyProperty="id" parameterType="com.ewfresh.pay.model.Bill"
+            useGeneratedKeys="true">
+        insert into t_bill
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="billFlow != null">
+                bill_flow,
+            </if>
+            <if test="billAmount != null">
+                bill_amount,
+            </if>
+            <if test="repaidAmount != null">
+                repaid_amount,
+            </if>
+            <if test="totalInterest != null">
+                total_interest,
+            </if>
+            <if test="repaidInterest != null">
+                repaid_interest,
+            </if>
+            <if test="billTime != null">
+                bill_time,
+            </if>
+            <if test="lastRepaidTime != null">
+                last_repaid_time,
+            </if>
+            <if test="billStatus != null">
+                bill_status,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="uname != null">
+                uname,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="billFlow != null">
+                #{billFlow,jdbcType=VARCHAR},
+            </if>
+            <if test="billAmount != null">
+                #{billAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="repaidAmount != null">
+                #{repaidAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="totalInterest != null">
+                #{totalInterest,jdbcType=DECIMAL},
+            </if>
+            <if test="repaidInterest != null">
+                #{repaidInterest,jdbcType=DECIMAL},
+            </if>
+            <if test="billTime != null">
+                #{billTime,jdbcType=DATE},
+            </if>
+            <if test="lastRepaidTime != null">
+                #{lastRepaidTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="billStatus != null">
+                #{billStatus,jdbcType=TINYINT},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="uname != null">
+                #{uname,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <!--更新账单 gyq-->
+    <update id="updateBillSelective" parameterType="com.ewfresh.pay.model.Bill">
+        update t_bill
+        <set>
+            <if test="billFlow != null">
+                bill_flow = #{billFlow,jdbcType=VARCHAR},
+            </if>
+            <if test="billAmount != null">
+                bill_amount = #{billAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="repaidAmount != null">
+                repaid_amount = #{repaidAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="totalInterest != null">
+                total_interest = #{totalInterest,jdbcType=DECIMAL},
+            </if>
+            <if test="repaidInterest != null">
+                repaid_interest = #{repaidInterest,jdbcType=DECIMAL},
+            </if>
+            <if test="billTime != null">
+                bill_time = #{billTime,jdbcType=DATE},
+            </if>
+            <if test="lastRepaidTime != null">
+                last_repaid_time = #{lastRepaidTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="billStatus != null">
+                bill_status = #{billStatus,jdbcType=TINYINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.ewfresh.pay.model.Bill">
+    update t_bill
+    set bill_flow = #{billFlow,jdbcType=VARCHAR},
+      bill_amount = #{billAmount,jdbcType=DECIMAL},
+      repaid_amount = #{repaidAmount,jdbcType=DECIMAL},
+      total_interest = #{totalInterest,jdbcType=DECIMAL},
+      repaid_interest = #{repaidInterest,jdbcType=DECIMAL},
+      bill_time = #{billTime,jdbcType=DATE},
+      last_repaid_time = #{lastRepaidTime,jdbcType=TIMESTAMP},
+      bill_status = #{billStatus,jdbcType=TINYINT},
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <select id="getBillByBillId" resultMap="BillVo">
+        select
+        <include refid="Base_Column_List"/>
+        from t_bill
+        where id = #{billId,jdbcType=INTEGER}
+    </select>
+    <select id="getBillByBillFlow" resultMap="BillVo">
+        select
+        <include refid="Base_Column_List"/>
+        from t_bill
+        where bill_flow = #{billFlow,jdbcType=VARCHAR}
+    </select>
+
+    <resultMap id="BillVo" type="com.ewfresh.pay.model.vo.BillVo" extends="BaseResultMap">
+        <result column="overdueMeg" property="overdueMeg" jdbcType="TINYINT"/>
+        <result column="payableAmount" property="payableAmount" jdbcType="DECIMAL"/>
+        <result column="payableInterest" property="payableInterest" jdbcType="DECIMAL"/>
+        <result column="overdueDays" property="overdueDays" jdbcType="BIGINT"/>
+        <result column="totalSum" property="totalSum" javaType="DECIMAL"/>
+        <result column="historicalTotalSum" property="historicalTotalSum" javaType="DECIMAL"/>
+    </resultMap>
+
+    <delete id="delBill" parameterType="string">
+    delete from t_bill
+    where bill_flow = #{billFlow,jdbcType=VARCHAR}
+  </delete>
+
+    <!--批量更新t_bill   gyq-->
+    <update id="batchUpdateBill" parameterType="java.util.List">
+        <foreach collection="list" item="bills" index="index" open="" close="" separator=";">
+            update t_bill
+            <set>
+                <if test="bills.billFlow != null">
+                    bill_flow = #{bills.billFlow,jdbcType=VARCHAR},
+                </if>
+                <if test="bills.billAmount != null">
+                    bill_amount = #{bills.billAmount,jdbcType=DECIMAL},
+                </if>
+                <if test="bills.repaidAmount != null">
+                    repaid_amount = #{bills.repaidAmount,jdbcType=DECIMAL},
+                </if>
+                <if test="bills.totalInterest != null">
+                    total_interest = #{bills.totalInterest,jdbcType=DECIMAL},
+                </if>
+                <if test="bills.repaidInterest != null">
+                    repaid_interest = #{bills.repaidInterest,jdbcType=DECIMAL},
+                </if>
+                <if test="bills.billTime != null">
+                    bill_time = #{bills.billTime,jdbcType=DATE},
+                </if>
+                <if test="bills.lastRepaidTime != null">
+                    last_repaid_time = #{bills.lastRepaidTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="bills.billStatus != null">
+                    bill_status = #{bills.billStatus,jdbcType=TINYINT},
+                </if>
+            </set>
+            where id = #{bills.id,jdbcType=INTEGER}
+        </foreach>
+    </update>
+
+    <resultMap id="AutoRepayVo" type="com.ewfresh.pay.model.vo.AutoRepayBillVo" extends="BaseResultMap">
+
+    </resultMap>
+
+    <!--DXM 根据用户ID获取用户超时未还款的账单-->
+    <select id="getOvertimeBills"  resultMap="AutoRepayVo">
+        SELECT
+            tb.id, tb.bill_flow, tb.bill_amount, tb.repaid_amount, tb.total_interest, tb.repaid_interest, tb.bill_time,
+            tb.last_repaid_time, tb.bill_status, tb.last_modify_time, tb.user_id, tb.uname
+        FROM
+            t_bill tb
+            LEFT JOIN t_white_bar tbw ON tb.user_id = tbw.uid
+        WHERE
+            tb.user_id = #{uid}
+        AND tb.bill_status IN (1,3)
+        AND DATE_FORMAT(now(),'%Y-%m-%d') &gt; ( tb.bill_time + INTERVAL tbw.period DAY )
+        ORDER BY tb.id
+    </select>
+    <!--  根据账单批次号查询账单  -->
+    <select id="getBillBybillFlow" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        t_bill
+        where
+        bill_flow = #{billFlow,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateBills" >
+        <foreach collection="list" item="bills" index="index" open="" close="" separator=";">
+            UPDATE t_bill
+            <set>
+                <if test="bills.repaidAmount != null">
+                    repaid_amount = #{bills.repaidAmount,jdbcType=DECIMAL},
+                </if>
+                <if test="bills.repaidInterest != null">
+                    repaid_interest = #{bills.repaidInterest,jdbcType=DECIMAL},
+                </if>
+                <if test="bills.billStatus != null">
+                    bill_status = #{bills.billStatus,jdbcType=TINYINT},
+                </if>
+            </set>
+            WHERE id = #{bills.id,jdbcType=INTEGER}
+        </foreach>
+    </update>
+    <!-- hby 根据uid 查询未还款账单-->
+    <select id="getBillsByUid" parameterType="java.lang.Long" resultMap="BillVo">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_bill
+        WHERE user_id = #{uid}
+        AND bill_status NOT IN
+        (2,4,5)
+    </select>
+</mapper>

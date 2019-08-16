@@ -6,22 +6,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="pay-api" />
         <module name="pay-commons" />
-        <module name="pay-dal" />
-        <module name="pay-manager" />
-        <module name="pay-web" />
         <module name="pay-worker" />
+        <module name="pay-dal" />
+        <module name="pay-web" />
+        <module name="pay-manager" />
+        <module name="pay-api" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="ewfresh-pay" target="1.5" />
-      <module name="pay-api" target="1.7" />
-      <module name="pay-commons" target="1.7" />
-      <module name="pay-dal" target="1.7" />
-      <module name="pay-manager" target="1.7" />
-      <module name="pay-web" target="1.7" />
-      <module name="pay-worker" target="1.7" />
-    </bytecodeTargetLevel>
   </component>
 </project>

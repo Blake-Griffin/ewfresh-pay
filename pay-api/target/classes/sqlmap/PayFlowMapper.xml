@@ -1,0 +1,1508 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ewfresh.pay.dao.PayFlowDao">
+    <resultMap id="BaseResultMap" type="com.ewfresh.pay.model.PayFlow">
+        <id column="pay_flow_id" property="payFlowId" jdbcType="INTEGER"/>
+        <result column="order_id" property="orderId" jdbcType="BIGINT"/>
+        <result column="channel_flow_id" property="channelFlowId" jdbcType="VARCHAR"/>
+        <result column="payer_id" property="payerId" jdbcType="VARCHAR"/>
+        <result column="payer_name" property="payerName" jdbcType="VARCHAR"/>
+        <result column="payer_pay_amount" property="payerPayAmount" jdbcType="DECIMAL"/>
+        <result column="payer_fee" property="payerFee" jdbcType="DECIMAL"/>
+        <result column="receiver_user_id" property="receiverUserId" jdbcType="VARCHAR"/>
+        <result column="receiver_name" property="receiverName" jdbcType="VARCHAR"/>
+        <result column="receiver_fee" property="receiverFee" jdbcType="DECIMAL"/>
+        <result column="order_ip" property="orderIp" jdbcType="VARCHAR"/>
+        <result column="order_referer_url" property="orderRefererUrl" jdbcType="VARCHAR"/>
+        <result column="order_amount" property="orderAmount" jdbcType="DECIMAL"/>
+        <result column="plat_income" property="platIncome" jdbcType="DECIMAL"/>
+        <result column="fee_rate" property="feeRate" jdbcType="DECIMAL"/>
+        <result column="channel_code" property="channelCode" jdbcType="VARCHAR"/>
+        <result column="channel_name" property="channelName" jdbcType="VARCHAR"/>
+        <result column="type_code" property="typeCode" jdbcType="VARCHAR"/>
+        <result column="type_name" property="typeName" jdbcType="VARCHAR"/>
+        <result column="success_time" property="successTime" jdbcType="TIMESTAMP"/>
+        <result column="complete_time" property="completeTime" jdbcType="TIMESTAMP"/>
+        <result column="is_refund" property="isRefund" jdbcType="TINYINT"/>
+        <result column="trade_type" property="tradeType" jdbcType="TINYINT"/>
+        <result column="return_info" property="returnInfo" jdbcType="VARCHAR"/>
+        <result column="is_blc" property="isBlc" jdbcType="TINYINT"/>
+        <result column="blc_time" property="blcTime" jdbcType="TIMESTAMP"/>
+        <result column="status" property="status" jdbcType="TINYINT"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="desp" property="desp" jdbcType="VARCHAR"/>
+        <result column="interaction_id" property="interactionId" jdbcType="VARCHAR"/>
+        <result column="channel_type" property="channelType" jdbcType="VARCHAR"/>
+        <result column="return_flow_id" property="returnFlowId" jdbcType="VARCHAR"/>
+	    <result column="payer_type" property="payerType" jdbcType="TINYINT"/>
+	    <result column="receiver_type" property="receiverType" jdbcType="TINYINT"/>
+	    <result column="shop_id" property="shopId" jdbcType="INTEGER"/>
+	    <result column="order_status" property="orderStatus" jdbcType="TINYINT"/>
+	    <result column="settle_status" property="settleStatus" jdbcType="TINYINT"/>
+	    <result column="uname" property="uname" jdbcType="VARCHAR"/>
+	    <result column="mid" property="mid" jdbcType="VARCHAR"/>
+	    <result column="tid" property="tid" jdbcType="VARCHAR"/>
+        <result column="shop_benefit_percent" property="shopBenefitPercent" jdbcType="INTEGER"/>
+        <result column="shop_benefit_money" property="shopBenefitMoney" jdbcType="DECIMAL"/>
+        <result column="freight" property="freight" jdbcType="DECIMAL"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        pay_flow_id, order_id, channel_flow_id, payer_id, payer_name, payer_pay_amount, payer_fee,
+        receiver_user_id, receiver_name, receiver_fee, order_ip, order_referer_url, order_amount,
+        plat_income, fee_rate, channel_code, channel_name, type_code, type_name, success_time,
+        complete_time, is_refund, trade_type, return_info, is_blc, blc_time, status, create_time,
+        desp, interaction_id, channel_type, return_flow_id, payer_type, receiver_type, uname, mid, tid,
+        shop_benefit_percent,shop_benefit_money,freight
+    </sql>
+
+    <select id="getPayFlowById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from t_pay_flow
+        where channel_flow_id = #{channelFlowId,jdbcType=VARCHAR}
+    </select>
+
+    <delete id="delPayFlowById" parameterType="java.lang.Integer">
+        delete from t_pay_flow
+        where pay_flow_id = #{payFlowId,jdbcType=INTEGER}
+    </delete>
+
+    <!--批量插入流水-->
+    <insert id="addBatch" useGeneratedKeys="true" keyProperty="payFlowId" keyColumn="pay_flow_id">
+        <foreach collection="list" item="item" index="index" separator=";">
+            INSERT INTO t_pay_flow
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="item.orderId != null">
+                    order_id,
+                </if>
+                <if test="item.channelFlowId != null">
+                    channel_flow_id,
+                </if>
+                <if test="item.payerId != null">
+                    payer_id,
+                </if>
+                <if test="item.payerName != null">
+                    payer_name,
+                </if>
+                <if test="item.payerPayAmount != null">
+                    payer_pay_amount,
+                </if>
+                <if test="item.payerFee != null">
+                    payer_fee,
+                </if>
+                <if test="item.receiverUserId != null">
+                    receiver_user_id,
+                </if>
+                <if test="item.receiverName != null">
+                    receiver_name,
+                </if>
+                <if test="item.receiverFee != null">
+                    receiver_fee,
+                </if>
+                <if test="item.orderIp != null">
+                    order_ip,
+                </if>
+                <if test="item.orderRefererUrl != null">
+                    order_referer_url,
+                </if>
+                <if test="item.orderAmount != null">
+                    order_amount,
+                </if>
+                <if test="item.platIncome != null">
+                    plat_income,
+                </if>
+                <if test="item.feeRate != null">
+                    fee_rate,
+                </if>
+                <if test="item.channelCode != null">
+                    channel_code,
+                </if>
+                <if test="item.channelName != null">
+                    channel_name,
+                </if>
+                <if test="item.typeCode != null">
+                    type_code,
+                </if>
+                <if test="item.typeName != null">
+                    type_name,
+                </if>
+                <if test="item.successTime != null">
+                    success_time,
+                </if>
+                <if test="item.completeTime != null">
+                    complete_time,
+                </if>
+                <if test="item.isRefund != null">
+                    is_refund,
+                </if>
+                <if test="item.tradeType != null">
+                    trade_type,
+                </if>
+                <if test="item.returnInfo != null">
+                    return_info,
+                </if>
+                <if test="item.isBlc != null">
+                    is_blc,
+                </if>
+                <if test="item.blcTime != null">
+                    blc_time,
+                </if>
+                <if test="item.status != null">
+                    status,
+                </if>
+                <if test="item.createTime != null">
+                    create_time,
+                </if>
+                <if test="item.desp != null">
+                    desp,
+                </if>
+                <if test="item.interactionId != null">
+                    interaction_id,
+                </if>
+                <if test="item.channelType != null">
+                    channel_type,
+                </if>
+                <if test="item.returnFlowId != null">
+                    return_flow_id,
+                </if>
+	            <if test="item.payerType != null">
+		            payer_type,
+	            </if>
+	            <if test="item.receiverType != null">
+		            receiver_type,
+	            </if>
+	            <if test="item.uname != null">
+		            uname,
+	            </if>
+                <if test="item.shopId != null">
+                    shop_id,
+                </if>
+                <!--新增2019年6月27日10:09:58店铺分润和运费-->
+                <if test="item.mid != null">
+                    mid,
+                </if>
+                <if test="item.tid != null">
+                    tid,
+                </if>
+                <if test="item.shopBenefitPercent != null">
+                    shop_benefit_percent,
+                </if>
+                <if test="item.shopBenefitMoney != null">
+                    shop_benefit_money,
+                </if>
+                <if test="item.freight != null">
+                    freight,
+                </if>
+            </trim>
+            <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="item.orderId != null">
+                    #{item.orderId,jdbcType=BIGINT},
+                </if>
+                <if test="item.channelFlowId != null">
+                    #{item.channelFlowId,jdbcType=VARCHAR},
+                </if>
+                <if test="item.payerId != null">
+                    #{item.payerId,jdbcType=VARCHAR},
+                </if>
+                <if test="item.payerName != null">
+                    #{item.payerName,jdbcType=VARCHAR},
+                </if>
+                <if test="item.payerPayAmount != null">
+                    #{item.payerPayAmount,jdbcType=DECIMAL},
+                </if>
+                <if test="item.payerFee != null">
+                    #{item.payerFee,jdbcType=DECIMAL},
+                </if>
+                <if test="item.receiverUserId != null">
+                    #{item.receiverUserId,jdbcType=VARCHAR},
+                </if>
+                <if test="item.receiverName != null">
+                    #{item.receiverName,jdbcType=VARCHAR},
+                </if>
+                <if test="item.receiverFee != null">
+                    #{item.receiverFee,jdbcType=DECIMAL},
+                </if>
+                <if test="item.orderIp != null">
+                    #{item.orderIp,jdbcType=VARCHAR},
+                </if>
+                <if test="item.orderRefererUrl != null">
+                    #{item.orderRefererUrl,jdbcType=VARCHAR},
+                </if>
+                <if test="item.orderAmount != null">
+                    #{item.orderAmount,jdbcType=DECIMAL},
+                </if>
+                <if test="item.platIncome != null">
+                    #{item.platIncome,jdbcType=DECIMAL},
+                </if>
+                <if test="item.feeRate != null">
+                    #{item.feeRate,jdbcType=DECIMAL},
+                </if>
+                <if test="item.channelCode != null">
+                    #{item.channelCode,jdbcType=VARCHAR},
+                </if>
+                <if test="item.channelName != null">
+                    #{item.channelName,jdbcType=VARCHAR},
+                </if>
+                <if test="item.typeCode != null">
+                    #{item.typeCode,jdbcType=VARCHAR},
+                </if>
+                <if test="item.typeName != null">
+                    #{item.typeName,jdbcType=VARCHAR},
+                </if>
+                <if test="item.successTime != null">
+                    #{item.successTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="item.completeTime != null">
+                    #{item.completeTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="item.isRefund != null">
+                    #{item.isRefund,jdbcType=TINYINT},
+                </if>
+                <if test="item.tradeType != null">
+                    #{item.tradeType,jdbcType=TINYINT},
+                </if>
+                <if test="item.returnInfo != null">
+                    #{item.returnInfo,jdbcType=VARCHAR},
+                </if>
+                <if test="item.isBlc != null">
+                    #{item.isBlc,jdbcType=TINYINT},
+                </if>
+                <if test="item.blcTime != null">
+                    #{item.blcTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="item.status != null">
+                    #{item.status,jdbcType=TINYINT},
+                </if>
+                <if test="item.createTime != null">
+                    #{item.createTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="item.desp != null">
+                    #{item.desp,jdbcType=VARCHAR},
+                </if>
+                <if test="item.interactionId != null">
+                    #{item.interactionId,jdbcType=VARCHAR},
+                </if>
+                <if test="item.channelType != null">
+                    #{item.channelType,jdbcType=VARCHAR},
+                </if>
+                <if test="item.returnFlowId != null">
+                    #{item.returnFlowId,jdbcType=VARCHAR},
+                </if>
+	            <if test="item.payerType != null">
+		            #{item.payerType,jdbcType=TINYINT},
+	            </if>
+	            <if test="item.receiverType != null">
+		            #{item.receiverType,jdbcType=TINYINT},
+	            </if>
+	            <if test="item.uname != null">
+		            #{item.uname,jdbcType=VARCHAR},
+	            </if>
+                <if test="item.shopId != null">
+                    #{item.shopId},
+                </if>
+                <!--新增2019年6月27日10:09:58店铺分润和运费-->
+                <if test="item.mid != null">
+                    #{item.mid},
+                </if>
+                <if test="item.tid != null">
+                    #{item.tid},
+                </if>
+                <if test="item.shopBenefitPercent != null">
+                    #{item.shopBenefitPercent},
+                </if>
+                <if test="item.shopBenefitMoney != null">
+                    #{item.shopBenefitMoney},
+                </if>
+                <if test="item.freight != null">
+                    #{item.freight},
+                </if>
+            </trim>
+        </foreach>
+    </insert>
+
+    <insert id="addPayFlows" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="payFlowId">
+        <foreach collection="list" item="item" index="index" separator=";">
+            INSERT INTO t_pay_flow
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="item.orderId != null">
+                    order_id,
+                </if>
+                <if test="item.channelFlowId != null">
+                    channel_flow_id,
+                </if>
+                <if test="item.payerId != null">
+                    payer_id,
+                </if>
+                <if test="item.payerName != null">
+                    payer_name,
+                </if>
+                <if test="item.payerPayAmount != null">
+                    payer_pay_amount,
+                </if>
+                <if test="item.payerFee != null">
+                    payer_fee,
+                </if>
+                <if test="item.receiverUserId != null">
+                    receiver_user_id,
+                </if>
+                <if test="item.receiverName != null">
+                    receiver_name,
+                </if>
+                <if test="item.receiverFee != null">
+                    receiver_fee,
+                </if>
+                <if test="item.orderIp != null">
+                    order_ip,
+                </if>
+                <if test="item.orderRefererUrl != null">
+                    order_referer_url,
+                </if>
+                <if test="item.orderAmount != null">
+                    order_amount,
+                </if>
+                <if test="item.platIncome != null">
+                    plat_income,
+                </if>
+                <if test="item.feeRate != null">
+                    fee_rate,
+                </if>
+                <if test="item.channelCode != null">
+                    channel_code,
+                </if>
+                <if test="item.channelName != null">
+                    channel_name,
+                </if>
+                <if test="item.typeCode != null">
+                    type_code,
+                </if>
+                <if test="item.typeName != null">
+                    type_name,
+                </if>
+                <if test="item.successTime != null">
+                    success_time,
+                </if>
+                <if test="item.completeTime != null">
+                    complete_time,
+                </if>
+                <if test="item.isRefund != null">
+                    is_refund,
+                </if>
+                <if test="item.tradeType != null">
+                    trade_type,
+                </if>
+                <if test="item.returnInfo != null">
+                    return_info,
+                </if>
+                <if test="item.isBlc != null">
+                    is_blc,
+                </if>
+                <if test="item.blcTime != null">
+                    blc_time,
+                </if>
+                <if test="item.status != null">
+                    status,
+                </if>
+                <if test="item.createTime != null">
+                    create_time,
+                </if>
+                <if test="item.desp != null">
+                    desp,
+                </if>
+                <if test="item.interactionId != null">
+                    interaction_id,
+                </if>
+                <if test="item.channelType != null">
+                    channel_type,
+                </if>
+                <if test="item.returnFlowId != null">
+                    return_flow_id,
+                </if>
+                <if test="item.payerType != null">
+                    payer_type,
+                </if>
+                <if test="item.receiverType != null">
+                    receiver_type,
+                </if>
+                <if test="item.uname != null">
+                    uname,
+                </if>
+                <if test="item.orderStatus != null">
+                    order_status,
+                </if>
+                <if test="item.shopId != null">
+                    shop_id,
+                </if>
+                <if test="item.mid != null">
+                    mid,
+                </if>
+                <if test="item.tid != null">
+                    tid,
+                </if>
+                <if test="item.shopBenefitPercent != null">
+                    shop_benefit_percent,
+                </if>
+                <if test="item.shopBenefitMoney != null">
+                    shop_benefit_money,
+                </if>
+                <if test="item.freight != null">
+                    freight,
+                </if>
+            </trim>
+            <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="item.orderId != null">
+                    #{item.orderId,jdbcType=BIGINT},
+                </if>
+                <if test="item.channelFlowId != null">
+                    #{item.channelFlowId,jdbcType=VARCHAR},
+                </if>
+                <if test="item.payerId != null">
+                    #{item.payerId,jdbcType=VARCHAR},
+                </if>
+                <if test="item.payerName != null">
+                    #{item.payerName,jdbcType=VARCHAR},
+                </if>
+                <if test="item.payerPayAmount != null">
+                    #{item.payerPayAmount,jdbcType=DECIMAL},
+                </if>
+                <if test="item.payerFee != null">
+                    #{item.payerFee,jdbcType=DECIMAL},
+                </if>
+                <if test="item.receiverUserId != null">
+                    #{item.receiverUserId,jdbcType=VARCHAR},
+                </if>
+                <if test="item.receiverName != null">
+                    #{item.receiverName,jdbcType=VARCHAR},
+                </if>
+                <if test="item.receiverFee != null">
+                    #{item.receiverFee,jdbcType=DECIMAL},
+                </if>
+                <if test="item.orderIp != null">
+                    #{item.orderIp,jdbcType=VARCHAR},
+                </if>
+                <if test="item.orderRefererUrl != null">
+                    #{item.orderRefererUrl,jdbcType=VARCHAR},
+                </if>
+                <if test="item.orderAmount != null">
+                    #{item.orderAmount,jdbcType=DECIMAL},
+                </if>
+                <if test="item.platIncome != null">
+                    #{item.platIncome,jdbcType=DECIMAL},
+                </if>
+                <if test="item.feeRate != null">
+                    #{item.feeRate,jdbcType=DECIMAL},
+                </if>
+                <if test="item.channelCode != null">
+                    #{item.channelCode,jdbcType=VARCHAR},
+                </if>
+                <if test="item.channelName != null">
+                    #{item.channelName,jdbcType=VARCHAR},
+                </if>
+                <if test="item.typeCode != null">
+                    #{item.typeCode,jdbcType=VARCHAR},
+                </if>
+                <if test="item.typeName != null">
+                    #{item.typeName,jdbcType=VARCHAR},
+                </if>
+                <if test="item.successTime != null">
+                    #{item.successTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="item.completeTime != null">
+                    #{item.completeTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="item.isRefund != null">
+                    #{item.isRefund,jdbcType=TINYINT},
+                </if>
+                <if test="item.tradeType != null">
+                    #{item.tradeType,jdbcType=TINYINT},
+                </if>
+                <if test="item.returnInfo != null">
+                    #{item.returnInfo,jdbcType=VARCHAR},
+                </if>
+                <if test="item.isBlc != null">
+                    #{item.isBlc,jdbcType=TINYINT},
+                </if>
+                <if test="item.blcTime != null">
+                    #{item.blcTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="item.status != null">
+                    #{item.status,jdbcType=TINYINT},
+                </if>
+                <if test="item.createTime != null">
+                    #{item.createTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="item.desp != null">
+                    #{item.desp,jdbcType=VARCHAR},
+                </if>
+                <if test="item.interactionId != null">
+                    #{item.interactionId,jdbcType=VARCHAR},
+                </if>
+                <if test="item.channelType != null">
+                    #{item.channelType,jdbcType=VARCHAR},
+                </if>
+                <if test="item.returnFlowId != null">
+                    #{item.returnFlowId,jdbcType=VARCHAR},
+                </if>
+                <if test="item.payerType != null">
+                    #{item.payerType},
+                </if>
+                <if test="item.receiverType != null">
+                    #{item.receiverType},
+                </if>
+                <if test="item.uname != null">
+                    #{item.uname},
+                </if>
+                <if test="item.orderStatus != null">
+                    #{item.orderStatusd},
+                </if>
+                <if test="item.shopId != null">
+                    #{item.shopId},
+                </if>
+                <if test="item.mid != null">
+                    #{item.mid},
+                </if>
+                <if test="item.tid != null">
+                    #{item.tid},
+                </if>
+                <if test="item.shopBenefitPercent != null">
+                    #{item.shopBenefitPercent},
+                </if>
+                <if test="item.shopBenefitMoney != null">
+                    #{item.shopBenefitMoney},
+                </if>
+                <if test="item.freight != null">
+                    #{item.freight},
+                </if>
+            </trim>
+        </foreach>
+    </insert>
+    <insert id="addPayFlow" parameterType="com.ewfresh.pay.model.PayFlow" useGeneratedKeys="true" keyProperty="payFlowId" keyColumn="pay_flow_id">
+        INSERT INTO t_pay_flow
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">
+                order_id,
+            </if>
+            <if test="channelFlowId != null">
+                channel_flow_id,
+            </if>
+            <if test="payerId != null">
+                payer_id,
+            </if>
+            <if test="payerName != null">
+                payer_name,
+            </if>
+            <if test="payerPayAmount != null">
+                payer_pay_amount,
+            </if>
+            <if test="payerFee != null">
+                payer_fee,
+            </if>
+            <if test="receiverUserId != null">
+                receiver_user_id,
+            </if>
+            <if test="receiverName != null">
+                receiver_name,
+            </if>
+            <if test="receiverFee != null">
+                receiver_fee,
+            </if>
+            <if test="orderIp != null">
+                order_ip,
+            </if>
+            <if test="orderRefererUrl != null">
+                order_referer_url,
+            </if>
+            <if test="orderAmount != null">
+                order_amount,
+            </if>
+            <if test="platIncome != null">
+                plat_income,
+            </if>
+            <if test="feeRate != null">
+                fee_rate,
+            </if>
+            <if test="channelCode != null">
+                channel_code,
+            </if>
+            <if test="channelName != null">
+                channel_name,
+            </if>
+            <if test="typeCode != null">
+                type_code,
+            </if>
+            <if test="typeName != null">
+                type_name,
+            </if>
+            <if test="successTime != null">
+                success_time,
+            </if>
+            <if test="completeTime != null">
+                complete_time,
+            </if>
+            <if test="isRefund != null">
+                is_refund,
+            </if>
+            <if test="tradeType != null">
+                trade_type,
+            </if>
+            <if test="returnInfo != null">
+                return_info,
+            </if>
+            <if test="isBlc != null">
+                is_blc,
+            </if>
+            <if test="blcTime != null">
+                blc_time,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="desp != null">
+                desp,
+            </if>
+            <if test="channelType != null">
+                channel_type,
+            </if>
+            <if test="interactionId != null">
+                interaction_id,
+            </if>
+            <if test="returnFlowId != null">
+                return_flow_id,
+            </if>
+            <if test="payerType != null">
+                payer_type,
+            </if>
+            <if test="receiverType != null">
+                receiver_type,
+            </if>
+            <if test="uname != null">
+                uname,
+            </if>
+            <if test="shopId != null">
+                shop_id,
+            </if>
+            <!--新增2019年7月3日11:24:58店铺分润和运费-->
+            <if test="mid != null">
+                mid,
+            </if>
+            <if test="tid != null">
+                tid,
+            </if>
+            <if test="shopBenefitPercent != null">
+	            shop_benefit_percent,
+            </if>
+            <if test="shopBenefitMoney != null">
+	            shop_benefit_money,
+            </if>
+            <if test="freight != null">
+                freight,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">
+                #{orderId,jdbcType=BIGINT},
+            </if>
+            <if test="channelFlowId != null">
+                #{channelFlowId,jdbcType=VARCHAR},
+            </if>
+            <if test="payerId != null">
+                #{payerId,jdbcType=VARCHAR},
+            </if>
+            <if test="payerName != null">
+                #{payerName,jdbcType=VARCHAR},
+            </if>
+            <if test="payerPayAmount != null">
+                #{payerPayAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="payerFee != null">
+                #{payerFee,jdbcType=DECIMAL},
+            </if>
+            <if test="receiverUserId != null">
+                #{receiverUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverName != null">
+                #{receiverName,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverFee != null">
+                #{receiverFee,jdbcType=DECIMAL},
+            </if>
+            <if test="orderIp != null">
+                #{orderIp,jdbcType=VARCHAR},
+            </if>
+            <if test="orderRefererUrl != null">
+                #{orderRefererUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="orderAmount != null">
+                #{orderAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="platIncome != null">
+                #{platIncome,jdbcType=DECIMAL},
+            </if>
+            <if test="feeRate != null">
+                #{feeRate,jdbcType=DECIMAL},
+            </if>
+            <if test="channelCode != null">
+                #{channelCode,jdbcType=VARCHAR},
+            </if>
+            <if test="channelName != null">
+                #{channelName,jdbcType=VARCHAR},
+            </if>
+            <if test="typeCode != null">
+                #{typeCode,jdbcType=VARCHAR},
+            </if>
+            <if test="typeName != null">
+                #{typeName,jdbcType=VARCHAR},
+            </if>
+            <if test="successTime != null">
+                #{successTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="completeTime != null">
+                #{completeTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isRefund != null">
+                #{isRefund,jdbcType=TINYINT},
+            </if>
+            <if test="tradeType != null">
+                #{tradeType,jdbcType=TINYINT},
+            </if>
+            <if test="returnInfo != null">
+                #{returnInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="isBlc != null">
+                #{isBlc,jdbcType=TINYINT},
+            </if>
+            <if test="blcTime != null">
+                #{blcTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="desp != null">
+                #{desp,jdbcType=VARCHAR},
+            </if>
+            <if test="channelType != null">
+                #{channelType,jdbcType=VARCHAR},
+            </if>
+            <if test="interactionId != null">
+                #{interactionId,jdbcType=VARCHAR},
+            </if>
+            <if test="returnFlowId != null">
+                #{returnFlowId,jdbcType=VARCHAR},
+            </if>
+            <if test="payerType != null">
+                #{payerType,jdbcType=TINYINT},
+            </if>
+            <if test="receiverType != null">
+                #{receiverType,jdbcType=TINYINT},
+            </if>
+            <if test="uname != null">
+                #{uname,jdbcType=VARCHAR},
+            </if>
+            <if test="shopId != null">
+                #{shopId,jdbcType=INTEGER},
+            </if>
+            <!--新增2019年7月3日11:09:58店铺分润和运费-->
+            <if test="mid != null">
+                #{mid},
+            </if>
+            <if test="tid != null">
+                #{tid},
+            </if>
+            <if test="shopBenefitPercent != null">
+                #{shopBenefitPercent},
+            </if>
+            <if test="shopBenefitMoney != null">
+                #{shopBenefitMoney},
+            </if>
+            <if test="freight != null">
+                #{freight},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updatePayFlowById" parameterType="com.ewfresh.pay.model.PayFlow">
+        update t_pay_flow
+        <set>
+            <if test="orderId != null">
+                order_id = #{orderId,jdbcType=BIGINT},
+            </if>
+            <if test="channelFlowId != null">
+                channel_flow_id = #{channelFlowId,jdbcType=VARCHAR},
+            </if>
+            <if test="payerId != null">
+                payer_id = #{payerId,jdbcType=VARCHAR},
+            </if>
+            <if test="payerName != null">
+                payer_name = #{payerName,jdbcType=VARCHAR},
+            </if>
+            <if test="payerPayAmount != null">
+                payer_pay_amount = #{payerPayAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="payerFee != null">
+                payer_fee = #{payerFee,jdbcType=DECIMAL},
+            </if>
+            <if test="receiverUserId != null">
+                receiver_user_id = #{receiverUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverName != null">
+                receiver_name = #{receiverName,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverFee != null">
+                receiver_fee = #{receiverFee,jdbcType=DECIMAL},
+            </if>
+            <if test="orderIp != null">
+                order_ip = #{orderIp,jdbcType=VARCHAR},
+            </if>
+            <if test="orderRefererUrl != null">
+                order_referer_url = #{orderRefererUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="orderAmount != null">
+                order_amount = #{orderAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="platIncome != null">
+                plat_income = #{platIncome,jdbcType=DECIMAL},
+            </if>
+            <if test="feeRate != null">
+                fee_rate = #{feeRate,jdbcType=DECIMAL},
+            </if>
+            <if test="channelCode != null">
+                channel_code = #{channelCode,jdbcType=VARCHAR},
+            </if>
+            <if test="channelName != null">
+                channel_name = #{channelName,jdbcType=VARCHAR},
+            </if>
+            <if test="typeCode != null">
+                type_code = #{typeCode,jdbcType=VARCHAR},
+            </if>
+            <if test="typeName != null">
+                type_name = #{typeName,jdbcType=VARCHAR},
+            </if>
+            <if test="successTime != null">
+                success_time = #{successTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="completeTime != null">
+                complete_time = #{completeTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isRefund != null">
+                is_refund = #{isRefund,jdbcType=TINYINT},
+            </if>
+            <if test="tradeType != null">
+                trade_type = #{tradeType,jdbcType=TINYINT},
+            </if>
+            <if test="returnInfo != null">
+                return_info = #{returnInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="isBlc != null">
+                is_blc = #{isBlc,jdbcType=TINYINT},
+            </if>
+            <if test="blcTime != null">
+                blc_time = #{blcTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="desp != null">
+                desp = #{desp,jdbcType=VARCHAR},
+            </if>
+            <if test="channelType != null">
+                channel_type = #{channelType,jdbcType=VARCHAR},
+            </if>
+            <if test="returnFlowId != null">
+                return_flow_id = #{returnFlowId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where pay_flow_id = #{payFlowId,jdbcType=INTEGER}
+    </update>
+
+    <!--更新支付流水，channel_flow_id参数必传，其余随机     jiudongdong-->
+    <update id="updatePayFlow" parameterType="com.ewfresh.pay.model.PayFlow">
+        update t_pay_flow
+        <set>
+            <if test="orderId != null">
+                order_id = #{orderId,jdbcType=BIGINT},
+            </if>
+            <if test="channelFlowId != null">
+                channel_flow_id = #{channelFlowId,jdbcType=VARCHAR},
+            </if>
+            <if test="payerId != null">
+                payer_id = #{payerId,jdbcType=VARCHAR},
+            </if>
+            <if test="payerName != null">
+                payer_name = #{payerName,jdbcType=VARCHAR},
+            </if>
+            <if test="payerPayAmount != null">
+                payer_pay_amount = #{payerPayAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="payerFee != null">
+                payer_fee = #{payerFee,jdbcType=DECIMAL},
+            </if>
+            <if test="payerType != null">
+                payer_type = #{payerType,jdbcType=TINYINT},
+            </if>
+            <if test="receiverUserId != null">
+                receiver_user_id = #{receiverUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverName != null">
+                receiver_name = #{receiverName,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverFee != null">
+                receiver_fee = #{receiverFee,jdbcType=DECIMAL},
+            </if>
+            <if test="receiverType != null">
+                receiver_type = #{receiverType,jdbcType=TINYINT},
+            </if>
+            <if test="orderIp != null">
+                order_ip = #{orderIp,jdbcType=VARCHAR},
+            </if>
+            <if test="orderRefererUrl != null">
+                order_referer_url = #{orderRefererUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="orderAmount != null">
+                order_amount = #{orderAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="platIncome != null">
+                plat_income = #{platIncome,jdbcType=DECIMAL},
+            </if>
+            <if test="feeRate != null">
+                fee_rate = #{feeRate,jdbcType=DECIMAL},
+            </if>
+            <if test="channelCode != null">
+                channel_code = #{channelCode,jdbcType=VARCHAR},
+            </if>
+            <if test="channelName != null">
+                channel_name = #{channelName,jdbcType=VARCHAR},
+            </if>
+            <if test="typeCode != null">
+                type_code = #{typeCode,jdbcType=VARCHAR},
+            </if>
+            <if test="typeName != null">
+                type_name = #{typeName,jdbcType=VARCHAR},
+            </if>
+            <if test="successTime != null">
+                success_time = #{successTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="completeTime != null">
+                complete_time = #{completeTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isRefund != null">
+                is_refund = #{isRefund,jdbcType=TINYINT},
+            </if>
+            <if test="tradeType != null">
+                trade_type = #{tradeType,jdbcType=TINYINT},
+            </if>
+            <if test="returnInfo != null">
+                return_info = #{returnInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="isBlc != null">
+                is_blc = #{isBlc,jdbcType=TINYINT},
+            </if>
+            <if test="blcTime != null">
+                blc_time = #{blcTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="desp != null">
+                desp = #{desp,jdbcType=VARCHAR},
+            </if>
+            <if test="interactionId != null and interactionId != '' ">
+                interaction_id = #{interactionId,jdbcType=VARCHAR},
+            </if>
+            <if test="channelType != null">
+                channel_type = #{channelType,jdbcType=VARCHAR},
+            </if>
+            <if test="returnFlowId != null">
+                return_flow_id = #{returnFlowId,jdbcType=VARCHAR}
+            </if>
+        </set>
+        WHERE
+            channel_flow_id = #{channelFlowId,jdbcType=VARCHAR}
+    </update>
+
+    <!-- 根据支付渠道流水号查询流水信息    jiudongdong-->
+    <select id="getPayFlowPartById" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            t_pay_flow
+        WHERE
+            channel_flow_id = #{channelFlowId,jdbcType=VARCHAR}
+    </select>
+
+    <!-- 根据父订单号查询快捷支付的退款流水集合    jiudongdong-->
+    <select id="getPayFlowsByOrderId" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            t_pay_flow
+        WHERE
+            order_id = #{orderId}
+    </select>
+
+    <!-- 根据父订单号和子订单号查询快钱快捷、快钱网银的支付流水集合    jiudongdong-->
+    <select id="getBill99PayFlowsByOrderId" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            t_pay_flow
+        WHERE
+            type_name = '快钱'
+        AND
+            trade_type = '1'
+        AND
+            order_id = #{orderId}
+    </select>
+
+    <!--查询今天是否使用快钱快捷的农业银行,交通银行,兴业银行,光大银行,中信银行,邮储银行,上海银行进行支付    jiudongdong-->
+    <select id="ifUseSpecialBank" resultMap="BaseResultMap">
+        SELECT
+            COUNT('1')
+        FROM
+            t_pay_flow
+        WHERE
+            DATE_FORMAT(create_time,'%Y-%m-%d') = DATE_FORMAT(NOW(),'%Y-%m-%d')
+        AND
+            channel_type IN ('ABC','BCOM','CIB','CEB','CITIC','PSBC','SHB')
+        AND
+            channel_name = '快钱快捷'
+        AND
+            trade_type = '1'
+        AND
+            order_id = #{orderId}
+    </select>
+
+    <!-- 根据支付渠道流水号和交易类型查询流水信息    DXM-->
+    <select id="getPayFlowPartByIdAndTradeType" resultMap="BaseResultMap" >
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            t_pay_flow
+        WHERE
+            channel_flow_id = #{channelFlowId,jdbcType=VARCHAR} AND trade_type = #{tradeType}
+    </select>
+
+    <!-- 根据支付流水ID查询流水信息    jiudongdong-->
+    <select id="getPayFlowPartByPayFlowId" resultMap="BaseResultMap" >
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            t_pay_flow
+        WHERE
+            pay_flow_id = #{payFlowId,jdbcType=INTEGER}
+    </select>
+
+    <!-- 根据订单ID查询相关支付流水的方法   DXM-->
+    <select id="getPayFlowByOrderId" resultMap="BaseResultMap">
+        SELECT
+           <include refid="Base_Column_List"/>
+        FROM
+            t_pay_flow
+        WHERE
+            order_id = #{orderId} AND trade_type = '1' AND channel_code != '1000';
+    </select>
+    <!-- 根据订单ID查询使用余额支付流水的方法   DXM-->
+    <select id="getBalancePayFlow" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            t_pay_flow
+        WHERE
+            order_id = #{orderId} AND trade_type = '1' AND channel_code = '1000';
+    </select>
+    <!-- 根据订单ID查询使用余额退款的支付流水的方法   DXM-->
+    <select id="getRefundBalancePayFlow" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            t_pay_flow
+        WHERE
+            order_id = #{orderId} AND trade_type = '2' AND channel_code = '1000'
+            <if test="interactionId != null and interactionId != ''">
+                AND  interaction_id = #{interactionId}
+            </if>
+    </select>
+    <!-- 根据订单ID查询使用余额退款的支付流水的方法   DXM-->
+    <select id="getPayFlowsByOrderIdAndTradeType" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            t_pay_flow
+        WHERE
+            order_id = #{orderId}
+        <if test="tradeType != null">
+        AND
+            trade_type
+        IN
+            (
+            <foreach collection="tradeType" item="item" separator=",">
+                #{item}
+            </foreach>
+            )
+        </if>
+
+    </select>
+    <!-- 根据订单ID查询相关支付流水的方法   DXM-->
+    <select id="getRefundFlowByOrderId" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+        t_pay_flow
+        WHERE
+        order_id = #{orderId} AND trade_type = '2'AND channel_code != '1000';
+    </select>
+    <!-- 根据订单ID查询相关支付流水的方法   DXM-->
+    <select id="getRefundFlowByOrderIdAndChannel" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            t_pay_flow
+        WHERE
+            order_id = #{orderId} AND trade_type = '2'AND channel_code = #{channelCode};
+    </select>
+    <!-- 根据订单ID查询相关支付流水的方法   DXM-->
+    <select id="getPayFlowByItems" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            t_pay_flow
+        WHERE
+            order_id = #{orderId} AND interaction_id = #{interactionId} AND trade_type = #{tradeType};
+    </select>
+    <!--根据订单号查询最近一次订单支付交易的支付渠道流水号   jiudongdong-->
+    <select id="getChannelFlowIdByOrderNo" parameterType="java.lang.Long" resultType="java.lang.String">
+        SELECT
+            channel_flow_id
+        FROM
+            t_pay_flow
+        WHERE
+            order_id = #{orderId,jdbcType=BIGINT}
+            AND channel_code = #{channelCode,jdbcType=VARCHAR}
+            AND trade_type = #{tradeType,jdbcType=TINYINT}
+            AND status = #{status,jdbcType=TINYINT}
+        ORDER BY
+            success_time DESC
+        LIMIT 1
+    </select>
+
+    <!--根据支付渠道流水号查询渠道类型     jiudongdong-->
+    <select id="getChannelTypeByChannelFlowId" resultType="java.lang.String">
+        SELECT
+            channel_type
+        FROM
+            t_pay_flow
+        WHERE
+            channel_flow_id = #{channelFlowId,jdbcType=VARCHAR}
+    </select>
+
+    <!--根据第三方交互订单号查询订单支付成功时间（北京银行专用）     jiudongdong-->
+    <select id="getSuccessTimeByInteractionId" resultType="java.util.Date">
+        SELECT
+            success_time
+        FROM
+            t_pay_flow
+        WHERE
+            interaction_id = #{interactionId,jdbcType=VARCHAR}
+        AND
+            trade_type = #{tradeType,jdbcType=TINYINT}
+        ORDER BY
+            success_time
+        LIMIT 1
+    </select>
+
+    <!--根据支付渠道流水号查询订单支付成功时间（北京银行专用）     jiudongdong-->
+    <select id="getSuccessTimeByChannelFlowId" resultType="java.util.Date">
+        SELECT
+            success_time
+        FROM
+            t_pay_flow
+        WHERE
+            channel_flow_id = #{channelFlowId,jdbcType=VARCHAR}
+        ORDER BY
+            success_time
+        LIMIT 1
+    </select>
+
+    <!--根据第三方交互订单号查询订单支付流水信息（北京银行专用）     jiudongdong-->
+    <select id="getPayFlowByInteractionId" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            t_pay_flow
+        WHERE
+            interaction_id = #{interactionId,jdbcType=VARCHAR}
+        AND
+            is_refund = '0'
+        AND
+            trade_type = '1'
+        ORDER BY
+            create_time
+        LIMIT 1
+    </select>
+
+    <!--根据第三方交互订单号查询最新的1条订单退款流水信息（北京银行专用）     jiudongdong-->
+    <select id="getReturnFlowIdByInteractionId" resultType="java.lang.String">
+        SELECT
+            return_flow_id
+        FROM
+            t_pay_flow
+        WHERE
+            interaction_id = #{interactionId,jdbcType=VARCHAR}
+        AND
+            is_refund = '1'
+        AND
+            trade_type = '2'
+        ORDER BY
+            create_time
+        DESC
+        limit 1
+    </select>
+
+    <!--根据渠道流水id查询订单退款流水信息     jiudongdong-->
+    <select id="getFlowIdByRefundSequence" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            t_pay_flow
+        WHERE
+            channel_flow_id = #{channelFlowId,jdbcType=VARCHAR}
+        AND
+            is_refund = '1'
+    </select>
+
+	<!--根据第三方交互订单号和建议类型查询订单号  微信支付-->
+    <select id="getOrderId" resultType="java.lang.Long">
+        SELECT
+        	order_id
+        FROM
+        	t_pay_flow
+        WHERE
+        	interaction_id = #{outTradeNo,jdbcType=VARCHAR}
+       		AND
+        	trade_type = '1'
+    </select>
+    
+    
+    <!--获取在线充值流水列表（可筛选）  zhaoqun-->
+    <!--<select id="getDispatchListByCondition" resultType="com.ewfresh.pay.model.vo.OnlineRechargeFlowVo">
+	    SELECT
+	    	p.pay_flow_id AS payFlowId,
+	    	p.order_id AS orderId,
+	    	p.payer_pay_amount AS payerPayAmount,
+	    	p.channel_code AS channelCode,
+	    	p.channel_name AS channelName,
+	    	p.create_time AS createTime,
+	    	p.trade_type AS tradeType,
+	    	a.uname AS uname
+	    FROM t_pay_flow p
+	    LEFT JOIN t_account_flow a ON p.order_id = a.busi_no
+	    WHERE
+	    	p.trade_type = 4 AND a.busi_type = 1
+	    <if test="uname != null" >
+		    AND	a.uname like "%"#{uname}"%"
+	    </if>
+	    <if test="channelCode != null  and channelCode != ''" >
+		    AND	p.channel_code = #{channelCode}
+	    </if>
+        <if test="tradeType != null" >
+            AND	p.trade_type = #{tradeType}
+        </if>
+	    <if test="timeStart != null">
+		    AND p.create_time <![CDATA[>=]]> #{timeStart}
+	    </if>
+	    <if test="timeEnd != null">
+		    AND #{timeEnd} <![CDATA[>=]]> p.create_time
+	    </if>
+        ORDER BY
+        p.create_time
+        DESC
+    </select>-->
+    
+    <select id="getOnlineRechargeList" resultType="com.ewfresh.pay.model.vo.OnlineRechargeFlowVo">
+        SELECT
+        pay_flow_id AS payFlowId,
+        order_id AS orderId,
+        payer_pay_amount AS payerPayAmount,
+        channel_code AS channelCode,
+        channel_name AS channelName,
+        create_time AS createTime,
+        trade_type AS tradeType,
+        uname
+        FROM t_pay_flow
+        WHERE
+	    	1=1
+        <if test="uname != null" >
+            AND	uname like "%"#{uname}"%"
+        </if>
+        <if test="channelCode != null  and channelCode != ''" >
+            AND	channel_code = #{channelCode}
+        </if>
+        <if test="tradeType != null" >
+            AND	trade_type = #{tradeType}
+        </if>
+        <if test="timeStart != null">
+            AND create_time <![CDATA[>=]]> #{timeStart}
+        </if>
+        <if test="timeEnd != null">
+            AND #{timeEnd} <![CDATA[>=]]> create_time
+        </if>
+        ORDER BY
+            pay_flow_id
+        DESC
+    </select>
+
+    <sql id="settlePayflows">
+        pay_flow_id, order_id, channel_flow_id, payer_id, payer_name, payer_pay_amount, payer_fee,
+        receiver_user_id, receiver_name, receiver_fee, order_ip, order_referer_url, order_amount,
+        plat_income, fee_rate, channel_code, channel_name, type_code, type_name, success_time,
+        complete_time, is_refund, trade_type, return_info, is_blc, blc_time, status, create_time,
+        desp, interaction_id, channel_type, return_flow_id, payer_type, receiver_type, uname,shop_id,
+        order_status,settle_status
+    </sql>
+
+    <!--多条件查询结算流水的内容DXM-->
+    <select id="getSettlePayflows" resultMap="BaseResultMap">
+        SELECT
+            <include refid="settlePayflows"/>
+        FROM t_pay_flow
+        WHERE
+            1 = 1
+        <if test="shopId != null" >
+            AND	shop_id = #{shopId}
+        </if>
+        <if test="orderStatus != null" >
+            AND	order_status = #{orderStatus}
+        </if>
+        <if test="batchNo != null" >
+            AND	batch_no = #{batchNo}
+        </if>
+        <if test="settleStatus != null" >
+            AND	settle_status = #{settleStatus}
+        </if>
+        <if test="successTime != null and successTime != ''">
+            AND success_time <![CDATA[<=]]> #{successTime}
+        </if>
+            AND trade_type != 12 AND trade_type != 13
+        ORDER BY
+            create_time
+        DESC
+    </select>
+    <!--根据id集合查询结算流水的内容DXM-->
+    <select id="getPayflowsByIds" resultMap="BaseResultMap">
+        SELECT
+            <include refid="settlePayflows"/>
+        FROM t_pay_flow
+        WHERE
+            pay_flow_id
+        IN
+        <foreach collection="list" item="item" index="index" separator=";" close=")" open="(">
+            #{item}
+        </foreach>
+    </select>
+    <!--根据批次号集合查询结算流水的内容DXM-->
+    <select id="getSettleRecordsByBatchNo" resultMap="BaseResultMap">
+        SELECT
+            <include refid="settlePayflows"/>
+        FROM t_pay_flow
+        WHERE
+            batch_no = #{batchNo}
+    </select>
+    <!--批量更新批次号DXM-->
+    <update id="updateSettleStatus">
+        UPDATE  t_pay_flow
+        SET
+            batch_no = #{oldBatchNo}
+        WHERE
+        1 = 1
+        <if test="list != null">
+            AND  pay_flow_id
+            IN
+            <foreach collection="list" item="item" index="index" separator="," close=")" open="(">
+                #{item.payFlowId}
+            </foreach>
+        </if>
+    </update>
+
+    <!--批量更新批次号DXM-->
+    <update id="updateSettleStatusByBatchNo">
+        UPDATE  t_pay_flow
+        SET
+            settle_status = #{settleStatus}
+            <if test="newBatchNo != null" >
+                ,batch_no = #{newBatchNo}
+            </if>
+        WHERE
+        1 = 1
+        <if test="oldBatchNo != null">
+            AND  batch_no = #{oldBatchNo}
+        </if>
+    </update>
+    <!--更新订单状态的方法DXM-->
+    <update id="updateOrderStatus">
+        UPDATE  t_pay_flow
+        SET
+        	order_status = 1
+        WHERE
+            channel_flow_id = #{channelFlowId}
+    </update>
+    <!--根据付款人id 查询最近的一条payflow    huboyang -->
+    <select id="getPayFlowByPayerId" resultMap="BaseResultMap">
+        SELECT
+          <include refid="Base_Column_List"/>
+        FROM
+        t_pay_flow
+        WHERE
+        payer_id = #{payerId} AND trade_type = 15
+        ORDER BY
+        pay_flow_id DESC
+        limit 1
+    </select>
+
+
+    <resultMap id="checkSatatusMap" type="java.util.HashMap">
+        <result column="successStatus" property="successStatus" jdbcType="TINYINT" javaType="Short"/>
+        <result column="failedStatus" property="failedStatus" jdbcType="TINYINT" javaType="Short"/>
+        <result column="waitStatus" property="waitStatus" jdbcType="TINYINT" javaType="Short"/>
+    </resultMap>
+    <select id="checkPayFlowStatus" resultMap="checkSatatusMap">
+        SELECT
+        CASE
+        WHEN
+            COUNT( IF ( pf.status = 0, 1, NULL ) ) = 0 THEN  1 ELSE 0
+        END successStatus,
+        CASE
+        WHEN
+            COUNT( IF ( pf.status = 1, 1, NULL ) ) = 0 THEN  1 ELSE 0
+        END failedStatus,
+        CASE
+        WHEN
+            COUNT( IF ( pf.status = 2, 1, NULL ) ) = 0 THEN  1 ELSE 0
+        END waitStatus
+        FROM
+            t_pay_flow pf
+        WHERE
+            channel_flow_id
+        IN
+            (
+            <foreach collection="channelFlowIds" item="item" separator=",">
+                #{item}
+            </foreach>
+            )
+        <if test="tradeType != null">
+        AND
+            trade_type = #{tradeType}
+        </if>
+    </select>
+
+</mapper>

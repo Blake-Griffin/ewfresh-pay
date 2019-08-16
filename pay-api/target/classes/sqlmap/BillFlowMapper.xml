@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ewfresh.pay.dao.BillFlowDao" >
+  <resultMap id="BaseResultMap" type="com.ewfresh.pay.model.BillFlow" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="channel_flow_id" property="channelFlowId" jdbcType="VARCHAR" />
+    <result column="order_id" property="orderId" jdbcType="BIGINT" />
+    <result column="income" property="income" jdbcType="DECIMAL" />
+    <result column="expenditure" property="expenditure" jdbcType="DECIMAL" />
+    <result column="account_balance" property="accountBalance" jdbcType="DECIMAL" />
+    <result column="channel_name" property="channelName" jdbcType="VARCHAR" />
+    <result column="trade_type" property="tradeType" jdbcType="TINYINT" />
+    <result column="desp" property="desp" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, channel_flow_id, order_id, income, expenditure, account_balance, channel_name, 
+    trade_type, desp, create_time
+  </sql>
+
+  <select id="getBillFlowById" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_bill_flow
+    WHERE id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <delete id="delBillFlowById" parameterType="java.lang.Long" >
+    delete from t_bill_flow
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="addBillFlow" parameterType="com.ewfresh.pay.model.BillFlow" >
+    insert into t_bill_flow
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="channelFlowId != null" >
+        channel_flow_id,
+      </if>
+      <if test="orderId != null" >
+        order_id,
+      </if>
+      <if test="income != null" >
+        income,
+      </if>
+      <if test="expenditure != null" >
+        expenditure,
+      </if>
+      <if test="accountBalance != null" >
+        account_balance,
+      </if>
+      <if test="channelName != null" >
+        channel_name,
+      </if>
+      <if test="tradeType != null" >
+        trade_type,
+      </if>
+      <if test="desp != null" >
+        desp,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="channelFlowId != null" >
+        #{channelFlowId,jdbcType=VARCHAR},
+      </if>
+      <if test="orderId != null" >
+        #{orderId,jdbcType=BIGINT},
+      </if>
+      <if test="income != null" >
+        #{income,jdbcType=DECIMAL},
+      </if>
+      <if test="expenditure != null" >
+        #{expenditure,jdbcType=DECIMAL},
+      </if>
+      <if test="accountBalance != null" >
+        #{accountBalance,jdbcType=DECIMAL},
+      </if>
+      <if test="channelName != null" >
+        #{channelName,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeType != null" >
+        #{tradeType,jdbcType=TINYINT},
+      </if>
+      <if test="desp != null" >
+        #{desp,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <insert id="addBillFlowBach" parameterType="com.ewfresh.pay.model.BillFlow" >
+    <foreach collection="list" item="item" index="index" separator=";" >
+    insert into t_bill_flow (
+        channel_flow_id,
+        order_id,
+        income,
+        expenditure,
+        account_balance,
+        channel_name,
+        trade_type,
+        <if test="item.desp != null and item.desp != ''">
+        desp,
+        </if>
+        create_time)
+    values
+        (
+        #{item.channelFlowId,jdbcType=VARCHAR},
+        #{item.orderId,jdbcType=BIGINT},
+        #{item.income,jdbcType=DECIMAL},
+        #{item.expenditure,jdbcType=DECIMAL},
+        #{item.accountBalance,jdbcType=DECIMAL},
+        #{item.channelName,jdbcType=VARCHAR},
+        #{item.tradeType,jdbcType=TINYINT},
+        <if test="item.desp != null and item.desp != ''">
+        #{item.desp,jdbcType=VARCHAR},
+        </if>
+        #{item.createTime,jdbcType=TIMESTAMP}
+        )
+      </foreach>
+</insert>
+
+  <update id="updateBillFlowById" parameterType="com.ewfresh.pay.model.BillFlow" >
+    update t_bill_flow
+    <set>
+      <if test="channelFlowId != null" >
+        channel_flow_id = #{channelFlowId,jdbcType=VARCHAR},
+      </if>
+      <if test="orderId != null" >
+        order_id = #{orderId,jdbcType=BIGINT},
+      </if>
+      <if test="income != null" >
+        income = #{income,jdbcType=DECIMAL},
+      </if>
+      <if test="expenditure != null" >
+        expenditure = #{expenditure,jdbcType=DECIMAL},
+      </if>
+      <if test="accountBalance != null" >
+        account_balance = #{accountBalance,jdbcType=DECIMAL},
+      </if>
+      <if test="channelName != null" >
+        channel_name = #{channelName,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeType != null" >
+        trade_type = #{tradeType,jdbcType=TINYINT},
+      </if>
+      <if test="desp != null" >
+        desp = #{desp,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>
