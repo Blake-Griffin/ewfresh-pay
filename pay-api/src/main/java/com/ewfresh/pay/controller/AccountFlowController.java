@@ -25,6 +25,7 @@ import java.util.HashMap;
  * Description:账户资金流水表
  * @author wangyaohui
  * Date 2018/4/11
+ * 调价格备注
  */
 @Controller
 public class AccountFlowController {
