@@ -29,7 +29,7 @@
 
     <!--处理静态资源被拦截的问题-->
     <mvc:default-servlet-handler/>
-    <mvc:interceptors>
+   <!-- <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/t/**"/>
             <bean class="com.ewfresh.commons.interceptor.CheckSingleLoginInterceptor"/>
@@ -58,5 +58,5 @@
                 <property name="getUriId" value="http://urm-dev.ewfresh.com/t/resources/queryAppByLocation.htm"/>
             </bean>
         </mvc:interceptor>
-    </mvc:interceptors>
+    </mvc:interceptors>-->
 </beans>

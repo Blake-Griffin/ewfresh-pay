@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -238,11 +239,21 @@ public class AccountFlowManagerImpl implements AccountFlowManager {
     }
 
     @Override
-    public Workbook exportAccountsFlowList(ResponseData responseData, String title, HashMap<String, Object> stringObjectHashMap) throws ParseException {
+    public Workbook exportAccountsFlowList(ResponseData responseData,@RequestParam(defaultValue = "资金的日日") String title, HashMap<String, Object> stringObjectHashMap) throws ParseException {
         logger.info("It is in manager.exportAccountsFlowList");
         List<AccountFlow> accountFlows = accountFlowService.getAccountsByUidList(stringObjectHashMap);
+        List<AccountFlowOneVo>  accountFlowOneVos;
+        // 添加空的导出
+        if (null == accountFlows || accountFlows.isEmpty()){
+            accountFlows.add(new AccountFlow());
+           accountFlowOneVos = ExpAccountFlowListInfo(accountFlows);
+        }else {
+           accountFlowOneVos = ExpAccountFlowListInfo(accountFlows);
+        }
+        // 添加空的导出
+
         logger.info("It is in manager.exportAccountsFlowList accountFlows={}", ItvJsonUtil.toJson(accountFlows));
-        List<AccountFlowOneVo> accountFlowOneVos = ExpAccountFlowListInfo(accountFlows);
+
         ExportAccountFlowEnumOne[] values = ExportAccountFlowEnumOne.values();
         Workbook workbook = new HSSFWorkbook();
         Map<String, String> map = new HashMap<>();
@@ -282,16 +293,16 @@ public class AccountFlowManagerImpl implements AccountFlowManager {
      */
     public List<AccountFlowOneVo> ExpAccountFlowListInfo(List<AccountFlow> list) {
         ArrayList<AccountFlowOneVo> accountFlowVosList = new ArrayList<>();
-        for (AccountFlow accountFlow : list) {
-            AccountFlowOneVo accountFlowVo = new AccountFlowOneVo();
-            accountFlowVo.setUname(accountFlow.getUname());//客户名称
-            accountFlowVo.setAmount(accountFlow.getAmount());//金额
-            accountFlowVo.setBalance(accountFlow.getBalance());//余额
-            accountFlowVo.setDesp(accountFlow.getDesp());//说明信息
-            accountFlowVo.setOccTime(accountFlow.getOccTime());//时间
-            getAccTypes(accountFlow, accountFlowVo);//支付渠道
-            accountFlowVosList.add(accountFlowVo);
-        }
+           for (AccountFlow accountFlow : list) {
+               AccountFlowOneVo accountFlowVo = new AccountFlowOneVo();
+               accountFlowVo.setUname(accountFlow.getUname());//客户名称
+               accountFlowVo.setAmount(accountFlow.getAmount());//金额
+               accountFlowVo.setBalance(accountFlow.getBalance());//余额
+               accountFlowVo.setDesp(accountFlow.getDesp());//说明信息
+               accountFlowVo.setOccTime(accountFlow.getOccTime());//时间
+               getAccTypes(accountFlow, accountFlowVo);//支付渠道
+               accountFlowVosList.add(accountFlowVo);
+       }
         return accountFlowVosList;
     }
 
@@ -318,19 +329,21 @@ public class AccountFlowManagerImpl implements AccountFlowManager {
 
     public AccountFlowOneVo getAccTypes(AccountFlow accountFlow, AccountFlowOneVo accountFlowVo) {
         Short accType = accountFlow.getAccType();
-        if (accType.shortValue() == Constants.ACC_TYPE_1.shortValue()) {
-            accountFlowVo.setAccType(Constants.ALIPAY);//支付渠道 支付宝
-        } else if (accType.shortValue() == Constants.ACC_TYPE_2.shortValue()) {
-            accountFlowVo.setAccType(Constants.WECHATPAYMENT);//支付渠道 微信
-        } else if (accType.shortValue() == Constants.ACC_TYPE_3.shortValue()) {
-            accountFlowVo.setAccType(Constants.BANKCARD);//支付渠道 银行卡
-        } else if (accType.shortValue() == Constants.ACC_TYPE_4.shortValue()) {
-            accountFlowVo.setAccType(Constants.BALANCES);//支付渠道 余额
-        } else if (accType.shortValue() == Constants.ACC_TYPE_5.shortValue()) {
-            accountFlowVo.setAccType(Constants.FASTMONEY);//支付渠道 快钱
-        }else if (accType.shortValue() == Constants.ACC_TYPE_6.shortValue()) {
-            accountFlowVo.setAccType(Constants.GREDIT);//支付渠道 信用
-        }
+       if (null != accType){
+           if (accType.shortValue() == Constants.ACC_TYPE_1.shortValue()) {
+               accountFlowVo.setAccType(Constants.ALIPAY);//支付渠道 支付宝
+           } else if (accType.shortValue() == Constants.ACC_TYPE_2.shortValue()) {
+               accountFlowVo.setAccType(Constants.WECHATPAYMENT);//支付渠道 微信
+           } else if (accType.shortValue() == Constants.ACC_TYPE_3.shortValue()) {
+               accountFlowVo.setAccType(Constants.BANKCARD);//支付渠道 银行卡
+           } else if (accType.shortValue() == Constants.ACC_TYPE_4.shortValue()) {
+               accountFlowVo.setAccType(Constants.BALANCES);//支付渠道 余额
+           } else if (accType.shortValue() == Constants.ACC_TYPE_5.shortValue()) {
+               accountFlowVo.setAccType(Constants.FASTMONEY);//支付渠道 快钱
+           }else if (accType.shortValue() == Constants.ACC_TYPE_6.shortValue()) {
+               accountFlowVo.setAccType(Constants.GREDIT);//支付渠道 信用
+           }
+       }
         return accountFlowVo;
     }
 
