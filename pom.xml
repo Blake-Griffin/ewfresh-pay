@@ -31,7 +31,7 @@
         <log4j.version>1.2.17</log4j.version>
         <slf4j.version>1.7.7</slf4j.version>
         <jedis.version>2.9.0</jedis.version>
-        <mysql.version>5.1.38</mysql.version>
+        <mysql.version>8.0.16</mysql.version>
         <spring.version>4.2.8.RELEASE</spring.version>
         <cglib.version>2.1_3</cglib.version>
         <aspectjweaver.version>1.6.10</aspectjweaver.version>
