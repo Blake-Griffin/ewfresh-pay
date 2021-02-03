@@ -11,7 +11,7 @@
     <properties>
         <mybatis-spring.version>1.3.1</mybatis-spring.version>
         <joda-time.version>2.7</joda-time.version>
-        <ant.version>1.9.1</ant.version>
+        <ant.version>1.10.9</ant.version>
         <opencsv.version>4.1</opencsv.version>
         <javase.version>3.3.0</javase.version>
         <core.version>3.3.0</core.version>
