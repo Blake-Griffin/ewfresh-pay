@@ -53,7 +53,7 @@
         <rpc.version>1.1</rpc.version>
         <discovery.version>0.2</discovery.version>
         <wsdl.version>1.5.1</wsdl.version>
-        <bouncycastle.bcprov.version>1.56</bouncycastle.bcprov.version>
+        <bouncycastle.bcprov.version>1.67</bouncycastle.bcprov.version>
         <netsfjson.version>2.4</netsfjson.version>
     </properties>
 
